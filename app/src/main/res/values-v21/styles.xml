@@ -1,0 +1,10 @@
+<!-- Value-v21/styles.xml -->
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="BaseTheme">
+        <item name="android:navigationBarColor">@color/navigationBar</item>
+    </style>
+
+
+</resources>
