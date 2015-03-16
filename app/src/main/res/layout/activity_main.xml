@@ -26,12 +26,14 @@
 
     <sg.edu.nus.taptask.SettingsToggle
         xmlns:widget="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/enableTaptask"
+        android:id="@+id/taptaskToggle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        widget:prefName="enableTaptask"
-        widget:text="@string/enable_taptask" />
+        widget:prefName="useTaptask"
+        widget:text="@string/enable_taptask"
+        widget:textColor="Black"
+        android:onClick="onClickTaptaskToggle"/>
 
 
 </RelativeLayout>

@@ -20,12 +20,14 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class SettingsToggle extends RelativeLayout implements View.OnClickListener {
 
     FrameLayout layout;
+    LinearLayout outerLayout;
     View toggleCircle, background_oval_off, background_oval_on;
     TextView textView;
     int dimen;
@@ -56,6 +58,7 @@ public class SettingsToggle extends RelativeLayout implements View.OnClickListen
         toggleCircle = findViewById(R.id.toggleCircle);
         textView = (TextView)findViewById(R.id.text);
         layout = (FrameLayout)findViewById(R.id.layout);
+        outerLayout = (LinearLayout)findViewById(R.id.outer_layout);
 
         if (bgDrawableOff != null) {
             int id = getResources().getIdentifier(bgDrawableOff, "drawable", context.getPackageName());
@@ -68,7 +71,7 @@ public class SettingsToggle extends RelativeLayout implements View.OnClickListen
 
         textView.setText(text);
         if (textColor != null) textView.setTextColor(Color.parseColor(textColor));
-        layout.setOnClickListener(this);
+        outerLayout.setOnClickListener(this);
 
         //get a pixel size for a particular dimension - will differ by device according to screen density
         dimen = getResources().getDimensionPixelSize(R.dimen.settings_toggle_width);
@@ -114,10 +117,17 @@ public class SettingsToggle extends RelativeLayout implements View.OnClickListen
 
     @Override
     public void onClick(View view) {
-        if (_oaLeft.isRunning() || _oaRight.isRunning() || _crossfadeRunning) return;
+        if (isAnimating()) {
+            return;
+        }
 
         SharedPreferences.Editor editor = _sp.edit();
-        boolean pref = _sp.getBoolean(_prefName, false);
+        boolean pref = isOn();
+        editor.putBoolean(_prefName, !pref);
+        editor.apply();
+
+        super.callOnClick();
+
         if (pref) {
             _oaLeft.start();
             _crossfadeViews(background_oval_on, background_oval_off, 110);
@@ -126,8 +136,13 @@ public class SettingsToggle extends RelativeLayout implements View.OnClickListen
             _oaRight.start();
             _crossfadeViews(background_oval_off, background_oval_on, 400);
         }
+    }
 
-        editor.putBoolean(_prefName, !pref);
-        editor.apply();
+    public boolean isOn() {
+        return _sp.getBoolean(_prefName, false);
+    }
+
+    public boolean isAnimating() {
+        return (_oaLeft.isRunning() || _oaRight.isRunning() || _crossfadeRunning);
     }
 }
