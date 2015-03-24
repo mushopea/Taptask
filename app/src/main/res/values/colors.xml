@@ -5,6 +5,8 @@
     <color name="Accent" >#FF1744</color>
     <color name="WindowBackground" >#E3F2FD</color>
     <color name="navigationBar">#F44336</color>
+    <color name="text_primary">#ffebee</color>
+    <color name="text_secondary">#ffffff</color>
     <color name="teal">#6dcded</color>
     <color name="darkTeal">#2bb3de</color>
     <color name="white">#FFFFFF</color>
