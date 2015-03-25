@@ -55,7 +55,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
                 Log.e("Invalid task type", "Invalid task type");
                 break;
         }
-        viewHolder.taskImage.setImageDrawable(mContext.getDrawable(mContext.getResources().getIdentifier(imageName, "drawable", mContext.getPackageName())));
+        viewHolder.taskImage.setImageDrawable(mContext.getResources().getDrawable(mContext.getResources().getIdentifier(imageName, "drawable", mContext.getPackageName())));
     }
 
     @Override

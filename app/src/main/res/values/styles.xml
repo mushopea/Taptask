@@ -9,6 +9,5 @@
     </style>
 
     <style name="BaseTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-
     </style>
 </resources> 

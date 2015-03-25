@@ -10,6 +10,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
+import com.melnykov.fab.FloatingActionButton;
+
 import sg.edu.nus.taptask.model.TaskList;
 
 
@@ -34,6 +37,10 @@ public class MainActivity extends ActionBarActivity {
         //mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mAdapter = new TaskAdapter(TaskList.getInstance().getTasks(), R.layout.row_task, this);
         mRecyclerView.setAdapter(mAdapter);
+
+        // floating action button
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.attachToRecyclerView(mRecyclerView);
     }
 
 

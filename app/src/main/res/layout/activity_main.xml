@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="dcodepages.materialstyling.MainActivity">
@@ -37,14 +38,38 @@
             android:layout_margin="@dimen/activity_vertical_margin" />
     </RelativeLayout>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="My tasks"
+        android:id="@+id/myTasks"
+        android:layout_below="@+id/taptaskToggleContainer"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="@dimen/frame_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:textSize="@dimen/default_text_size" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/taskList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".MainActivity"
-        android:layout_below="@+id/taptaskToggleContainer"
+        android:layout_below="@+id/myTasks"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
-
+    <com.melnykov.fab.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:src="@drawable/add"
+        fab:fab_colorNormal="@color/Primary"
+        fab:fab_colorPressed="@color/Primary_pressed"
+        fab:fab_colorRipple="@color/Ripple"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="@dimen/activity_horizontal_margin" />
 </RelativeLayout>
