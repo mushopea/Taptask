@@ -4,6 +4,9 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+
     <FrameLayout
         android:id="@+id/layout"
         android:layout_width="wrap_content"
@@ -40,6 +43,7 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="10dip"
         android:layout_marginLeft="10dip"
-        android:textColor="@color/white"
+        android:textColor="@color/abc_primary_text_material_light"
         android:textSize="12sp" />
+
 </LinearLayout>

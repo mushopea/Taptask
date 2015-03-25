@@ -5,9 +5,6 @@
         <item name="colorPrimary" >@color/Primary</item>
         <item name="colorPrimaryDark">@color/PrimaryDark</item>
         <item name="colorAccent">@color/Accent</item>
-        <item name="textColorPrimary">@color/text_primary</item>
-        <item name="textColor">@color/text_secondary</item>
-        <item name="navigationBarColor">@color/navigationBar</item>
         <!--<item name="windowBackground">@color/WindowBackground</item>-->
     </style>
 

@@ -1,4 +1,4 @@
-package sg.edu.nus.taptask;
+package sg.edu.nus.taptask.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
