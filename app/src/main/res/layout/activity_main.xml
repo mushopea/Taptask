@@ -1,39 +1,50 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:layout_height="match_parent"
     tools:context="dcodepages.materialstyling.MainActivity">
 
-    <EditText
+    <RelativeLayout
+        android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/editText"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="214dp" />
+        android:background="@color/WindowBackground"
+        android:layout_alignParentRight="false"
+        android:layout_alignParentLeft="false"
+        android:gravity="center_horizontal"
+        android:id="@+id/taptaskToggleContainer"
+        android:layout_marginBottom="@dimen/frame_margin">
 
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New CheckBox"
-        android:id="@+id/checkBox"
-        android:layout_above="@+id/editText"
-        android:layout_alignLeft="@+id/editText"
-        android:layout_alignStart="@+id/editText"
-        android:layout_marginBottom="68dp" />
+        <sg.edu.nus.taptask.SettingsToggle
+            xmlns:widget="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/taptaskToggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            widget:prefName="useTaptask"
+            android:onClick="onClickTaptaskToggle"
+            android:layout_margin="@dimen/activity_vertical_margin"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentTop="false"
+            android:layout_alignParentRight="true" />
 
-    <sg.edu.nus.taptask.SettingsToggle
-        xmlns:widget="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/taptaskToggle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        widget:prefName="useTaptask"
-        widget:text="@string/enable_taptask"
-        widget:textColor="Black"
-        android:onClick="onClickTaptaskToggle"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enable Taptask"
+            android:id="@+id/tasptaskToggleText"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:textSize="@dimen/big_text_size"
+            android:layout_margin="@dimen/activity_vertical_margin" />
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/taskList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity"
+        android:layout_below="@+id/taptaskToggleContainer"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 
 </RelativeLayout>

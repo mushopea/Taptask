@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/WindowBackground">
+
+    <ImageView
+        android:id="@+id/taskImage"
+        android:layout_width="@dimen/task_icon_diameter"
+        android:layout_height="@dimen/task_icon_diameter"
+        android:src="@drawable/task_icon_message"
+        android:layout_margin="@dimen/activity_vertical_margin">
+    </ImageView>
+
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <TextView
+            android:id="@+id/taskName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@+id/label"
+            android:gravity="center_vertical"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:textSize="@dimen/default_text_size"
+            android:layout_marginTop="@dimen/frame_margin">
+        </TextView>
+         <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center_vertical">
+
+            <sg.edu.nus.taptask.SettingsToggle
+                xmlns:widget="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/individualTaskToggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/activity_vertical_margin"
+                android:layout_alignParentLeft="false"
+                android:layout_alignParentTop="false"
+                android:layout_alignParentRight="true"
+                android:layout_alignWithParentIfMissing="false"
+                />
+        </RelativeLayout>
+
+
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/list_separator_height"
+            android:id="@+id/listSeparator"
+            android:background="@color/separator_grey"
+            android:layout_centerVertical="true"
+            android:layout_alignParentBottom="true"></LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>

@@ -2,18 +2,22 @@ package sg.edu.nus.taptask;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import sg.edu.nus.taptask.model.TaskList;
 
 
 public class MainActivity extends ActionBarActivity {
 
     private SettingsToggle taptaskToggle;
+    private RecyclerView mRecyclerView;
+    private TaskAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +25,15 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         // Initialize views
+        // enable taptask toggle
         taptaskToggle = (SettingsToggle)this.findViewById(R.id.taptaskToggle);
+
+        // task list recycler view
+        mRecyclerView = (RecyclerView)findViewById(R.id.taskList);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        //mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mAdapter = new TaskAdapter(TaskList.getInstance().getTasks(), R.layout.row_task, this);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
 

@@ -15,21 +15,17 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
-
 public class SettingsToggle extends RelativeLayout implements View.OnClickListener {
 
     FrameLayout layout;
     LinearLayout outerLayout;
     View toggleCircle, background_oval_off, background_oval_on;
-    TextView textView;
     int dimen;
 
     private Boolean _crossfadeRunning = false;
@@ -56,7 +52,6 @@ public class SettingsToggle extends RelativeLayout implements View.OnClickListen
         background_oval_off = findViewById(R.id.background_oval_off);
         background_oval_on = findViewById(R.id.background_oval_on);
         toggleCircle = findViewById(R.id.toggleCircle);
-        textView = (TextView)findViewById(R.id.text);
         layout = (FrameLayout)findViewById(R.id.layout);
         outerLayout = (LinearLayout)findViewById(R.id.outer_layout);
 
@@ -69,8 +64,7 @@ public class SettingsToggle extends RelativeLayout implements View.OnClickListen
             background_oval_on.setBackground(getResources().getDrawable(id));
         }
 
-        textView.setText(text);
-        if (textColor != null) textView.setTextColor(Color.parseColor(textColor));
+
         outerLayout.setOnClickListener(this);
 
         //get a pixel size for a particular dimension - will differ by device according to screen density

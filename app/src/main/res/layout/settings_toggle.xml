@@ -34,7 +34,7 @@
 
     </FrameLayout>
 
-    <TextView
+    <!--<TextView
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -44,6 +44,6 @@
         android:layout_marginStart="10dip"
         android:layout_marginLeft="10dip"
         android:textColor="@color/abc_primary_text_material_light"
-        android:textSize="12sp" />
+        android:textSize="12sp" />-->
 
 </LinearLayout>
