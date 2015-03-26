@@ -8,4 +8,5 @@
     <string name="title_activity_add_new_task">add_new_task</string>
     <string name="title_activity_add_task">AddTaskActivity</string>
     <string name="title_activity_add_call_task">AddCallTaskActivity</string>
+    <string name="title_activity_record">RecordActivity</string>
 </resources>

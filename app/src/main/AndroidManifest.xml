@@ -49,6 +49,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="sg.edu.nus.taptask.MainActivity" />
         </activity>
+        <activity
+            android:name=".RecordActivity"
+            android:label="@string/title_activity_record" >
+        </activity>
     </application>
 
 </manifest>
