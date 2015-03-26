@@ -7,6 +7,7 @@ import android.os.Vibrator;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -90,6 +91,15 @@ public class MainActivity extends ActionBarActivity {
             v.vibrate(pattern, -1);
             stopService(new Intent(this, TaptaskService.class));
         }
+    }
+
+    // go to add new task screen
+    public void onClickAddButton(View view) {
+        Log.e("Meow", "Add activity button triggered");
+
+        Intent intent;
+        intent = new Intent(this, AddTaskActivity.class);
+        startActivity(intent);
     }
 
 }
