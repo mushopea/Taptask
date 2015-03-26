@@ -7,4 +7,5 @@
     <string name="preferences_key">sg.edu.nus.taptask.androidtogglebutton</string>
     <string name="title_activity_add_new_task">add_new_task</string>
     <string name="title_activity_add_task">AddTaskActivity</string>
+    <string name="title_activity_add_call_task">AddCallTaskActivity</string>
 </resources>

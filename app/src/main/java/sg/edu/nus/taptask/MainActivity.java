@@ -125,7 +125,7 @@ public class MainActivity extends ActionBarActivity {
         Log.e("Meow", "Add activity button triggered");
 
         Intent intent;
-        intent = new Intent(this, AddTaskActivity.class);
+        intent = new Intent(this, AddCallTaskActivity.class);
         startActivity(intent);
     }
 

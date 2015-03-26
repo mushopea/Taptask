@@ -94,7 +94,8 @@
             fab:fab_size="mini"
             fab:fab_icon="@drawable/call"
             fab:fab_colorNormal="@color/call_color"
-            fab:fab_colorPressed="@color/call_color"/>
+            fab:fab_colorPressed="@color/call_color"
+            android:onClick="onClickAddButton" />
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
