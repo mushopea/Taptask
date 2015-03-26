@@ -1,5 +1,6 @@
 package sg.edu.nus.taptask;
 
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,10 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.melnykov.fab.FloatingActionButton;
-
 import sg.edu.nus.taptask.model.TaskList;
-
 
 public class MainActivity extends ActionBarActivity {
 
@@ -33,6 +31,7 @@ public class MainActivity extends ActionBarActivity {
         taptaskToggle = (SettingsToggle)this.findViewById(R.id.taptaskToggle);
 
         // task list recycler view
+        // to do: disable recycler view when there are no tasks and show prompt (arrow pointing to (+))
         mRecyclerView = (RecyclerView)findViewById(R.id.taskList);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         //mRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -40,8 +39,36 @@ public class MainActivity extends ActionBarActivity {
         mRecyclerView.setAdapter(mAdapter);
 
         // floating action button
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
+
+        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.attachToRecyclerView(mRecyclerView);
+
+        // floating action button with submenus
+        ImageView icon = new ImageView(this); // Create an icon
+        icon.setImageDrawable(getResources().getDrawable(R.drawable.plus));
+        FloatingActionButton actionButton = new FloatingActionButton.Builder(this).setContentView(icon).build();
+
+        SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
+        ImageView itemIcon = new ImageView(this);
+        itemIcon.setImageDrawable(getResources().getDrawable(R.drawable.task_icon_call));
+        SubActionButton button_add_call = itemBuilder.setContentView(itemIcon).build();
+        ImageView itemIcon2 = new ImageView(this);
+        itemIcon.setImageDrawable(getResources().getDrawable(R.drawable.task_icon_call_reject));
+        SubActionButton button_add_call_reject = itemBuilder.setContentView(itemIcon).build();
+        ImageView itemIcon3 = new ImageView(this);
+        itemIcon.setImageDrawable(getResources().getDrawable(R.drawable.task_icon_message));
+        SubActionButton button_add_message = itemBuilder.setContentView(itemIcon).build();
+        ImageView itemIcon4 = new ImageView(this);
+        itemIcon.setImageDrawable(getResources().getDrawable(R.drawable.task_icon_volume));
+        SubActionButton button_add_volume = itemBuilder.setContentView(itemIcon).build();
+        FloatingActionMenu actionMenu = new FloatingActionMenu.Builder(this)
+                .addSubActionView(button_add_call)
+                .addSubActionView(button_add_call_reject)
+                .addSubActionView(button_add_message)
+                .addSubActionView(button_add_volume)
+                .attachTo(actionButton)
+                .build();*/
     }
 
 
