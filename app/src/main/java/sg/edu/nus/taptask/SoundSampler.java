@@ -25,6 +25,8 @@ public class SoundSampler {
         init();
     }
 
+
+
     private void init() throws Exception{
         try {
             if (audioRecord != null) {
@@ -68,7 +70,7 @@ public class SoundSampler {
     /**
      * Stops audio recording
      */
-    public void stop() {
+    public void stopRecording() {
         if (audioRecord != null) {
             audioRecord.stop();
             audioRecord.release();

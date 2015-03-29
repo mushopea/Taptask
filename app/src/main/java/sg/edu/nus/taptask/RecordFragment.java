@@ -1,7 +1,5 @@
 package sg.edu.nus.taptask;
 
-import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -39,4 +37,9 @@ public class RecordFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onDestroy() {
+        soundSampler.stopRecording();
+        super.onDestroy();
+    }
 }
