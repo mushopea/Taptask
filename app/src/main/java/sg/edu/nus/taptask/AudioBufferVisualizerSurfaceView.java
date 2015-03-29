@@ -95,6 +95,9 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
         private int canvasHeight = 0;
         private int canvasWidth = 0;
         private SurfaceHolder surfaceHolder;
+        private double maxFFTMagnitudeSum = 0;
+        private int time = 0;
+        private boolean[] tapArray = null;
 
         public DrawThread(SurfaceHolder paramContext, Context paramHandler, Handler arg4)
         {
@@ -158,7 +161,57 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
 
                 canvas.drawLine(x0, y0, x1, y1, bluePaint);
             }
-            
+
+            // Normalize and sum FFTMagnitude
+            double[] FFTMagnitudeNormalized = FFTHelper.normalizeMax(FFTMagnitude, 1);
+            double FFTMagnitudeSum = FFTHelper.sum(FFTMagnitudeNormalized);
+            if (FFTMagnitudeSum > maxFFTMagnitudeSum) {
+                maxFFTMagnitudeSum = FFTMagnitudeSum;
+            }
+
+            // Write FFTMagnitudeSum
+            Paint blackPaint = new Paint();
+            blackPaint.setColor(Color.BLACK);
+            blackPaint.setTextSize(40);
+            canvas.drawText("FFTMagnitudeSum: " + (int)(FFTMagnitudeSum), 40, 40, blackPaint);
+            // Write maxFFTMagnitudeSum
+            canvas.drawText("maxFFTMagnitudeSum: " + (int)(maxFFTMagnitudeSum), 40, 90, blackPaint);
+            // Detect tap
+            double[] doubleBuffer = FFTHelper.shortToDouble(buffer);
+            doubleBuffer = FFTHelper.normalizeMax(doubleBuffer, 1);
+            boolean tap = FFTHelper.absSum(doubleBuffer) < 50;//FFTMagnitudeNormalized[FFTMagnitudeNormalized.length-1] > 0.6;
+//            int peaks = 0;
+//            for (int i=0 ; i<FFTMagnitudeNormalized.length ; i++) {
+//                if (FFTMagnitudeNormalized[i] >= 0.9) {
+//                    peaks ++;
+//                }
+//            }
+//            if (peaks > 10) {
+//                tap = false;
+//            }
+            if (tap) {
+                tapArray[time] = true;
+            } else {
+                tapArray[time] = false;
+            }
+
+            // Draw line at time index
+            float x0 = time;
+            float y0 = canvasHeight/5.0f * 4.0f;
+            float x1 = time;
+            float y1 = canvasHeight/5.0f * 4.0f + 100;
+            canvas.drawLine(x0, y0, x1, y1, bluePaint);
+
+            // Draw taps
+            for (int i=0 ; i<time && i<tapArray.length ; i++) {
+                if (tapArray[i]) {
+                    canvas.drawLine(i, y0, i, y1, redPaint);
+                }
+            }
+
+            // Increment time index
+            time ++;
+            time %= canvasWidth;
         }
 
 
@@ -168,6 +221,7 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
             synchronized (surfaceHolder)
             {
                 bitmap = Bitmap.createScaledBitmap(bitmap, canvasWidth, canvasHeight, true);
+                tapArray = new boolean[canvasWidth];
             }
         }
 
