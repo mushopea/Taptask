@@ -87,10 +87,7 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
 
             }
         }
-
-
     }
-
 
     class DrawThread extends Thread
     {
@@ -116,8 +113,6 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
             canvasHeight = canvas.getHeight();
             canvasWidth = canvas.getWidth();
 
-            int xMax = buffer.length;
-            float xScale =(float)canvasWidth/(float)xMax;
 
             // Clear screen
             Paint paint = new Paint();
@@ -129,17 +124,41 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
             Paint redPaint = new Paint();
             redPaint.setColor(Color.RED);
             redPaint.setStrokeWidth(3);
+            int bufferXMax = buffer.length;
+            float bufferXScale =(float)canvasWidth/(float)bufferXMax;
             float bufferYOffset = canvasHeight/5.0f;
-            float bufferYScale = (canvasHeight/5.0f)/18000.0f;
+            float bufferYScale = -(canvasHeight/5.0f)/18000.0f;
             for (int x=0 ; x<canvasWidth-1 ; x++) {
                 float x0 = x;
-                float y0 = buffer[(int)(x0/xScale)]*bufferYScale + bufferYOffset;
+                float y0 = buffer[(int)(x0/bufferXScale)]*bufferYScale + bufferYOffset;
                 float x1 = x+1;
-                float y1 = buffer[(int)(x1/xScale)]*bufferYScale + bufferYOffset;
+                float y1 = buffer[(int)(x1/bufferXScale)]*bufferYScale + bufferYOffset;
 
                 canvas.drawLine(x0, y0, x1, y1, redPaint);
             }
 
+            // Perform FFT
+            double[] FFTResult = FFTHelper.FFTReal(buffer);
+            double[] FFTResultShifted = FFTHelper.FFTShift(FFTResult);
+            double[] FFTMagnitude = FFTHelper.complexMagnitude(FFTResultShifted);
+
+            // Draw FFTMagnitude
+            Paint bluePaint = new Paint();
+            bluePaint.setColor(Color.BLUE);
+            bluePaint.setStrokeWidth(3);
+            int FFTMagnitudeXMax = buffer.length;
+            float FFTMagnitudeXScale =(float)canvasWidth/(float)FFTMagnitudeXMax;
+            float FFTMagnitudeYOffset = canvasHeight/5.0f * 2.5f;
+            float FFTMagnitudeYScale = -(canvasHeight/5.0f)/10.0f;
+            for (int x=0 ; x<canvasWidth-1 ; x++) {
+                float x0 = x;
+                float y0 = (float) (FFTMagnitude[(int)(x0/FFTMagnitudeXScale)]*FFTMagnitudeYScale + FFTMagnitudeYOffset);
+                float x1 = x+1;
+                float y1 = (float) (FFTMagnitude[(int)(x1/FFTMagnitudeXScale)]*FFTMagnitudeYScale + FFTMagnitudeYOffset);
+
+                canvas.drawLine(x0, y0, x1, y1, bluePaint);
+            }
+            
         }
 
 

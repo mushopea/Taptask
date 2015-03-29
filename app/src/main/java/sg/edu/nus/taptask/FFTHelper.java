@@ -88,4 +88,10 @@ public class FFTHelper {
         }
     }
 
+    public static double[] FFTShift(double[] complexInput) {
+        double[] shiftedResult = new double[complexInput.length];
+        System.arraycopy(complexInput, complexInput.length/2, shiftedResult, 0, complexInput.length/2);
+        System.arraycopy(complexInput, 0, shiftedResult, complexInput.length/2, complexInput.length/2);
+        return shiftedResult;
+    }
 }
