@@ -95,9 +95,12 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
         private int canvasHeight = 0;
         private int canvasWidth = 0;
         private SurfaceHolder surfaceHolder;
-        private double maxFFTMagnitudeSum = 0;
         private int time = 0;
         private boolean[] tapArray = null;
+
+        private double maxFFTMagnitudeSum = Double.MIN_VALUE;
+        private double minFFTMagnitudeSobelSum = Double.MAX_VALUE;
+
 
         public DrawThread(SurfaceHolder paramContext, Context paramHandler, Handler arg4)
         {
@@ -149,7 +152,7 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
             Paint bluePaint = new Paint();
             bluePaint.setColor(Color.BLUE);
             bluePaint.setStrokeWidth(3);
-            int FFTMagnitudeXMax = buffer.length;
+            int FFTMagnitudeXMax = FFTMagnitude.length;
             float FFTMagnitudeXScale =(float)canvasWidth/(float)FFTMagnitudeXMax;
             float FFTMagnitudeYOffset = canvasHeight/5.0f * 2.5f;
             float FFTMagnitudeYScale = -(canvasHeight/5.0f)/10.0f;
@@ -162,11 +165,40 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
                 canvas.drawLine(x0, y0, x1, y1, bluePaint);
             }
 
+            // Convolve sobel kernel with FFTMagnitude
+            double[] FFTMagnitudeSobel = FFTHelper.FFTConvolution(FFTMagnitude, FFTHelper.sobelKernel(FFTMagnitude.length,2));
+            // 2nd derivative
+            FFTMagnitudeSobel = FFTHelper.FFTConvolution(FFTMagnitudeSobel, FFTHelper.sobelKernel(FFTMagnitude.length,1));
+
+
+            // Draw FFTMagnitudeSobel
+            Paint cyanPaint = new Paint();
+            cyanPaint.setColor(Color.CYAN);
+            cyanPaint.setStrokeWidth(3);
+            int FFTMagnitudeSobelXMax = FFTMagnitudeSobel.length;
+            float FFTMagnitudeSobelXScale =(float)canvasWidth/(float)FFTMagnitudeSobelXMax;
+            float FFTMagnitudeSobelYOffset = canvasHeight/5.0f * 2.50f;
+            float FFTMagnitudeSobelYScale = -(canvasHeight/5.0f)/10.0f;
+            for (int x=0 ; x<canvasWidth-1 ; x++) {
+                float x0 = x;
+                float y0 = (float) (FFTMagnitudeSobel[(int)(x0/FFTMagnitudeSobelXScale)]*FFTMagnitudeSobelYScale + FFTMagnitudeSobelYOffset);
+                float x1 = x+1;
+                float y1 = (float) (FFTMagnitudeSobel[(int)(x1/FFTMagnitudeSobelXScale)]*FFTMagnitudeSobelYScale + FFTMagnitudeSobelYOffset);
+
+                canvas.drawLine(x0, y0, x1, y1, cyanPaint);
+            }
+
             // Normalize and sum FFTMagnitude
             double[] FFTMagnitudeNormalized = FFTHelper.normalizeMax(FFTMagnitude, 1);
             double FFTMagnitudeSum = FFTHelper.sum(FFTMagnitudeNormalized);
             if (FFTMagnitudeSum > maxFFTMagnitudeSum) {
                 maxFFTMagnitudeSum = FFTMagnitudeSum;
+            }
+
+            // Sum FFTMagnitudeSobel
+            double FFTMagnitudeSobelSum = FFTHelper.absSum(FFTMagnitudeSobel);
+            if (FFTMagnitudeSobelSum < minFFTMagnitudeSobelSum) {
+                minFFTMagnitudeSobelSum = FFTMagnitudeSobelSum;
             }
 
             // Write FFTMagnitudeSum
@@ -176,10 +208,18 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
             canvas.drawText("FFTMagnitudeSum: " + (int)(FFTMagnitudeSum), 40, 40, blackPaint);
             // Write maxFFTMagnitudeSum
             canvas.drawText("maxFFTMagnitudeSum: " + (int)(maxFFTMagnitudeSum), 40, 90, blackPaint);
+            // Write FFTMagnitudeSobelSum
+            canvas.drawText("FFTMagnitudeSobelSum: " + (int)(FFTMagnitudeSobelSum), 40, 140, blackPaint);
+            // Write minFFTMagnitudeSobelSum
+            canvas.drawText("minFFTMagnitudeSobelSum: " + (int)(minFFTMagnitudeSobelSum), 40, 190, blackPaint);
+
+
             // Detect tap
             double[] doubleBuffer = FFTHelper.shortToDouble(buffer);
             doubleBuffer = FFTHelper.normalizeMax(doubleBuffer, 1);
-            boolean tap = FFTHelper.absSum(doubleBuffer) < 50;//FFTMagnitudeNormalized[FFTMagnitudeNormalized.length-1] > 0.6;
+            //boolean tap = FFTHelper.absSum(doubleBuffer) < 50;//FFTMagnitudeNormalized[FFTMagnitudeNormalized.length-1] > 0.6;
+            boolean tap = FFTMagnitudeSobelSum < 500;
+
 //            int peaks = 0;
 //            for (int i=0 ; i<FFTMagnitudeNormalized.length ; i++) {
 //                if (FFTMagnitudeNormalized[i] >= 0.9) {

@@ -1,5 +1,7 @@
 package sg.edu.nus.taptask;
 
+import java.util.Arrays;
+
 import edu.emory.mathcs.jtransforms.fft.DoubleFFT_1D;
 
 public class FFTHelper {
@@ -25,6 +27,36 @@ public class FFTHelper {
         return complexInput;
     }
 
+    public static double[] sobelKernel(int length, int size) {
+        // Size a positive number
+        if ( size <= 0) {
+            return null;
+        }
+        double[] sobelKernel = new double[length];
+        Arrays.fill(sobelKernel, 0);
+        for (int i=0 ; i<size ; i++) {
+            sobelKernel[length/2-i] = -i;
+            sobelKernel[length/2+i] = i;
+        }
+        return sobelKernel;
+    }
+
+    public static double[] FFTConvolution(double[] realSignal, double[] realKernel) {
+        if (realSignal.length != realKernel.length) {
+            return null;
+        }
+        double[] complexSignal = FFTHelper.realToComplex(realSignal);
+        double[] complexKernel = FFTHelper.realToComplex(realKernel);
+        double[] FFTSignal = FFTHelper.FFT(complexSignal);
+        double[] FFTKernel = FFTHelper.FFT(complexKernel);
+        double[] FFTProduct = FFTHelper.complexMultiply(FFTSignal, FFTKernel);
+        double[] FFTInverse = FFTHelper.FFTInverse(FFTProduct);
+        double[] realConvolutionResult = FFTHelper.complexRealPart(FFTInverse);
+        return realConvolutionResult;
+
+        //return FFTHelper.complexMagnitude(FFTInverse(complexSignal));//FFTHelper.complexRealPart(FFTHelper.FFTInverse(complexSignal));
+    }
+
     public static double[] complexMultiply(double[] input0, double[] input1) {
         if (input0.length != input1.length) {
             return null;
@@ -32,7 +64,7 @@ public class FFTHelper {
         // Multiply FFTs together
         // complex multiplication: (a + bj) * (c + dj) = (ac - bd) + (bc + ad)j
         double[] FFTProduct = new double[input0.length];
-        for (int i=0 ; i<512 ; i++) {
+        for (int i=0 ; i<input0.length/2 ; i++) {
             double a = input0[i*2];
             double b = input0[i*2+1];
             double c = input1[i*2];
@@ -46,7 +78,19 @@ public class FFTHelper {
 
     public static double[] realToComplex(short[] realInput) {
         double[] complexOutput = new double[realInput.length*2];
-        for (int i=0 ; i<realInput.length ; i++) {
+        for (int i=0 ; i<complexOutput.length ; i++) {
+            if (i%2 == 0) {
+                complexOutput[i] = realInput[i/2];
+            } else {
+                complexOutput[i] = 0;
+            }
+        }
+        return complexOutput;
+    }
+
+    public static double[] realToComplex(double[] realInput) {
+        double[] complexOutput = new double[realInput.length*2];
+        for (int i=0 ; i<complexOutput.length ; i++) {
             if (i%2 == 0) {
                 complexOutput[i] = realInput[i/2];
             } else {
