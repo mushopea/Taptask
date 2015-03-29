@@ -94,4 +94,43 @@ public class FFTHelper {
         System.arraycopy(complexInput, 0, shiftedResult, complexInput.length/2, complexInput.length/2);
         return shiftedResult;
     }
+
+    public static double[] normalizeMax(double[] input, double normalizedMax) {
+        double[] normalizedResult = new double[input.length];
+        double max = Double.MIN_VALUE;
+        for (int i=0 ; i<input.length ; i++) {
+            if (input[i] > max) {
+                max = input[i];
+            }
+        }
+        double scale = normalizedMax/max;
+        for (int i=0 ; i<input.length ; i++) {
+            normalizedResult[i] = input[i] * scale;
+        }
+        return normalizedResult;
+    }
+
+    public static double sum(double[] input) {
+        double sum = 0;
+        for (int i=0 ; i<input.length ; i++) {
+            sum += input[i];
+        }
+        return sum;
+    }
+
+    public static double absSum(double[] input) {
+        double sum = 0;
+        for (int i=0 ; i<input.length ; i++) {
+            sum += Math.abs(input[i]);
+        }
+        return sum;
+    }
+
+    public static double[] shortToDouble(short[] input) {
+        double[] output = new double[input.length];
+        for (int i=0 ; i<input.length ; i++) {
+            output[i] = input[i];
+        }
+        return output;
+    }
 }
