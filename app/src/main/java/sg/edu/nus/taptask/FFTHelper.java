@@ -34,9 +34,24 @@ public class FFTHelper {
         }
         double[] sobelKernel = new double[length];
         Arrays.fill(sobelKernel, 0);
-        for (int i=0 ; i<size ; i++) {
+        for (int i=1 ; i<=size ; i++) {
             sobelKernel[length/2-i] = -i;
             sobelKernel[length/2+i] = i;
+        }
+        return sobelKernel;
+    }
+
+    public static double[] boxKernel(int length, int size) {
+        // Size a positive number
+        if ( size <= 0) {
+            return null;
+        }
+        double[] sobelKernel = new double[length];
+        Arrays.fill(sobelKernel, 0);
+        sobelKernel[length/2] = 1.0f/(double)(size);
+        for (int i=0 ; i<size ; i++) {
+            sobelKernel[length/2-i] = 1.0f/(double)(size);
+            sobelKernel[length/2+i] = 1.0f/(double)(size);
         }
         return sobelKernel;
     }
@@ -53,8 +68,6 @@ public class FFTHelper {
         double[] FFTInverse = FFTHelper.FFTInverse(FFTProduct);
         double[] realConvolutionResult = FFTHelper.complexRealPart(FFTInverse);
         return realConvolutionResult;
-
-        //return FFTHelper.complexMagnitude(FFTInverse(complexSignal));//FFTHelper.complexRealPart(FFTHelper.FFTInverse(complexSignal));
     }
 
     public static double[] complexMultiply(double[] input0, double[] input1) {
