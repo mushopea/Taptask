@@ -13,6 +13,13 @@ public class FFTHelper {
         return FFT(complex);
     }
 
+    public static double[] FFTReal(double[] realInput) {
+        // Convert to complex
+        double[] complex = realToComplex(realInput);
+        // Perform FFT
+        return FFT(complex);
+    }
+
     public static double[] FFT(double[] complexInput) {
         // Perform FFT
         DoubleFFT_1D fft = new DoubleFFT_1D(complexInput.length/2);
@@ -28,7 +35,6 @@ public class FFTHelper {
     }
 
     public static double[] sobelKernel(int length, int size) {
-        // Size a positive number
         if ( size <= 0) {
             return null;
         }
@@ -42,7 +48,6 @@ public class FFTHelper {
     }
 
     public static double[] boxKernel(int length, int size) {
-        // Size a positive number
         if ( size <= 0) {
             return null;
         }
@@ -54,6 +59,25 @@ public class FFTHelper {
             sobelKernel[length/2+i] = 1.0f/(double)(size);
         }
         return sobelKernel;
+    }
+
+    public static double[] planckTaperWindow(int length, double e) {
+        if ( length < 1 || e <= 0 || e >= 0.5f) {
+            return null;
+        }
+        double[] planckTaperWindow = new double[length];
+        Arrays.fill(planckTaperWindow, 1);
+        planckTaperWindow[0] = 0;
+        planckTaperWindow[length-1] = 0;
+        for (int i=1 ; i<e*(length-1) ; i++) {
+            double za = e*(length-1) * (1.0f/i + 1.0f/(i-e*(length-1)));
+            planckTaperWindow[i] = 1.0f/(Math.exp(za)+1);
+        }
+        for (int i=(int)(1-e)*(length-1) ; i<length-1 ; i++) {
+            double zb = e*(length-1) * (1.0f/(length-1+i) + 1.0f/((1-e)*(length-1)*(i)));
+            planckTaperWindow[i] = 1.0f/(Math.exp(zb)+1);
+        }
+        return planckTaperWindow;
     }
 
     public static double[] FFTConvolution(double[] realSignal, double[] realKernel) {
@@ -87,6 +111,18 @@ public class FFTHelper {
             FFTProduct[i*2+1] = b*c + a*d;
         }
         return FFTProduct;
+    }
+
+    public static double[] realMultiply(double[] input0, double[] input1) {
+        if (input0.length != input1.length) {
+            return null;
+        }
+        // Multiply FFTs together
+        double[] product = new double[input0.length];
+        for (int i=0 ; i<input0.length ; i++) {
+            product[i] = input0[i] * input1[i];
+        }
+        return product;
     }
 
     public static double[] realToComplex(short[] realInput) {
