@@ -116,6 +116,10 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
                 System.arraycopy(audioBuffer, 0, buffer, 0, audioBuffer.length);
             }
 
+            double[] doubleBuffer = FFTHelper.shortToDouble(buffer);
+            // Taper window
+            doubleBuffer = FFTHelper.realMultiply(doubleBuffer, FFTHelper.planckTaperWindow(doubleBuffer.length, 0.4f));
+
             canvasHeight = canvas.getHeight();
             canvasWidth = canvas.getWidth();
 
@@ -136,15 +140,15 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
             float bufferYScale = -(canvasHeight/5.0f)/18000.0f;
             for (int x=0 ; x<canvasWidth-1 ; x++) {
                 float x0 = x;
-                float y0 = buffer[(int)(x0/bufferXScale)]*bufferYScale + bufferYOffset;
+                float y0 = (float)doubleBuffer[(int)(x0/bufferXScale)]*bufferYScale + bufferYOffset;
                 float x1 = x+1;
-                float y1 = buffer[(int)(x1/bufferXScale)]*bufferYScale + bufferYOffset;
+                float y1 = (float)doubleBuffer[(int)(x1/bufferXScale)]*bufferYScale + bufferYOffset;
 
                 canvas.drawLine(x0, y0, x1, y1, redPaint);
             }
 
             // Perform FFT
-            double[] FFTResult = FFTHelper.FFTReal(buffer);
+            double[] FFTResult = FFTHelper.FFTReal(doubleBuffer);
             double[] FFTResultShifted = FFTHelper.FFTShift(FFTResult);
             double[] FFTMagnitude = FFTHelper.complexMagnitude(FFTResultShifted);
 
@@ -166,9 +170,7 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
             }
 
             // Convolve sobel kernel with FFTMagnitude
-            double[] FFTMagnitudeSobel = FFTHelper.FFTConvolution(FFTMagnitude, FFTHelper.sobelKernel(FFTMagnitude.length,2));
-            // 2nd derivative
-            FFTMagnitudeSobel = FFTHelper.FFTConvolution(FFTMagnitudeSobel, FFTHelper.sobelKernel(FFTMagnitude.length,1));
+            double[] FFTMagnitudeSobel = FFTHelper.FFTConvolution(FFTMagnitude, FFTHelper.sobelKernel(FFTMagnitude.length,1));
 
 
             // Draw FFTMagnitudeSobel
@@ -215,8 +217,6 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
 
 
             // Detect tap
-            double[] doubleBuffer = FFTHelper.shortToDouble(buffer);
-            doubleBuffer = FFTHelper.normalizeMax(doubleBuffer, 1);
             //boolean tap = FFTHelper.absSum(doubleBuffer) < 50;//FFTMagnitudeNormalized[FFTMagnitudeNormalized.length-1] > 0.6;
             boolean tap = FFTMagnitudeSobelSum < 500;
 
