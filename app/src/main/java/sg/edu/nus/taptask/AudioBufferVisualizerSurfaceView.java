@@ -21,6 +21,7 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
     public boolean draw = true;
 
     private short[] audioBuffer = null;
+    private volatile float[] accelerationValuesBuffer = null;
 
     private static final Handler handler = new Handler(){
         public void handleMessage(Message paramMessage)
@@ -37,6 +38,10 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
 
     public void setAudioBuffer(short[] buffer) {
         audioBuffer = buffer;
+    }
+
+    public void setAccelerationValuesBuffer(float[] accelerationValuesBuffer) {
+        this.accelerationValuesBuffer = accelerationValuesBuffer;
     }
 
     public void setDrawSurfaceHolder()
@@ -98,6 +103,8 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
         private int time = 0;
         private boolean[] tapArray = null;
 
+        private float[] absAccelerationBuffer = null;
+
         private double maxFFTMagnitudeSum = Double.MIN_VALUE;
         private double minFFTMagnitudeSobelSum = Double.MAX_VALUE;
 
@@ -115,6 +122,13 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
             synchronized (audioBuffer) {
                 System.arraycopy(audioBuffer, 0, buffer, 0, audioBuffer.length);
             }
+
+            // Get acceleration data
+            float absAcceleration = (float) Math.sqrt((double)(accelerationValuesBuffer[0] * accelerationValuesBuffer[0] +
+                    accelerationValuesBuffer[1] * accelerationValuesBuffer[1] +
+                    accelerationValuesBuffer[2] * accelerationValuesBuffer[2]));
+            absAccelerationBuffer[time] = absAcceleration;
+
 
             double[] doubleBuffer = FFTHelper.shortToDouble(buffer);
             // Taper window
@@ -203,6 +217,26 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
                 minFFTMagnitudeSobelSum = FFTMagnitudeSobelSum;
             }
 
+
+            // Draw Acceleration
+            Paint purplePaint = new Paint();
+            purplePaint.setColor(Color.MAGENTA);
+            purplePaint.setStrokeWidth(1);
+            int accelerationXMax = absAccelerationBuffer.length;
+            float accelerationXScale =(float)canvasWidth/(float)accelerationXMax;
+            float accelerationYOffset = canvasHeight/5.0f * 4.0f;
+            float accelerationYScale = -(canvasHeight/5.0f)/10.0f;
+            for (int x=0 ; x<canvasWidth-1 ; x++) {
+                float x0 = x;
+                float y0 = (float) (absAccelerationBuffer[(int)(x0/accelerationXScale)]*accelerationYScale + accelerationYOffset);
+                float x1 = x+1;
+                float y1 = (float) (absAccelerationBuffer[(int)(x1/accelerationXScale)]*accelerationYScale + accelerationYOffset);
+
+                canvas.drawLine(x0, y0, x1, y1, purplePaint);
+            }
+
+
+
             // Write FFTMagnitudeSum
             Paint blackPaint = new Paint();
             blackPaint.setColor(Color.BLACK);
@@ -219,16 +253,6 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
             // Detect tap
             //boolean tap = FFTHelper.absSum(doubleBuffer) < 50;//FFTMagnitudeNormalized[FFTMagnitudeNormalized.length-1] > 0.6;
             boolean tap = FFTMagnitudeSobelSum < 500;
-
-//            int peaks = 0;
-//            for (int i=0 ; i<FFTMagnitudeNormalized.length ; i++) {
-//                if (FFTMagnitudeNormalized[i] >= 0.9) {
-//                    peaks ++;
-//                }
-//            }
-//            if (peaks > 10) {
-//                tap = false;
-//            }
             if (tap) {
                 tapArray[time] = true;
             } else {
@@ -237,9 +261,9 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
 
             // Draw line at time index
             float x0 = time;
-            float y0 = canvasHeight/5.0f * 4.0f;
+            float y0 = canvasHeight/5.0f * 4.5f;
             float x1 = time;
-            float y1 = canvasHeight/5.0f * 4.0f + 100;
+            float y1 = canvasHeight/5.0f * 4.5f + 100;
             canvas.drawLine(x0, y0, x1, y1, bluePaint);
 
             // Draw taps
@@ -248,6 +272,11 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
                     canvas.drawLine(i, y0, i, y1, redPaint);
                 }
             }
+
+
+            // Write minFFTMagnitudeSobelSum
+            canvas.drawText("Acceleration: " + absAcceleration, 40, 240, blackPaint);
+
 
             // Increment time index
             time ++;
@@ -260,8 +289,10 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
         {
             synchronized (surfaceHolder)
             {
+                time = 0;
                 bitmap = Bitmap.createScaledBitmap(bitmap, canvasWidth, canvasHeight, true);
                 tapArray = new boolean[canvasWidth];
+                absAccelerationBuffer = new float[canvasWidth];
             }
         }
 
@@ -284,7 +315,7 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
                             surfaceHolder.unlockCanvasAndPost(localCanvas);
                         }
                         try {
-                            this.sleep(0);
+                            this.sleep(1);
                         } catch (InterruptedException e) {
                         }
                     }
