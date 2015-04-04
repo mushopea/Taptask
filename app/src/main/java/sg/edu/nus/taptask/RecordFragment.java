@@ -1,17 +1,12 @@
 package sg.edu.nus.taptask;
 
-import android.content.Context;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class RecordFragment extends Fragment implements SensorEventListener {
+public class RecordFragment extends Fragment {
     // SurfaceView
     private AudioBufferVisualizerSurfaceView audioBufferVisualizerSurfaceView = null;
 
@@ -20,12 +15,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
     private short[] buffer = null;
 
     // Accelerometer
-    private SensorManager senSensorManager;
-    private Sensor senAccelerometer;
-    private volatile float[] accelerationBuffer = {0.0f, 0.0f, 0.0f};
-    private volatile float[] absAccelerationBuffer = new float[512];
-    private volatile int[] count = {0};
-
+    AccelerometerSampler accelerometerSampler = null;
 
     public RecordFragment() {
     }
@@ -52,12 +42,12 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
 
         // Start accelerometer
-        senSensorManager = (SensorManager) this.getActivity().getSystemService(Context.SENSOR_SERVICE);
-        senAccelerometer = senSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        senSensorManager.registerListener(this, senAccelerometer , SensorManager.SENSOR_DELAY_FASTEST);
+        accelerometerSampler = new AccelerometerSampler(this.getActivity());
+        accelerometerSampler.calibrateSamplingRate();
+        accelerometerSampler.startSampling(5);
 
         // Set visualizer for absAcceleration
-        audioBufferVisualizerSurfaceView.setAccelerationValuesBuffer(accelerationBuffer, absAccelerationBuffer, count);
+        audioBufferVisualizerSurfaceView.setAccelerationSampler(accelerometerSampler);
 
         return view;
     }
@@ -66,30 +56,5 @@ public class RecordFragment extends Fragment implements SensorEventListener {
     public void onDestroy() {
         soundSampler.stopRecording();
         super.onDestroy();
-    }
-
-    @Override
-    public void onSensorChanged(SensorEvent sensorEvent) {
-        Sensor mySensor = sensorEvent.sensor;
-        if (mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            float x = sensorEvent.values[0];
-            float y = sensorEvent.values[1];
-            float z = sensorEvent.values[2];
-            accelerationBuffer[0] = x;
-            accelerationBuffer[1] = y;
-            accelerationBuffer[2] = z;
-
-            float absAcceleration = (float) Math.sqrt(x * x + y * y + z * z);
-            synchronized (absAccelerationBuffer) {
-                // -10 to account for gravity...
-                absAccelerationBuffer[count[0]] = absAcceleration - 10;
-            }
-            count[0] += 1;
-            count[0] %= absAccelerationBuffer.length;
-        }
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
 }

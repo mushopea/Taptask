@@ -12,6 +12,8 @@ import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import sg.edu.nus.taptask.AccelerometerSampler;
+
 public class AudioBufferVisualizerSurfaceView extends SurfaceView implements SurfaceHolder.Callback  {
     private Context drawContext;
     public  DrawThread drawThread;
@@ -21,9 +23,8 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
     public boolean draw = true;
 
     private short[] audioBuffer = null;
-    private volatile float[] accelerationValuesBuffer = null;
-    private volatile float[] absAccelerationBuffer = null;
-    private volatile int[] count = null;
+
+    private AccelerometerSampler accelerometerSampler = null;
 
     private static final Handler handler = new Handler(){
         public void handleMessage(Message paramMessage)
@@ -42,10 +43,8 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
         audioBuffer = buffer;
     }
 
-    public void setAccelerationValuesBuffer(float[] accelerationValuesBuffer, float[] absAccelerationBuffer, int[] count) {
-        this.accelerationValuesBuffer = accelerationValuesBuffer;
-        this.absAccelerationBuffer = absAccelerationBuffer;
-        this.count = count;
+    public void setAccelerationSampler(AccelerometerSampler accelerometerSampler) {
+        this.accelerometerSampler = accelerometerSampler;
     }
 
     public void setDrawSurfaceHolder()
@@ -126,12 +125,7 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
             }
 
             // Copy absAccelerationBuffer
-            float[] absAccelerationBufferCopy = new float[absAccelerationBuffer.length];
-            int countCopy = 0;
-            synchronized (absAccelerationBuffer) {
-                countCopy = count[0];
-                System.arraycopy(absAccelerationBuffer, 0, absAccelerationBufferCopy, 0, absAccelerationBuffer.length);
-            }
+            double[] absAccelerationBufferCopy = accelerometerSampler.getAbsAccelerationBuffer();
 
             double[] doubleBuffer = FFTHelper.shortToDouble(buffer);
             // Taper window
@@ -231,16 +225,15 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
             float accelerationYScale = -(canvasHeight/5.0f)/10.0f;
             for (int x=0 ; x<canvasWidth-1 ; x++) {
                 float x0 = x;
-                float y0 = (float) (absAccelerationBufferCopy[(int)(x0/accelerationXScale + countCopy)%absAccelerationBufferCopy.length]*accelerationYScale + accelerationYOffset);
+                float y0 = (float) (absAccelerationBufferCopy[(int)(x0/accelerationXScale)%absAccelerationBufferCopy.length]*accelerationYScale + accelerationYOffset);
                 float x1 = x+1;
-                float y1 = (float) (absAccelerationBufferCopy[(int)(x1/accelerationXScale + countCopy)%absAccelerationBufferCopy.length]*accelerationYScale + accelerationYOffset);
+                float y1 = (float) (absAccelerationBufferCopy[(int)(x1/accelerationXScale)%absAccelerationBufferCopy.length]*accelerationYScale + accelerationYOffset);
 
                 canvas.drawLine(x0, y0, x1, y1, purplePaint);
             }
 
             // Draw Jerk (change in acceleration)
-            double[] absAccelerationBufferCopyDouble = FFTHelper.floatToDouble(absAccelerationBufferCopy);
-            double[] jerkBuffer = FFTHelper.FFTConvolution(absAccelerationBufferCopyDouble, FFTHelper.sobelKernel(absAccelerationBufferCopy.length,1));
+            double[] jerkBuffer = FFTHelper.FFTConvolution(absAccelerationBufferCopy, FFTHelper.sobelKernel(absAccelerationBufferCopy.length,1));
             jerkBuffer = FFTHelper.FFTConvolution(jerkBuffer, FFTHelper.sobelKernel(absAccelerationBufferCopy.length,1));
 
             Paint greenPaint = new Paint();
@@ -252,9 +245,9 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
             float jerkYScale = -(canvasHeight/5.0f)/10.0f;
             for (int x=0 ; x<canvasWidth-1 ; x++) {
                 float x0 = x;
-                float y0 = (float) (jerkBuffer[(int)(x0/jerkXScale + countCopy)%absAccelerationBufferCopy.length]*jerkYScale + jerkYOffset);
+                float y0 = (float) (jerkBuffer[(int)(x0/jerkXScale)%absAccelerationBufferCopy.length]*jerkYScale + jerkYOffset);
                 float x1 = x+1;
-                float y1 = (float) (jerkBuffer[(int)(x1/jerkXScale + countCopy)%absAccelerationBufferCopy.length]*jerkYScale + jerkYOffset);
+                float y1 = (float) (jerkBuffer[(int)(x1/jerkXScale)%absAccelerationBufferCopy.length]*jerkYScale + jerkYOffset);
 
                 canvas.drawLine(x0, y0, x1, y1, greenPaint);
             }
