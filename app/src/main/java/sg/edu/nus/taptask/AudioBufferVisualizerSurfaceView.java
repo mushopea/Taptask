@@ -22,6 +22,8 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
 
     private short[] audioBuffer = null;
     private volatile float[] accelerationValuesBuffer = null;
+    private volatile float[] absAccelerationBuffer = null;
+    private volatile int[] count = null;
 
     private static final Handler handler = new Handler(){
         public void handleMessage(Message paramMessage)
@@ -40,8 +42,10 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
         audioBuffer = buffer;
     }
 
-    public void setAccelerationValuesBuffer(float[] accelerationValuesBuffer) {
+    public void setAccelerationValuesBuffer(float[] accelerationValuesBuffer, float[] absAccelerationBuffer, int[] count) {
         this.accelerationValuesBuffer = accelerationValuesBuffer;
+        this.absAccelerationBuffer = absAccelerationBuffer;
+        this.count = count;
     }
 
     public void setDrawSurfaceHolder()
@@ -103,8 +107,6 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
         private int time = 0;
         private boolean[] tapArray = null;
 
-        private float[] absAccelerationBuffer = null;
-
         private double maxFFTMagnitudeSum = Double.MIN_VALUE;
         private double minFFTMagnitudeSobelSum = Double.MAX_VALUE;
 
@@ -123,12 +125,13 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
                 System.arraycopy(audioBuffer, 0, buffer, 0, audioBuffer.length);
             }
 
-            // Get acceleration data
-            float absAcceleration = (float) Math.sqrt((double)(accelerationValuesBuffer[0] * accelerationValuesBuffer[0] +
-                    accelerationValuesBuffer[1] * accelerationValuesBuffer[1] +
-                    accelerationValuesBuffer[2] * accelerationValuesBuffer[2]));
-            absAccelerationBuffer[time] = absAcceleration;
-
+            // Copy absAccelerationBuffer
+            float[] absAccelerationBufferCopy = new float[absAccelerationBuffer.length];
+            int countCopy = 0;
+            synchronized (absAccelerationBuffer) {
+                countCopy = count[0];
+                System.arraycopy(absAccelerationBuffer, 0, absAccelerationBufferCopy, 0, absAccelerationBuffer.length);
+            }
 
             double[] doubleBuffer = FFTHelper.shortToDouble(buffer);
             // Taper window
@@ -222,19 +225,39 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
             Paint purplePaint = new Paint();
             purplePaint.setColor(Color.MAGENTA);
             purplePaint.setStrokeWidth(1);
-            int accelerationXMax = absAccelerationBuffer.length;
+            int accelerationXMax = absAccelerationBufferCopy.length;
             float accelerationXScale =(float)canvasWidth/(float)accelerationXMax;
-            float accelerationYOffset = canvasHeight/5.0f * 4.0f;
+            float accelerationYOffset = canvasHeight/5.0f * 3.8f;
             float accelerationYScale = -(canvasHeight/5.0f)/10.0f;
             for (int x=0 ; x<canvasWidth-1 ; x++) {
                 float x0 = x;
-                float y0 = (float) (absAccelerationBuffer[(int)(x0/accelerationXScale)]*accelerationYScale + accelerationYOffset);
+                float y0 = (float) (absAccelerationBufferCopy[(int)(x0/accelerationXScale + countCopy)%absAccelerationBufferCopy.length]*accelerationYScale + accelerationYOffset);
                 float x1 = x+1;
-                float y1 = (float) (absAccelerationBuffer[(int)(x1/accelerationXScale)]*accelerationYScale + accelerationYOffset);
+                float y1 = (float) (absAccelerationBufferCopy[(int)(x1/accelerationXScale + countCopy)%absAccelerationBufferCopy.length]*accelerationYScale + accelerationYOffset);
 
                 canvas.drawLine(x0, y0, x1, y1, purplePaint);
             }
 
+            // Draw Jerk (change in acceleration)
+            double[] absAccelerationBufferCopyDouble = FFTHelper.floatToDouble(absAccelerationBufferCopy);
+            double[] jerkBuffer = FFTHelper.FFTConvolution(absAccelerationBufferCopyDouble, FFTHelper.sobelKernel(absAccelerationBufferCopy.length,1));
+            jerkBuffer = FFTHelper.FFTConvolution(jerkBuffer, FFTHelper.sobelKernel(absAccelerationBufferCopy.length,1));
+
+            Paint greenPaint = new Paint();
+            greenPaint.setColor(Color.GREEN);
+            greenPaint.setStrokeWidth(1);
+            int jerkXMax = jerkBuffer.length;
+            float jerkXScale =(float)canvasWidth/(float)jerkXMax;
+            float jerkYOffset = canvasHeight/5.0f * 4.2f;
+            float jerkYScale = -(canvasHeight/5.0f)/10.0f;
+            for (int x=0 ; x<canvasWidth-1 ; x++) {
+                float x0 = x;
+                float y0 = (float) (jerkBuffer[(int)(x0/jerkXScale + countCopy)%absAccelerationBufferCopy.length]*jerkYScale + jerkYOffset);
+                float x1 = x+1;
+                float y1 = (float) (jerkBuffer[(int)(x1/jerkXScale + countCopy)%absAccelerationBufferCopy.length]*jerkYScale + jerkYOffset);
+
+                canvas.drawLine(x0, y0, x1, y1, greenPaint);
+            }
 
 
             // Write FFTMagnitudeSum
@@ -274,10 +297,6 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
             }
 
 
-            // Write minFFTMagnitudeSobelSum
-            canvas.drawText("Acceleration: " + absAcceleration, 40, 240, blackPaint);
-
-
             // Increment time index
             time ++;
             time %= canvasWidth;
@@ -292,7 +311,6 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
                 time = 0;
                 bitmap = Bitmap.createScaledBitmap(bitmap, canvasWidth, canvasHeight, true);
                 tapArray = new boolean[canvasWidth];
-                absAccelerationBuffer = new float[canvasWidth];
             }
         }
 
@@ -314,10 +332,10 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
                         if (localCanvas != null) {
                             surfaceHolder.unlockCanvasAndPost(localCanvas);
                         }
-                        try {
-                            this.sleep(1);
-                        } catch (InterruptedException e) {
-                        }
+                        //try {
+                        //    this.sleep(1);
+                        //} catch (InterruptedException e) {
+                        //}
                     }
                 }
             }

@@ -23,6 +23,8 @@ public class RecordFragment extends Fragment implements SensorEventListener {
     private SensorManager senSensorManager;
     private Sensor senAccelerometer;
     private volatile float[] accelerationBuffer = {0.0f, 0.0f, 0.0f};
+    private volatile float[] absAccelerationBuffer = new float[512];
+    private volatile int[] count = {0};
 
 
     public RecordFragment() {
@@ -55,7 +57,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         senSensorManager.registerListener(this, senAccelerometer , SensorManager.SENSOR_DELAY_FASTEST);
 
         // Set visualizer for absAcceleration
-        audioBufferVisualizerSurfaceView.setAccelerationValuesBuffer(accelerationBuffer);
+        audioBufferVisualizerSurfaceView.setAccelerationValuesBuffer(accelerationBuffer, absAccelerationBuffer, count);
 
         return view;
     }
@@ -76,6 +78,14 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             accelerationBuffer[0] = x;
             accelerationBuffer[1] = y;
             accelerationBuffer[2] = z;
+
+            float absAcceleration = (float) Math.sqrt(x * x + y * y + z * z);
+            synchronized (absAccelerationBuffer) {
+                // -10 to account for gravity...
+                absAccelerationBuffer[count[0]] = absAcceleration - 10;
+            }
+            count[0] += 1;
+            count[0] %= absAccelerationBuffer.length;
         }
     }
 

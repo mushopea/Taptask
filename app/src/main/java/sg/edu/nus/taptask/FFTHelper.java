@@ -226,4 +226,12 @@ public class FFTHelper {
         }
         return output;
     }
+
+    public static double[] floatToDouble(float[] input) {
+        double[] output = new double[input.length];
+        for (int i=0 ; i<input.length ; i++) {
+            output[i] = input[i];
+        }
+        return output;
+    }
 }
