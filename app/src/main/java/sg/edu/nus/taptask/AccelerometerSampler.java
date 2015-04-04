@@ -18,6 +18,8 @@ public class AccelerometerSampler implements SensorEventListener {
                                                  SensorManager.SENSOR_DELAY_FASTEST};
     public static final double[] sensorDelaySamplingRate = new double[sensorDelayList.length];
     public static final double gravityOffset = 10.0; // Rough estimate is enough
+    public static final int minSamplingFrequency = 90; // TODO: Test to see how low the sampling rate can go. ~200 works, 49 does not seem to work.
+
 
     private Activity activity;
     private SensorManager sensorManager;
@@ -35,8 +37,9 @@ public class AccelerometerSampler implements SensorEventListener {
         accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
     }
 
-    // TODO: Better to call this in a separate thread as it may take some time, depending on sampleSize
+    // TODO: Call this in a separate thread as it may take some time, depending on sampleSize
     public void calibrateSamplingRate() {
+        Log.d("accSampler", "calibrateSamplingRate: Calibrating...");
         // TODO: Read from file if available
         for (int i=0 ; i<sensorDelayList.length ; i++) {
             int sensorDelay = sensorDelayList[i];
@@ -60,7 +63,7 @@ public class AccelerometerSampler implements SensorEventListener {
      * @return frequency in hertz (1/sec)
      */
     public double calibrateSamplingRate(int sensorDelay, int sampleSize) {
-        if (isSampling) {
+        if (this.isSampling) {
             Log.e("accSampler", "calibrateSamplingRate: Cannot calibrate, already sampling.");
             return -1;
         }
@@ -75,7 +78,7 @@ public class AccelerometerSampler implements SensorEventListener {
         this.startSampling(sensorDelay, 0, 0);
 
         // Wait for sampling to complete
-        while (isSampling) {
+        while (this.isSampling) {
             try {
                 Thread.sleep(1);
             } catch (InterruptedException e) {
@@ -99,7 +102,7 @@ public class AccelerometerSampler implements SensorEventListener {
 
     // Calibrate first before calling this.
     public void startSampling(double bufferSizeInSeconds) {
-        int minSamplingFrequency = 90;
+        int minSamplingFrequency = this.minSamplingFrequency;
         int minSensorDelay = sensorDelayList[sensorDelayList.length-1];
         double samplingFrequency = 0;
         for (int i=0 ; i<sensorDelayList.length ; i++) {
@@ -159,8 +162,8 @@ public class AccelerometerSampler implements SensorEventListener {
         double[] absAccelerationBufferCopy = new double[absAccelerationBuffer.length];
         synchronized (this) {
             // Rotate and return copy of buffer
-            System.arraycopy(absAccelerationBuffer, 0, absAccelerationBufferCopy, timeIndex, absAccelerationBuffer.length - timeIndex);
-            System.arraycopy(absAccelerationBuffer, timeIndex, absAccelerationBufferCopy, 0, timeIndex);
+            System.arraycopy(absAccelerationBuffer, timeIndex, absAccelerationBufferCopy, 0, absAccelerationBuffer.length - timeIndex);
+            System.arraycopy(absAccelerationBuffer, 0, absAccelerationBufferCopy, absAccelerationBuffer.length - timeIndex, timeIndex);
         }
         return absAccelerationBufferCopy;
     }
