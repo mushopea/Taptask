@@ -232,22 +232,26 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
                 canvas.drawLine(x0, y0, x1, y1, purplePaint);
             }
 
-            // Draw Jerk (change in acceleration)
-            double[] jerkBuffer = FFTHelper.FFTConvolution(absAccelerationBufferCopy, FFTHelper.sobelKernel(absAccelerationBufferCopy.length,1));
-            jerkBuffer = FFTHelper.FFTConvolution(jerkBuffer, FFTHelper.sobelKernel(absAccelerationBufferCopy.length,1));
+            // Draw Jounce
+            double[] jounceBuffer = FFTHelper.FFTConvolution(absAccelerationBufferCopy, FFTHelper.sobelKernel(absAccelerationBufferCopy.length,1)); // Snap/Jerk
+            jounceBuffer = FFTHelper.FFTConvolution(jounceBuffer, FFTHelper.sobelKernel(jounceBuffer.length,1)); // Jounce
+
+            // TODO: Something might be wrong with FFTConvolution....... Sometimes the result seems to be shifted
+            //jounceBuffer = FFTHelper.FFTConvolution(jounceBuffer, FFTHelper.sobelKernel(jounceBuffer.length,1)); // Crackle
+            //jounceBuffer = FFTHelper.FFTConvolution(jounceBuffer, FFTHelper.sobelKernel(jounceBuffer.length,1)); // Pop
 
             Paint greenPaint = new Paint();
             greenPaint.setColor(Color.GREEN);
             greenPaint.setStrokeWidth(1);
-            int jerkXMax = jerkBuffer.length;
+            int jerkXMax = jounceBuffer.length;
             float jerkXScale =(float)canvasWidth/(float)jerkXMax;
             float jerkYOffset = canvasHeight/5.0f * 4.2f;
             float jerkYScale = -(canvasHeight/5.0f)/10.0f;
             for (int x=0 ; x<canvasWidth-1 ; x++) {
                 float x0 = x;
-                float y0 = (float) (jerkBuffer[(int)(x0/jerkXScale)%absAccelerationBufferCopy.length]*jerkYScale + jerkYOffset);
+                float y0 = (float) (jounceBuffer[(int)(x0/jerkXScale)%absAccelerationBufferCopy.length]*jerkYScale + jerkYOffset);
                 float x1 = x+1;
-                float y1 = (float) (jerkBuffer[(int)(x1/jerkXScale)%absAccelerationBufferCopy.length]*jerkYScale + jerkYOffset);
+                float y1 = (float) (jounceBuffer[(int)(x1/jerkXScale)%absAccelerationBufferCopy.length]*jerkYScale + jerkYOffset);
 
                 canvas.drawLine(x0, y0, x1, y1, greenPaint);
             }

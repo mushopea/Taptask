@@ -38,6 +38,10 @@ public class AccelerometerSampler implements SensorEventListener {
     }
 
     // TODO: Call this in a separate thread as it may take some time, depending on sampleSize
+    /**
+     * Calibrate and find out the sampling rates for each sensorDelay parameter.
+     * Need to calibrate as different devices support different sampling rates.
+     */
     public void calibrateSamplingRate() {
         Log.d("accSampler", "calibrateSamplingRate: Calibrating...");
         // TODO: Read from file if available

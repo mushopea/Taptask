@@ -55,6 +55,7 @@ public class RecordFragment extends Fragment {
     @Override
     public void onDestroy() {
         soundSampler.stopRecording();
+        accelerometerSampler.stopSampling();
         super.onDestroy();
     }
 }
