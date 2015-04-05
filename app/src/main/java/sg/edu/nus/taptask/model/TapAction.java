@@ -1,4 +1,6 @@
-package sg.edu.nus.taptask;
+package sg.edu.nus.taptask.model;
+
+import sg.edu.nus.taptask.model.TapPattern;
 
 /**
  * Class that describes an action to be done when a tap pattern is matched

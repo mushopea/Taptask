@@ -42,7 +42,7 @@ public class RecordFragment extends Fragment {
 
 
         // Start accelerometer
-        accelerometerSampler = new AccelerometerSampler(this.getActivity());
+        accelerometerSampler = new AccelerometerRecorder(this.getActivity());
         accelerometerSampler.calibrateSamplingRate();
         accelerometerSampler.startSampling(5);
 

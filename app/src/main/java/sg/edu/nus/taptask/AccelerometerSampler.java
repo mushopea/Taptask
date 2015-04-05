@@ -21,14 +21,14 @@ public class AccelerometerSampler implements SensorEventListener {
     public static final int minSamplingFrequency = 90; // TODO: Test to see how low the sampling rate can go. ~200 works, 49 does not seem to work.
 
 
-    private Activity activity;
-    private SensorManager sensorManager;
-    private Sensor accelerometerSensor;
-    private volatile int timeIndex = 0;
-    private volatile double[] absAccelerationBuffer;
+    protected Activity activity;
+    protected SensorManager sensorManager;
+    protected Sensor accelerometerSensor;
+    protected volatile int timeIndex = 0;
+    protected volatile double[] absAccelerationBuffer;
 
-    private boolean isSampling = false;
-    private double samplingFrequency = 0;
+    protected boolean isSampling = false;
+    protected double samplingFrequency = 0;
 
 
     public AccelerometerSampler(Activity activity) {
@@ -177,36 +177,43 @@ public class AccelerometerSampler implements SensorEventListener {
         Sensor mySensor = sensorEvent.sensor;
         if (mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             if (isCalibrating) {
-                // Calibration
-                long timestamp = sensorEvent.timestamp;
-                if (this.lastTimeStamp == 0) {
-                    this.lastTimeStamp = timestamp;
-                } else {
-                    // Calculate period
-                    long period = timestamp - this.lastTimeStamp;
-                    double avgPeriod = (double)period / (double)(this.sampleSize - 1);
-                    this.period += avgPeriod;
-                    this.sampleCount += 1;
-                    this.lastTimeStamp = timestamp;
-
-                    // Stop sampling
-                    if (this.sampleCount >= this.sampleSize) {
-                        stopSampling();
-                    }
-                }
-
+                calibrationStep(sensorEvent);
             } else {
-                // Normal sampling
-                float x = sensorEvent.values[0];
-                float y = sensorEvent.values[1];
-                float z = sensorEvent.values[2];
-                double absAcceleration = Math.sqrt(x * x + y * y + z * z);
-                synchronized (this) {
-                    absAccelerationBuffer[timeIndex] = absAcceleration - gravityOffset;
-                    timeIndex += 1;
-                    timeIndex %= absAccelerationBuffer.length;
-                }
+                samplingStep(sensorEvent);
             }
+        }
+    }
+
+    protected void calibrationStep(SensorEvent sensorEvent) {
+        // Calibration
+        long timestamp = sensorEvent.timestamp;
+        if (this.lastTimeStamp == 0) {
+            this.lastTimeStamp = timestamp;
+        } else {
+            // Calculate period
+            long period = timestamp - this.lastTimeStamp;
+            double avgPeriod = (double)period / (double)(this.sampleSize - 1);
+            this.period += avgPeriod;
+            this.sampleCount += 1;
+            this.lastTimeStamp = timestamp;
+
+            // Stop sampling
+            if (this.sampleCount >= this.sampleSize) {
+                stopSampling();
+            }
+        }
+    }
+
+    protected void samplingStep(SensorEvent sensorEvent) {
+        // Normal sampling
+        float x = sensorEvent.values[0];
+        float y = sensorEvent.values[1];
+        float z = sensorEvent.values[2];
+        double absAcceleration = Math.sqrt(x * x + y * y + z * z);
+        synchronized (this) {
+            absAccelerationBuffer[timeIndex] = absAcceleration - gravityOffset;
+            timeIndex += 1;
+            timeIndex %= absAccelerationBuffer.length;
         }
     }
 
