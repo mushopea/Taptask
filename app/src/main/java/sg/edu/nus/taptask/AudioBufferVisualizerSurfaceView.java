@@ -13,6 +13,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import sg.edu.nus.taptask.AccelerometerSampler;
+import sg.edu.nus.taptask.model.TapPattern;
 
 public class AudioBufferVisualizerSurfaceView extends SurfaceView implements SurfaceHolder.Callback  {
     private Context drawContext;
@@ -221,7 +222,7 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
             purplePaint.setStrokeWidth(1);
             int accelerationXMax = absAccelerationBufferCopy.length;
             float accelerationXScale =(float)canvasWidth/(float)accelerationXMax;
-            float accelerationYOffset = canvasHeight/5.0f * 3.8f;
+            float accelerationYOffset = canvasHeight/5.0f * 3.5f;
             float accelerationYScale = -(canvasHeight/5.0f)/10.0f;
             for (int x=0 ; x<canvasWidth-1 ; x++) {
                 float x0 = x;
@@ -233,19 +234,14 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
             }
 
             // Draw Jounce
-            double[] jounceBuffer = FFTHelper.FFTConvolution(absAccelerationBufferCopy, FFTHelper.sobelKernel(absAccelerationBufferCopy.length,1)); // Snap/Jerk
-            jounceBuffer = FFTHelper.FFTConvolution(jounceBuffer, FFTHelper.sobelKernel(jounceBuffer.length,1)); // Jounce
-
-            // TODO: Something might be wrong with FFTConvolution....... Sometimes the result seems to be shifted
-            //jounceBuffer = FFTHelper.FFTConvolution(jounceBuffer, FFTHelper.sobelKernel(jounceBuffer.length,1)); // Crackle
-            //jounceBuffer = FFTHelper.FFTConvolution(jounceBuffer, FFTHelper.sobelKernel(jounceBuffer.length,1)); // Pop
+            double[] jounceBuffer = TapPattern.getJounce(absAccelerationBufferCopy);
 
             Paint greenPaint = new Paint();
             greenPaint.setColor(Color.GREEN);
             greenPaint.setStrokeWidth(1);
             int jerkXMax = jounceBuffer.length;
             float jerkXScale =(float)canvasWidth/(float)jerkXMax;
-            float jerkYOffset = canvasHeight/5.0f * 4.2f;
+            float jerkYOffset = canvasHeight/5.0f * 3.75f;
             float jerkYScale = -(canvasHeight/5.0f)/10.0f;
             for (int x=0 ; x<canvasWidth-1 ; x++) {
                 float x0 = x;
@@ -254,6 +250,24 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
                 float y1 = (float) (jounceBuffer[(int)(x1/jerkXScale)%absAccelerationBufferCopy.length]*jerkYScale + jerkYOffset);
 
                 canvas.drawLine(x0, y0, x1, y1, greenPaint);
+            }
+
+            // Draw Processed Pattern
+            TapPattern tapPattern = TapPattern.createPattern(jounceBuffer, accelerometerSampler.samplingFrequency, 5);
+            double[] patternBuffer = tapPattern.pattern;
+
+            redPaint.setStrokeWidth(1);
+            int patternBufferXMax = patternBuffer.length;
+            float patternBufferXScale =(float)canvasWidth/(float)patternBufferXMax;
+            float patternBufferYOffset = canvasHeight/5.0f * 4.3f;
+            float patternBufferYScale = -(canvasHeight/5.0f)/10.0f;
+            for (int x=0 ; x<canvasWidth-1 ; x++) {
+                float x0 = x;
+                float y0 = (float) (patternBuffer[(int)(x0/patternBufferXScale)%patternBuffer.length]*patternBufferYScale + patternBufferYOffset);
+                float x1 = x+1;
+                float y1 = (float) (patternBuffer[(int)(x1/patternBufferXScale)%patternBuffer.length]*patternBufferYScale + patternBufferYOffset);
+
+                canvas.drawLine(x0, y0, x1, y1, redPaint);
             }
 
 

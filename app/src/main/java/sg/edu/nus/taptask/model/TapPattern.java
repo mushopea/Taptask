@@ -17,19 +17,28 @@ public class TapPattern {
         // TODO: implement this
         // Calculate jounce
         double[] jounce = getJounce(absAccelerationBuffer);
-        // Apply convolution with gaussian kernel
+        // Get absolute values
+        FFTHelper.abs(jounce);
+        // Apply convolution to blur with box kernel
+        jounce = FFTHelper.FFTConvolution(jounce, FFTHelper.boxKernel(jounce.length, 3));
+        // Binary threshold
+        FFTHelper.binaryThreshold(jounce, 3.5); // TODO: tweak threshold
 
         // Check number of taps using threshold?
         // Check first tap at the front of buffer?
 
-
-        return null;
+        TapPattern pattern = new TapPattern();
+        pattern.duration = duration;
+        pattern.frequency = frequency;
+        pattern.pattern = jounce;
+        return pattern;
     }
 
     // Calculates jounce from acceleration
     public static double[] getJounce(double[] acceleration) {
-        double[] jounce = FFTHelper.FFTConvolution(acceleration, FFTHelper.sobelKernel(acceleration.length, 1)); // Snap/Jerk
-        jounce = FFTHelper.FFTConvolution(jounce, FFTHelper.sobelKernel(jounce.length,1)); // Jounce
+        double[] sobelKernel = FFTHelper.sobelKernel(acceleration.length, 1);
+        double[] snap = FFTHelper.FFTConvolution(acceleration, sobelKernel); // Snap/Jerk
+        double[] jounce = FFTHelper.FFTConvolution(snap, sobelKernel); // Jounce
         return jounce;
     }
 

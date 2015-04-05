@@ -9,23 +9,32 @@ import android.hardware.SensorEvent;
  */
 public class AccelerometerRecorder extends AccelerometerSampler{
 
-    protected boolean waitForFirstTap = false;  // Wait for first tap before beginning to record
-    protected double delayBeforeStart = 0;                 // Delay before recording
+    protected boolean waitForFirstTap = false;           // Wait for first tap before beginning to record
+    protected double delayBeforeStart = 0;               // Delay before recording
+    protected double remainingDelayBeforeStart = 0;      // Remaining delay before recording
     protected int startTimeIndex = 0;
 
     public AccelerometerRecorder(Activity activity) {
         super(activity);
+        this.waitForFirstTap = false;
+        this.delayBeforeStart = 0;
+        this.remainingDelayBeforeStart = this.delayBeforeStart;
     }
 
     public AccelerometerRecorder(Activity activity, boolean waitForFirstTap, double delayBeforeStart) {
         super(activity);
         this.waitForFirstTap = waitForFirstTap;
         this.delayBeforeStart = delayBeforeStart;
-        // TODO: adjust startTimeIndex?
+        this.remainingDelayBeforeStart = this.delayBeforeStart;
     }
 
     @Override
     protected void samplingStep(SensorEvent sensorEvent) {
+        // Delay start
+        if (this.remainingDelayBeforeStart > 0) {
+            this.remainingDelayBeforeStart -= this.samplingPeriod;
+            return;
+        }
         // Perform normal sampling for a set duration
         float x = sensorEvent.values[0];
         float y = sensorEvent.values[1];
@@ -39,9 +48,9 @@ public class AccelerometerRecorder extends AccelerometerSampler{
 
         // Stop after recording for the specified duration
         if (!waitForFirstTap && timeIndex == startTimeIndex) {
-            stopSampling();
+                stopSampling();
         }
-        if (!waitForFirstTap) {
+        if (waitForFirstTap) {
             // TODO: implement version that waits for first tap
         }
     }

@@ -90,7 +90,8 @@ public class FFTHelper {
         double[] FFTKernel = FFTHelper.FFT(complexKernel);
         double[] FFTProduct = FFTHelper.complexMultiply(FFTSignal, FFTKernel);
         double[] FFTInverse = FFTHelper.FFTInverse(FFTProduct);
-        double[] realConvolutionResult = FFTHelper.complexRealPart(FFTInverse);
+        double[] FFTInverseShifted = FFTHelper.FFTShift(FFTInverse);
+        double[] realConvolutionResult = FFTHelper.complexRealPart(FFTInverseShifted);
         return realConvolutionResult;
     }
 
@@ -117,7 +118,7 @@ public class FFTHelper {
         if (input0.length != input1.length) {
             return null;
         }
-        // Multiply FFTs together
+        // Multiply inputs element-wise
         double[] product = new double[input0.length];
         for (int i=0 ; i<input0.length ; i++) {
             product[i] = input0[i] * input1[i];
@@ -203,6 +204,17 @@ public class FFTHelper {
         return normalizedResult;
     }
 
+    // Thresholds input to zero if < threshold, one if >= threshold
+    public static void binaryThreshold(double[] input, double threshold) {
+        for (int i=0 ; i<input.length ; i++) {
+            if (input[i] < threshold) {
+                input[i] = 0;
+            } else {
+                input[i] = 1;
+            }
+        }
+    }
+
     public static double sum(double[] input) {
         double sum = 0;
         for (int i=0 ; i<input.length ; i++) {
@@ -217,6 +229,12 @@ public class FFTHelper {
             sum += Math.abs(input[i]);
         }
         return sum;
+    }
+
+    public static void abs(double[] input) {
+        for (int i=0 ; i<input.length ; i++) {
+            input[i] += Math.abs(input[i]);
+        }
     }
 
     public static double[] shortToDouble(short[] input) {

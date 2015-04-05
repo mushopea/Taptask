@@ -29,7 +29,8 @@ public class AccelerometerSampler implements SensorEventListener {
 
     protected boolean isSampling = false;
     protected double samplingFrequency = 0;
-
+    protected double samplingPeriod = 0;
+    protected double samplingDuration = 0;
 
     public AccelerometerSampler(Activity activity) {
         // Initialize
@@ -106,6 +107,7 @@ public class AccelerometerSampler implements SensorEventListener {
 
     // Calibrate first before calling this.
     public void startSampling(double bufferSizeInSeconds) {
+        this.samplingDuration = bufferSizeInSeconds;
         int minSamplingFrequency = this.minSamplingFrequency;
         int minSensorDelay = sensorDelayList[sensorDelayList.length-1];
         double samplingFrequency = 0;
@@ -129,6 +131,7 @@ public class AccelerometerSampler implements SensorEventListener {
             isSampling = true;
             this.timeIndex = 0;
             this.samplingFrequency = samplingFrequency;
+            this.samplingPeriod = 1.0 / samplingFrequency;
 
             // Set up buffer
             double period = 1.0 / samplingFrequency;
