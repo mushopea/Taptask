@@ -1,7 +1,6 @@
 package sg.edu.nus.taptask;
 
 import android.app.Activity;
-import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 
 /**
@@ -12,20 +11,25 @@ public class AccelerometerRecorder extends AccelerometerSampler{
     protected boolean waitForFirstTap = false;           // Wait for first tap before beginning to record
     protected double delayBeforeStart = 0;               // Delay before recording
     protected double remainingDelayBeforeStart = 0;      // Remaining delay before recording
-    protected int startTimeIndex = 0;
+    protected int filledTimeIndex = 0;
 
     public AccelerometerRecorder(Activity activity) {
         super(activity);
         this.waitForFirstTap = false;
         this.delayBeforeStart = 0;
-        this.remainingDelayBeforeStart = this.delayBeforeStart;
     }
 
     public AccelerometerRecorder(Activity activity, boolean waitForFirstTap, double delayBeforeStart) {
         super(activity);
         this.waitForFirstTap = waitForFirstTap;
         this.delayBeforeStart = delayBeforeStart;
+    }
+
+    @Override
+    public void startSampling(int sensorDelay, double samplingFrequency, double bufferSizeInSeconds) {
         this.remainingDelayBeforeStart = this.delayBeforeStart;
+        this.filledTimeIndex = 0;
+        super.startSampling(sensorDelay, samplingFrequency, bufferSizeInSeconds);
     }
 
     @Override
@@ -45,13 +49,16 @@ public class AccelerometerRecorder extends AccelerometerSampler{
             timeIndex += 1;
             timeIndex %= absAccelerationBuffer.length;
         }
-
+        if (filledTimeIndex < absAccelerationBuffer.length) {
+            filledTimeIndex += 1;
+        }
         // Stop after recording for the specified duration
-        if (!waitForFirstTap && timeIndex == startTimeIndex) {
-                stopSampling();
+        if (!waitForFirstTap && filledTimeIndex >= absAccelerationBuffer.length) {
+            stopSampling();
         }
         if (waitForFirstTap) {
             // TODO: implement version that waits for first tap
+
         }
     }
 

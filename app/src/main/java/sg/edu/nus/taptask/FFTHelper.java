@@ -1,5 +1,7 @@
 package sg.edu.nus.taptask;
 
+import android.util.Log;
+
 import java.util.Arrays;
 
 import edu.emory.mathcs.jtransforms.fft.DoubleFFT_1D;
@@ -82,6 +84,7 @@ public class FFTHelper {
 
     public static double[] FFTConvolution(double[] realSignal, double[] realKernel) {
         if (realSignal.length != realKernel.length) {
+            Log.e("FFT", "FFTConvolution: Signal length mismatch!");
             return null;
         }
         double[] complexSignal = FFTHelper.realToComplex(realSignal);
@@ -90,9 +93,9 @@ public class FFTHelper {
         double[] FFTKernel = FFTHelper.FFT(complexKernel);
         double[] FFTProduct = FFTHelper.complexMultiply(FFTSignal, FFTKernel);
         double[] FFTInverse = FFTHelper.FFTInverse(FFTProduct);
-        double[] FFTInverseShifted = FFTHelper.FFTShift(FFTInverse);
-        double[] realConvolutionResult = FFTHelper.complexRealPart(FFTInverseShifted);
-        return realConvolutionResult;
+        double[] realConvolutionResult = FFTHelper.complexRealPart(FFTInverse);
+        double[] realConvolutionResultShifted = FFTHelper.FFTShift(realConvolutionResult);
+        return realConvolutionResultShifted;
     }
 
     public static double[] complexMultiply(double[] input0, double[] input1) {

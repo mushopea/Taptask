@@ -245,9 +245,9 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
             float jerkYScale = -(canvasHeight/5.0f)/10.0f;
             for (int x=0 ; x<canvasWidth-1 ; x++) {
                 float x0 = x;
-                float y0 = (float) (jounceBuffer[(int)(x0/jerkXScale)%absAccelerationBufferCopy.length]*jerkYScale + jerkYOffset);
+                float y0 = (float) (jounceBuffer[(int)(x0/jerkXScale)%jounceBuffer.length]*jerkYScale + jerkYOffset);
                 float x1 = x+1;
-                float y1 = (float) (jounceBuffer[(int)(x1/jerkXScale)%absAccelerationBufferCopy.length]*jerkYScale + jerkYOffset);
+                float y1 = (float) (jounceBuffer[(int)(x1/jerkXScale)%jounceBuffer.length]*jerkYScale + jerkYOffset);
 
                 canvas.drawLine(x0, y0, x1, y1, greenPaint);
             }
