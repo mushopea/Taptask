@@ -25,4 +25,5 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:21.+'
     compile 'com.getbase:floatingactionbutton:1.8.0'
     compile files('libs/jtransforms-2.4.jar')
+    compile files('libs/gson-2.2.4.jar')
 }

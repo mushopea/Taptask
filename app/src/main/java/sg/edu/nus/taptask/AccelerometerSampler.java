@@ -10,15 +10,9 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 
-public class AccelerometerSampler implements SensorEventListener {
+import sg.edu.nus.taptask.model.AccelerometerConfig;
 
-    public static final int[] sensorDelayList = {SensorManager.SENSOR_DELAY_NORMAL,
-                                                 SensorManager.SENSOR_DELAY_UI,
-                                                 SensorManager.SENSOR_DELAY_GAME,
-                                                 SensorManager.SENSOR_DELAY_FASTEST};
-    public static final double[] sensorDelaySamplingRate = new double[sensorDelayList.length];
-    public static final double gravityOffset = 10.0; // Rough estimate is enough
-    public static final int minSamplingFrequency = 90; // TODO: Test to see how low the sampling rate can go. ~200 works, 49 does not seem to work.
+public class AccelerometerSampler implements SensorEventListener {
 
 
     protected Activity activity;
@@ -27,6 +21,8 @@ public class AccelerometerSampler implements SensorEventListener {
     protected volatile int timeIndex = 0;
     protected volatile double[] absAccelerationBuffer;
 
+    protected AccelerometerConfig accelerometerConfig = null;
+
     protected volatile boolean isSampling = false;
     protected double samplingFrequency = 0;
     protected double samplingPeriod = 0;
@@ -34,8 +30,10 @@ public class AccelerometerSampler implements SensorEventListener {
 
     public AccelerometerSampler(Activity activity) {
         // Initialize
-        sensorManager = (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
-        accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        this.sensorManager = (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
+        this.accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        this.activity = activity;
+        this.accelerometerConfig = AccelerometerConfig.getInstance(this.activity.getBaseContext());
     }
 
     // TODO: Call this in a separate thread as it may take some time, depending on sampleSize
@@ -44,15 +42,23 @@ public class AccelerometerSampler implements SensorEventListener {
      * Need to calibrate as different devices support different sampling rates.
      */
     public void calibrateSamplingRate() {
+        accelerometerConfig.readAccelerometerConfig();
+        if (accelerometerConfig.getSamplingFrequencyToUse() != 0) {
+            // Already calibrated
+            return;
+        }
+
         Log.d("accSampler", "calibrateSamplingRate: Calibrating...");
-        // TODO: Read from file if available
-        for (int i=0 ; i<sensorDelayList.length ; i++) {
-            int sensorDelay = sensorDelayList[i];
+        for (int i=0 ; i<accelerometerConfig.sensorDelayList.length ; i++) {
+            int sensorDelay = accelerometerConfig.sensorDelayList[i];
             double frequency = calibrateSamplingRate(sensorDelay, 101 / (sensorDelay+1)); // TODO: adjust sampleSize accordingly
-            sensorDelaySamplingRate[i] = frequency;
+            accelerometerConfig.sensorDelaySamplingRate[i] = frequency;
             Log.d("accSampler", "calibrateSamplingRate: " + sensorDelay + ", frequency: " + frequency + " hertz.");
         }
-        // TODO: Store results after calibration
+
+        accelerometerConfig.calculateFrequencyToUse();
+        // Store results after calibration
+        accelerometerConfig.saveAccelerometerConfig();
     }
 
 
@@ -107,23 +113,8 @@ public class AccelerometerSampler implements SensorEventListener {
 
     // Calibrate first before calling this.
     public void startSampling(double bufferSizeInSeconds) {
-        this.samplingDuration = bufferSizeInSeconds;
-        int minSamplingFrequency = this.minSamplingFrequency;
-        int minSensorDelay = sensorDelayList[sensorDelayList.length-1];
-        double samplingFrequency = 0;
-        for (int i=0 ; i<sensorDelayList.length ; i++) {
-            if (sensorDelaySamplingRate[i] >= minSamplingFrequency) {
-                minSensorDelay = sensorDelayList[i];
-                samplingFrequency = sensorDelaySamplingRate[i];
-                break;
-            }
-        }
-        if (samplingFrequency < minSamplingFrequency) {
-            Log.w("accSampler", "startSampling: Sampling frequency of " + samplingFrequency + " less than minimum of " + minSamplingFrequency + "\n");
-        }
-
-        Log.d("accSampler", "startSampling: Start sampling using " + minSensorDelay + ", " + samplingFrequency + " Hz.");
-        startSampling(minSensorDelay, samplingFrequency, bufferSizeInSeconds);
+        Log.d("accSampler", "startSampling: Start sampling using " + accelerometerConfig.getSensorDelayToUse() + ", " + accelerometerConfig.getSamplingFrequencyToUse() + " Hz.");
+        startSampling(accelerometerConfig.getSensorDelayToUse(), accelerometerConfig.getSamplingFrequencyToUse(), bufferSizeInSeconds);
     }
 
     public void startSampling(int sensorDelay, double samplingFrequency, double bufferSizeInSeconds) {
@@ -221,7 +212,7 @@ public class AccelerometerSampler implements SensorEventListener {
         float z = sensorEvent.values[2];
         double absAcceleration = Math.sqrt(x * x + y * y + z * z);
         synchronized (this) {
-            absAccelerationBuffer[timeIndex] = absAcceleration - gravityOffset;
+            absAccelerationBuffer[timeIndex] = absAcceleration - accelerometerConfig.gravityOffset;
             timeIndex += 1;
             timeIndex %= absAccelerationBuffer.length;
         }

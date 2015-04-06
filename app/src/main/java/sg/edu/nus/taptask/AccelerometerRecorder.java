@@ -20,7 +20,7 @@ public class AccelerometerRecorder extends AccelerometerSampler{
     public AccelerometerRecorder(Activity activity) {
         super(activity);
         this.waitForFirstTap = true;
-        this.delayBeforeStart = 5;
+        this.delayBeforeStart = 2;
     }
 
     public AccelerometerRecorder(Activity activity, boolean waitForFirstTap, double delayBeforeStart) {
@@ -53,7 +53,7 @@ public class AccelerometerRecorder extends AccelerometerSampler{
             if (!isSampling) {
                 return;
             }
-            absAccelerationBuffer[timeIndex] = absAcceleration - gravityOffset;
+            absAccelerationBuffer[timeIndex] = absAcceleration - accelerometerConfig.gravityOffset;
             timeIndex += 1;
             timeIndex %= absAccelerationBuffer.length;
 
@@ -66,23 +66,19 @@ public class AccelerometerRecorder extends AccelerometerSampler{
                 stopSampling();
                 return;
             }
-            if (timeIndexBeforeStop > 0) {
-                timeIndexBeforeStop --;
-                // Stop after recording for duration after first tap
-                if (waitForFirstTap && this.timeIndexBeforeStop == 0 &&
-                        filledTimeIndex >= absAccelerationBuffer.length ) {
-                    stopSampling();
-                    return;
-                }
-            }
-            // Attempt to locate first tap every 5/20 sec (0.25 sec)
+            // Attempt to locate first tap every 5/10 sec (0.5 sec)
             if (waitForFirstTap && timeIndexBeforeStop == -1 &&
-                    timeIndex % (absAccelerationBuffer.length / 20) == 1) {
+                    timeIndex % (absAccelerationBuffer.length / 10) == 0) {
                 TapPattern pattern = TapPattern.createPattern(this.getAbsAccelerationBuffer(), this.samplingDuration, this.samplingFrequency);
-                timeIndexBeforeStop = FFTHelper.firstElementGreaterThan(pattern.pattern, 0.01);
-                if (timeIndexBeforeStop > 0) {
-                    timeIndexBeforeStop --;
-                }
+                timeIndexBeforeStop = FFTHelper.firstElementGreaterThan(pattern.pattern, 0.1, absAccelerationBuffer.length / 10);
+            }
+            if (waitForFirstTap && timeIndexBeforeStop > 0) {
+                timeIndexBeforeStop --;
+            }
+            // Stop after recording for duration after first tap
+            if (waitForFirstTap && this.timeIndexBeforeStop == 0) {
+                stopSampling();
+                return;
             }
         }
     }
