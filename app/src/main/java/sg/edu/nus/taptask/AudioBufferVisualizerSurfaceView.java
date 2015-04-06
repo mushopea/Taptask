@@ -12,7 +12,6 @@ import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import sg.edu.nus.taptask.AccelerometerSampler;
 import sg.edu.nus.taptask.model.TapPattern;
 
 public class AudioBufferVisualizerSurfaceView extends SurfaceView implements SurfaceHolder.Callback  {
@@ -126,7 +125,7 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
             }
 
             // Copy absAccelerationBuffer
-            double[] absAccelerationBufferCopy = accelerometerSampler.getAbsAccelerationBuffer();
+            double[] absAccelerationBufferCopy = accelerometerSampler.getAbsAccelerationBufferSafe();
 
             double[] doubleBuffer = FFTHelper.shortToDouble(buffer);
             // Taper window

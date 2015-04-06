@@ -49,6 +49,22 @@ public class FFTHelper {
         return sobelKernel;
     }
 
+    public static double[] triangleKernel(int length, int size) {
+        if ( size <= 0) {
+            return null;
+        }
+        double[] triangleKernel = new double[length];
+        Arrays.fill(triangleKernel, 0);
+        triangleKernel[length/2] = 1;
+        for (int i=1 ; i<=size ; i++) {
+            triangleKernel[length/2-i] = 1 - (double)i/(double)size;
+            triangleKernel[length/2+i] = 1 - (double)i/(double)size;
+        }
+        return triangleKernel;
+    }
+
+
+
     public static double[] boxKernel(int length, int size) {
         if ( size <= 0) {
             return null;
@@ -172,16 +188,52 @@ public class FFTHelper {
     }
 
     /**
-     * Gets the number that is a power of 2, and larger or equal to num
-     * Not sure if this works. Might have precision errors...
+     * Uses a maximum of ~30 loops to reach the limit of int, not so bad...
      */
-    public static int nextPower2(int num) {
-        double n = Math.log(num)/Math.log(2);
-        double floorN = Math.floor(n);
-        if (n == floorN) {
-            return num;
+    public static int nextPowerOf2(int num) {
+        int power = 1;
+        while(power <= num) {
+            power *= 2;
+        }
+        return power;
+    }
+
+    public static double[] padWithZeros(double[] input) {
+        int len = nextPowerOf2(input.length);
+        if (len == input.length) {
+            return input;
         } else {
-            return (int)Math.pow(2, floorN + 1);
+            double[] output = new double[len];
+            System.arraycopy(input, 0, output, 0, input.length);
+            Arrays.fill(output, input.length, output.length, 0);
+            return output;
+        }
+    }
+
+    public static double[] trim(double[] input, int length) {
+        if (input.length == length) {
+            return input;
+        } else {
+            double[] output = new double[length];
+            System.arraycopy(input, 0, output, 0, length);
+            return output;
+        }
+    }
+
+    public static int firstElementGreaterThan(double[] input, double limit) {
+        for (int i=0 ; i<input.length ; i++) {
+            if (input[i] > limit) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public static void clampMaxValue(double[] input, double max) {
+        for (int i=0 ; i<input.length ; i++) {
+            if (input[i] > max) {
+                input[i] = max;
+            }
         }
     }
 

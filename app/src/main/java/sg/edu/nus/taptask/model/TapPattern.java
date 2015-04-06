@@ -14,7 +14,6 @@ public class TapPattern {
 
 
     public static TapPattern createPattern(double[] absAccelerationBuffer, double duration, double frequency) {
-        // TODO: implement this
         // Calculate jounce
         double[] jounce = getJounce(absAccelerationBuffer);
         // Get absolute values
@@ -22,7 +21,11 @@ public class TapPattern {
         // Apply convolution to blur with box kernel
         jounce = FFTHelper.FFTConvolution(jounce, FFTHelper.boxKernel(jounce.length, 3));
         // Binary threshold
-        FFTHelper.binaryThreshold(jounce, 3.5); // TODO: tweak threshold
+        FFTHelper.binaryThreshold(jounce, 5); // TODO: tweak threshold
+
+        // TODO: Triangle filter? Clamp to 1?
+        jounce = FFTHelper.FFTConvolution(jounce, FFTHelper.triangleKernel(jounce.length, 10));
+        FFTHelper.clampMaxValue(jounce, 1);
 
         // Check number of taps using threshold?
         // Check first tap at the front of buffer?

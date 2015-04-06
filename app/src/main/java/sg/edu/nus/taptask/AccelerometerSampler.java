@@ -27,7 +27,7 @@ public class AccelerometerSampler implements SensorEventListener {
     protected volatile int timeIndex = 0;
     protected volatile double[] absAccelerationBuffer;
 
-    protected boolean isSampling = false;
+    protected volatile boolean isSampling = false;
     protected double samplingFrequency = 0;
     protected double samplingPeriod = 0;
     protected double samplingDuration = 0;
@@ -156,22 +156,27 @@ public class AccelerometerSampler implements SensorEventListener {
         if (this.isSampling) {
             Log.d("accSampler", "stopSampling: Stop sampling");
             this.sensorManager.unregisterListener(this);
-            this.timeIndex = 0;
             this.isSampling = false;
-            this.samplingFrequency = 0;
-
         } else {
             Log.w("accSampler", "stopSampling: Not sampling");
         }
     }
 
-    public double[] getAbsAccelerationBuffer() {
+    public double[] getAbsAccelerationBufferSafe() {
         double[] absAccelerationBufferCopy = new double[absAccelerationBuffer.length];
         synchronized (this) {
             // Rotate and return copy of buffer
-            System.arraycopy(absAccelerationBuffer, timeIndex, absAccelerationBufferCopy, 0, absAccelerationBuffer.length - timeIndex);
-            System.arraycopy(absAccelerationBuffer, 0, absAccelerationBufferCopy, absAccelerationBuffer.length - timeIndex, timeIndex);
+            System.arraycopy(absAccelerationBuffer, (timeIndex+1), absAccelerationBufferCopy, 0, absAccelerationBuffer.length - (timeIndex+1));
+            System.arraycopy(absAccelerationBuffer, 0, absAccelerationBufferCopy, absAccelerationBuffer.length - (timeIndex+1), (timeIndex+1));
         }
+        return absAccelerationBufferCopy;
+    }
+
+    public double[] getAbsAccelerationBuffer() {
+        double[] absAccelerationBufferCopy = new double[absAccelerationBuffer.length];
+        // Rotate and return copy of buffer
+        System.arraycopy(absAccelerationBuffer, (timeIndex+1), absAccelerationBufferCopy, 0, absAccelerationBuffer.length - (timeIndex+1));
+        System.arraycopy(absAccelerationBuffer, 0, absAccelerationBufferCopy, absAccelerationBuffer.length - (timeIndex+1), (timeIndex+1));
         return absAccelerationBufferCopy;
     }
 
@@ -179,10 +184,12 @@ public class AccelerometerSampler implements SensorEventListener {
     public void onSensorChanged(SensorEvent sensorEvent) {
         Sensor mySensor = sensorEvent.sensor;
         if (mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            if (isCalibrating) {
-                calibrationStep(sensorEvent);
-            } else {
-                samplingStep(sensorEvent);
+            if (isSampling) {
+                if (isCalibrating) {
+                    calibrationStep(sensorEvent);
+                } else {
+                    samplingStep(sensorEvent);
+                }
             }
         }
     }
