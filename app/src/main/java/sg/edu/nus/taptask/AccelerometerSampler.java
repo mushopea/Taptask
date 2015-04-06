@@ -166,8 +166,8 @@ public class AccelerometerSampler implements SensorEventListener {
         double[] absAccelerationBufferCopy = new double[absAccelerationBuffer.length];
         synchronized (this) {
             // Rotate and return copy of buffer
-            System.arraycopy(absAccelerationBuffer, (timeIndex+1), absAccelerationBufferCopy, 0, absAccelerationBuffer.length - (timeIndex+1));
-            System.arraycopy(absAccelerationBuffer, 0, absAccelerationBufferCopy, absAccelerationBuffer.length - (timeIndex+1), (timeIndex+1));
+            System.arraycopy(absAccelerationBuffer, timeIndex, absAccelerationBufferCopy, 0, absAccelerationBuffer.length - timeIndex);
+            System.arraycopy(absAccelerationBuffer, 0, absAccelerationBufferCopy, absAccelerationBuffer.length - timeIndex, timeIndex);
         }
         return absAccelerationBufferCopy;
     }
@@ -175,8 +175,8 @@ public class AccelerometerSampler implements SensorEventListener {
     public double[] getAbsAccelerationBuffer() {
         double[] absAccelerationBufferCopy = new double[absAccelerationBuffer.length];
         // Rotate and return copy of buffer
-        System.arraycopy(absAccelerationBuffer, (timeIndex+1), absAccelerationBufferCopy, 0, absAccelerationBuffer.length - (timeIndex+1));
-        System.arraycopy(absAccelerationBuffer, 0, absAccelerationBufferCopy, absAccelerationBuffer.length - (timeIndex+1), (timeIndex+1));
+        System.arraycopy(absAccelerationBuffer, timeIndex, absAccelerationBufferCopy, 0, absAccelerationBuffer.length - timeIndex);
+        System.arraycopy(absAccelerationBuffer, 0, absAccelerationBufferCopy, absAccelerationBuffer.length - timeIndex, timeIndex);
         return absAccelerationBufferCopy;
     }
 
