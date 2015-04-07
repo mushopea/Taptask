@@ -99,15 +99,26 @@ public class FFTHelper {
     }
 
     public static double[] FFTConvolution(double[] realSignal, double[] realKernel) {
+        return FFTConvolution(realSignal, realKernel, 1);
+    }
+
+    public static double[] FFTConvolution(double[] realSignal, double[] realKernel, int times) {
         if (realSignal.length != realKernel.length) {
             Log.e("FFT", "FFTConvolution: Signal length mismatch!");
+            return null;
+        }
+        if (times <= 0) {
+            Log.e("FFT", "FFTConvolution: Invalid number of times to do convolution!");
             return null;
         }
         double[] complexSignal = FFTHelper.realToComplex(realSignal);
         double[] complexKernel = FFTHelper.realToComplex(realKernel);
         double[] FFTSignal = FFTHelper.FFT(complexSignal);
         double[] FFTKernel = FFTHelper.FFT(complexKernel);
-        double[] FFTProduct = FFTHelper.complexMultiply(FFTSignal, FFTKernel);
+        double[] FFTProduct = null;
+        for (int i=0 ; i<times ; i++) {
+            FFTProduct = FFTHelper.complexMultiply(FFTSignal, FFTKernel);
+        }
         double[] FFTInverse = FFTHelper.FFTInverse(FFTProduct);
         double[] realConvolutionResult = FFTHelper.complexRealPart(FFTInverse);
         double[] realConvolutionResultShifted = FFTHelper.FFTShift(realConvolutionResult);

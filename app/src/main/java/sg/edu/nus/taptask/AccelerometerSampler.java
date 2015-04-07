@@ -18,6 +18,7 @@ public class AccelerometerSampler implements SensorEventListener {
     protected Activity activity;
     protected SensorManager sensorManager;
     protected Sensor accelerometerSensor;
+    protected AccelerometerSamplerListener accelerometerSamplerListener;
     protected volatile int timeIndex = 0;
     protected volatile double[] absAccelerationBuffer;
 
@@ -138,6 +139,10 @@ public class AccelerometerSampler implements SensorEventListener {
             Log.d("accSampler", "startSampling: Start sampling");
             sensorManager.registerListener(this, accelerometerSensor, sensorDelay, handler);
 
+            // Send event
+            if (accelerometerSamplerListener != null) {
+                accelerometerSamplerListener.onSamplingStart();
+            }
         } else {
             Log.w("accSampler", "startSampling: Already sampling");
         }
@@ -148,6 +153,11 @@ public class AccelerometerSampler implements SensorEventListener {
             Log.d("accSampler", "stopSampling: Stop sampling");
             this.sensorManager.unregisterListener(this);
             this.isSampling = false;
+
+            // Send event
+            if (accelerometerSamplerListener != null) {
+                accelerometerSamplerListener.onSamplingStop();
+            }
         } else {
             Log.w("accSampler", "stopSampling: Not sampling");
         }
@@ -222,5 +232,9 @@ public class AccelerometerSampler implements SensorEventListener {
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         if (sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
         }
+    }
+
+    public void setAccelerometerSamplerListener(AccelerometerSamplerListener accelerometerSamplerListener) {
+        this.accelerometerSamplerListener = accelerometerSamplerListener;
     }
 }

@@ -15,7 +15,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
 public class AccelerometerConfig {
-    public String saveFileName = "AccelerometerConfig.json";
+    public transient String saveFileName = "AccelerometerConfig.json";
     private transient static AccelerometerConfig ourInstance = new AccelerometerConfig();
     private transient Context context = null;
     public static AccelerometerConfig getInstance(Context context) {
@@ -25,6 +25,7 @@ public class AccelerometerConfig {
         return ourInstance;
     }
 
+    // Attributes
     public int[] sensorDelayList = {SensorManager.SENSOR_DELAY_NORMAL,
             SensorManager.SENSOR_DELAY_UI,
             SensorManager.SENSOR_DELAY_GAME,
@@ -52,12 +53,10 @@ public class AccelerometerConfig {
     public void saveAccelerometerConfig() {
         Gson gson = new Gson();
         String jsonAccelerometerConfig = gson.toJson(this);
-        Log.e("WRITING", "start" + jsonAccelerometerConfig);
         writeToFile(jsonAccelerometerConfig);
     }
 
     public void readAccelerometerConfig() {
-        Log.e("READING", "start");
         String jsonAccelerometerConfig = readFromFile();
         if (jsonAccelerometerConfig.equals("")) {
             return;

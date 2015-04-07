@@ -22,9 +22,9 @@ public class TapPattern {
         jounce = FFTHelper.FFTConvolution(jounce, FFTHelper.boxKernel(jounce.length, 3));
         // Binary threshold
         FFTHelper.binaryThreshold(jounce, 5); // TODO: tweak threshold
-
-        // TODO: Triangle filter? Clamp to 1?
+        // Triangle filter
         jounce = FFTHelper.FFTConvolution(jounce, FFTHelper.triangleKernel(jounce.length, 10));
+        // Clamp max value
         FFTHelper.clampMaxValue(jounce, 1);
 
         // Check number of taps using threshold?
@@ -40,8 +40,7 @@ public class TapPattern {
     // Calculates jounce from acceleration
     public static double[] getJounce(double[] acceleration) {
         double[] sobelKernel = FFTHelper.sobelKernel(acceleration.length, 1);
-        double[] snap = FFTHelper.FFTConvolution(acceleration, sobelKernel); // Snap/Jerk
-        double[] jounce = FFTHelper.FFTConvolution(snap, sobelKernel); // Jounce
+        double[] jounce = FFTHelper.FFTConvolution(acceleration, sobelKernel, 2); // Jounce (m/s^4)
         return jounce;
     }
 
@@ -51,6 +50,9 @@ public class TapPattern {
 
     public double matchPatternPercentage(TapPattern pattern) {
         // TODO: implement this
+
+
+
         return 0;
     }
 

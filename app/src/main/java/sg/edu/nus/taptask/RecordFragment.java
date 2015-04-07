@@ -2,11 +2,16 @@ package sg.edu.nus.taptask;
 
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class RecordFragment extends Fragment {
+import sg.edu.nus.taptask.model.TapAction;
+import sg.edu.nus.taptask.model.TapActionManager;
+import sg.edu.nus.taptask.model.TapPattern;
+
+public class RecordFragment extends Fragment implements AccelerometerSamplerListener {
     // SurfaceView
     private AudioBufferVisualizerSurfaceView audioBufferVisualizerSurfaceView = null;
 
@@ -43,6 +48,7 @@ public class RecordFragment extends Fragment {
 
         // Start accelerometer
         accelerometerSampler = new AccelerometerRecorder(this.getActivity());
+        accelerometerSampler.setAccelerometerSamplerListener(this);
         accelerometerSampler.calibrateSamplingRate();
         accelerometerSampler.startSampling(5);
 
@@ -58,4 +64,35 @@ public class RecordFragment extends Fragment {
         accelerometerSampler.stopSampling();
         super.onDestroy();
     }
+
+    @Override
+    public void onSamplingStart() {
+        Log.e("RecordFragment", "onSamplingStart() called");
+    }
+
+    @Override
+    public void onSamplingStop() {
+        Log.e("RecordFragment", "onSamplingStop() called");
+    }
+
+    @Override
+    public void onRecordingDelayOver() {
+        Log.e("RecordFragment", "onRecordingDelayOver() called");
+    }
+
+    @Override
+    public void onRecordingDone() {
+        Log.e("RecordFragment", "onRecordingDone() called");
+        TapPattern pattern = TapPattern.createPattern(accelerometerSampler.getAbsAccelerationBuffer(),
+                accelerometerSampler.samplingDuration,
+                accelerometerSampler.samplingFrequency);
+        TapAction tapAction = new TapAction(pattern);
+        TapActionManager tapActionManager = TapActionManager.getInstance(this.getActivity().getBaseContext());
+        tapActionManager.removeAllTasks();
+        tapActionManager.addTapAction(tapAction);
+
+        // Run matcher to match pattern
+
+    }
+
 }
