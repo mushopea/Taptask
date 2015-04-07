@@ -92,6 +92,8 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
         tapActionManager.addTapAction(tapAction);
 
         // Run matcher to match pattern
+        pattern.matchPatternPercentage(pattern);
+
 
     }
 

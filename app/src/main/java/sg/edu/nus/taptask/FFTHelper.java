@@ -43,8 +43,8 @@ public class FFTHelper {
         double[] sobelKernel = new double[length];
         Arrays.fill(sobelKernel, 0);
         for (int i=1 ; i<=size ; i++) {
-            sobelKernel[length/2-i] = -i;
-            sobelKernel[length/2+i] = i;
+            sobelKernel[length-i] = -i;
+            sobelKernel[i] = i;
         }
         return sobelKernel;
     }
@@ -55,10 +55,10 @@ public class FFTHelper {
         }
         double[] triangleKernel = new double[length];
         Arrays.fill(triangleKernel, 0);
-        triangleKernel[length/2] = 1;
+        triangleKernel[0] = 1;
         for (int i=1 ; i<=size ; i++) {
-            triangleKernel[length/2-i] = 1 - (double)i/(double)size;
-            triangleKernel[length/2+i] = 1 - (double)i/(double)size;
+            triangleKernel[length-i] = 1 - (double)i/(double)size;
+            triangleKernel[i] = 1 - (double)i/(double)size;
         }
         return triangleKernel;
     }
@@ -69,14 +69,14 @@ public class FFTHelper {
         if ( size <= 0) {
             return null;
         }
-        double[] sobelKernel = new double[length];
-        Arrays.fill(sobelKernel, 0);
-        sobelKernel[length/2] = 1.0f/(double)(size);
-        for (int i=0 ; i<size ; i++) {
-            sobelKernel[length/2-i] = 1.0f/(double)(size);
-            sobelKernel[length/2+i] = 1.0f/(double)(size);
+        double[] boxKernel = new double[length];
+        Arrays.fill(boxKernel, 0);
+        boxKernel[0] = 1.0f/(double)(size);
+        for (int i=1 ; i<=size ; i++) {
+            boxKernel[length-i] = 1.0f/(double)(size);
+            boxKernel[i] = 1.0f/(double)(size);
         }
-        return sobelKernel;
+        return boxKernel;
     }
 
     public static double[] planckTaperWindow(int length, double e) {
@@ -121,8 +121,7 @@ public class FFTHelper {
         }
         double[] FFTInverse = FFTHelper.FFTInverse(FFTProduct);
         double[] realConvolutionResult = FFTHelper.complexRealPart(FFTInverse);
-        double[] realConvolutionResultShifted = FFTHelper.FFTShift(realConvolutionResult);
-        return realConvolutionResultShifted;
+        return realConvolutionResult;
     }
 
     public static double[] complexMultiply(double[] input0, double[] input1) {
@@ -270,6 +269,15 @@ public class FFTHelper {
         return normalizedResult;
     }
 
+    public static double[] normalize(double[] input) {
+        double absSum = absSum(input);
+        double[] normalizedResult = new double[input.length];
+        for (int i=0 ; i<input.length ; i++) {
+            normalizedResult[i] = input[i] / absSum;
+        }
+        return normalizedResult;
+    }
+
     // Thresholds input to zero if < threshold, one if >= threshold
     public static void binaryThreshold(double[] input, double threshold) {
         for (int i=0 ; i<input.length ; i++) {
@@ -287,6 +295,28 @@ public class FFTHelper {
             sum += input[i];
         }
         return sum;
+    }
+
+    public static double max(double[] input) {
+        double max = Double.MIN_VALUE;
+        for (int i=0 ; i<input.length ; i++) {
+            if (input[i] > max ) {
+                max = input[i];
+            }
+        }
+        return max;
+    }
+
+    public static int maxIndex(double[] input) {
+        double max = Double.MIN_VALUE;
+        int index = -1;
+        for (int i=0 ; i<input.length ; i++) {
+            if (input[i] > max ) {
+                max = input[i];
+                index = i;
+            }
+        }
+        return index;
     }
 
     public static double absSum(double[] input) {

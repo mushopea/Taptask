@@ -270,6 +270,26 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
             }
 
 
+            if (!accelerometerSampler.isSampling) {
+                double[] pattern = FFTHelper.normalize(patternBuffer);//FFTHelper.padWithZeros(FFTHelper.normalize(patternBuffer));
+                double[] correlationResult = FFTHelper.FFTConvolution(pattern, pattern);
+
+                // Draw correlation result
+                greenPaint.setStrokeWidth(1);
+                patternBufferXMax = correlationResult.length;
+                patternBufferXScale = (float) canvasWidth / (float) patternBufferXMax;
+                patternBufferYOffset = canvasHeight / 5.0f * 4.5f;
+                patternBufferYScale = -(canvasHeight / 5.0f) * 5;
+                for (int x = 0; x < canvasWidth - 1; x++) {
+                    float x0 = x;
+                    float y0 = (float) (correlationResult[(int) (x0 / patternBufferXScale) % correlationResult.length] * patternBufferYScale + patternBufferYOffset);
+                    float x1 = x + 1;
+                    float y1 = (float) (correlationResult[(int) (x1 / patternBufferXScale) % correlationResult.length] * patternBufferYScale + patternBufferYOffset);
+
+                    canvas.drawLine(x0, y0, x1, y1, greenPaint);
+                }
+            }
+
             // Write FFTMagnitudeSum
             Paint blackPaint = new Paint();
             blackPaint.setColor(Color.BLACK);

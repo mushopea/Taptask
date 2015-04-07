@@ -1,5 +1,7 @@
 package sg.edu.nus.taptask.model;
 
+import android.util.Log;
+
 import sg.edu.nus.taptask.FFTHelper;
 
 /**
@@ -51,9 +53,19 @@ public class TapPattern {
     public double matchPatternPercentage(TapPattern pattern) {
         // TODO: implement this
 
+        if (this.pattern.length != pattern.pattern.length) {
+            // TODO: Pad with zeros?
+        }
 
+        double[] correlationResult = FFTHelper.FFTConvolution(
+                FFTHelper.normalize(this.pattern),
+                FFTHelper.normalize(pattern.pattern));
+        int maxIndex = FFTHelper.maxIndex(correlationResult);
+        double maxValue = correlationResult[maxIndex];
 
-        return 0;
+        Log.e("TapPattern", "Best match at pos: " + maxIndex + ", value: " + maxValue);
+
+        return maxValue;
     }
 
 }
