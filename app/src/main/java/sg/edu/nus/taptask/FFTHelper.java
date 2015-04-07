@@ -333,6 +333,14 @@ public class FFTHelper {
         }
     }
 
+    public static double[] reverse(double[] input) {
+        double[] output = new double[input.length];
+        for (int i=0 ; i<input.length ; i++) {
+            output[i] = input[input.length-1-i];
+        }
+        return output;
+    }
+
     public static double[] shortToDouble(short[] input) {
         double[] output = new double[input.length];
         for (int i=0 ; i<input.length ; i++) {

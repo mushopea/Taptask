@@ -59,7 +59,7 @@ public class TapPattern {
 
         double[] correlationResult = FFTHelper.FFTConvolution(
                 FFTHelper.normalize(this.pattern),
-                FFTHelper.normalize(pattern.pattern));
+                FFTHelper.reverse(FFTHelper.normalize(pattern.pattern)));
         int maxIndex = FFTHelper.maxIndex(correlationResult);
         double maxValue = correlationResult[maxIndex];
 

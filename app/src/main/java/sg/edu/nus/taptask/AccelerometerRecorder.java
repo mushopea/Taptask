@@ -104,6 +104,8 @@ public class AccelerometerRecorder extends AccelerometerSampler {
                 for (int i=0 ; i<0.025/this.samplingPeriod ; i++) {
                     if (timeIndexBeforeStop > 0) {
                         timeIndexBeforeStop -= 1;
+                    } else {
+                        break;
                     }
                 }
             }
