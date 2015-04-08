@@ -333,6 +333,14 @@ public class FFTHelper {
         }
     }
 
+    public static double trapezoidSum(double[] input) {
+        double sum = 0;
+        for (int i=0 ; i<input.length -1 ; i++) {
+            sum += (input[i] + input[i+1]) / 2;
+        }
+        return sum;
+    }
+
     public static double[] reverse(double[] input) {
         double[] output = new double[input.length];
         for (int i=0 ; i<input.length ; i++) {

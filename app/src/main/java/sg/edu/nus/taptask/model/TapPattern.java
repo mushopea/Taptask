@@ -58,14 +58,18 @@ public class TapPattern {
         }
 
         double[] correlationResult = FFTHelper.FFTConvolution(
-                FFTHelper.normalize(this.pattern),
-                FFTHelper.reverse(FFTHelper.normalize(pattern.pattern)));
+                this.pattern,
+                FFTHelper.reverse(pattern.pattern));
         int maxIndex = FFTHelper.maxIndex(correlationResult);
         double maxValue = correlationResult[maxIndex];
+        double normalizingFactor = Math.max(FFTHelper.trapezoidSum(this.pattern), FFTHelper.absSum(pattern.pattern));
+        double pctMatch = maxValue/normalizingFactor;
 
-        Log.e("TapPattern", "Best match at pos: " + maxIndex + ", value: " + maxValue);
+        Log.i("TapPattern", "Best match at pos: " + maxIndex + ", value: " + maxValue + ", pct: " + pctMatch);
+        Log.i("TapPattern", "AbsSum corr result: " + FFTHelper.absSum(correlationResult));
+        Log.i("TapPattern", "AbsSum pattern: " + FFTHelper.absSum(this.pattern));
 
-        return maxValue;
+        return pctMatch;
     }
 
 }
