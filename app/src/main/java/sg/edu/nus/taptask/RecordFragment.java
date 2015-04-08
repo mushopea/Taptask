@@ -91,10 +91,25 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
         tapActionManager.removeAllTasks();
         tapActionManager.addTapAction(tapAction);
 
-        // Run matcher to match pattern
+        // Run matcher to match pattern with itself
         pattern.matchPatternPercentage(pattern);
 
 
+        // TODO: Run AccelerometerMatcher to match pattern?
+
+        this.accelerometerSampler = new AccelerometerMatcher(this.getActivity());
+        this.accelerometerSampler.setAccelerometerSamplerListener(this);
+        ((AccelerometerMatcher)this.accelerometerSampler).setTapPatternToMatch(pattern);
+        this.accelerometerSampler.startSampling(10); // 10 sec buffer
+
+        // Reset visualizer
+        audioBufferVisualizerSurfaceView.setAccelerationSampler(accelerometerSampler);
+
     }
 
+    @Override
+    public void onMatchFound(TapPattern pattern, double[] signal, double matchPct) {
+        Log.e("RecordFragment", "Match found!!");
+        accelerometerSampler.stopSampling();
+    }
 }

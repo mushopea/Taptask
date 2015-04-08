@@ -208,9 +208,13 @@ public class FFTHelper {
         return power;
     }
 
-    public static double[] padWithZeros(double[] input) {
+    public static double[] padWithZerosPower2(double[] input) {
         int len = nextPowerOf2(input.length);
-        if (len == input.length) {
+        return padWithZeros(input, len);
+    }
+
+    public static double[] padWithZeros(double[] input, int len) {
+        if (len <= input.length) {
             return input;
         } else {
             double[] output = new double[len];
@@ -308,9 +312,13 @@ public class FFTHelper {
     }
 
     public static int maxIndex(double[] input) {
+        return maxIndex(input, input.length);
+    }
+
+    public static int maxIndex(double[] input, int limit) {
         double max = Double.MIN_VALUE;
         int index = -1;
-        for (int i=0 ; i<input.length ; i++) {
+        for (int i=0 ; i<input.length && i<limit ; i++) {
             if (input[i] > max ) {
                 max = input[i];
                 index = i;
@@ -318,6 +326,7 @@ public class FFTHelper {
         }
         return index;
     }
+
 
     public static double absSum(double[] input) {
         double sum = 0;

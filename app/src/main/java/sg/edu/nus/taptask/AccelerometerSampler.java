@@ -10,6 +10,8 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 
+import java.util.Arrays;
+
 import sg.edu.nus.taptask.model.AccelerometerConfig;
 
 public class AccelerometerSampler implements SensorEventListener {
@@ -129,6 +131,7 @@ public class AccelerometerSampler implements SensorEventListener {
             double period = 1.0 / samplingFrequency;
             int bufferSize = (int) Math.ceil(bufferSizeInSeconds / period);
             absAccelerationBuffer = new double[bufferSize];
+            Arrays.fill(absAccelerationBuffer, 0);
 
             // Use a separate thread to receive sensor readings asynchronously
             HandlerThread handlerThread = new HandlerThread("sensorThread");

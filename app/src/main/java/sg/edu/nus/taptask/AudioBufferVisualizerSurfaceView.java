@@ -271,7 +271,7 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
 
 
             if (!accelerometerSampler.isSampling) {
-                double[] pattern = FFTHelper.normalize(patternBuffer);//FFTHelper.padWithZeros(FFTHelper.normalize(patternBuffer));
+                double[] pattern = FFTHelper.normalize(patternBuffer);//FFTHelper.padWithZerosPower2(FFTHelper.normalize(patternBuffer));
                 double[] correlationResult = FFTHelper.FFTConvolution(pattern, FFTHelper.reverse(pattern));
 
                 // Draw correlation result
