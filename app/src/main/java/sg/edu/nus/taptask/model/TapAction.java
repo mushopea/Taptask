@@ -1,5 +1,7 @@
 package sg.edu.nus.taptask.model;
 
+import android.content.Context;
+
 import sg.edu.nus.taptask.model.TapPattern;
 
 /**
@@ -20,8 +22,8 @@ public class TapAction {
      * Stuff to be done when the action is triggered.
      * e.g. call someone, etc.
      */
-    public void performAction() {
-
+    public boolean performAction(Context context) {
+        return true;
     }
 
     public TapPattern getPattern() {

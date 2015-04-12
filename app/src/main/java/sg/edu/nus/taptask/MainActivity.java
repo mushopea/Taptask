@@ -3,6 +3,7 @@ package sg.edu.nus.taptask;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v7.app.ActionBarActivity;
@@ -14,12 +15,14 @@ import android.view.MenuItem;
 import android.view.View;
 
 import sg.edu.nus.taptask.model.TaskList;
+import sg.edu.nus.taptask.model.TapActionVolume;
 
 public class MainActivity extends ActionBarActivity {
 
     private SettingsToggle taptaskToggle;
     private RecyclerView mRecyclerView;
     private TaskAdapter mAdapter;
+    private AudioManager audioManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,9 +127,12 @@ public class MainActivity extends ActionBarActivity {
     public void onClickAddButton(View view) {
         Log.e("Meow", "Add activity button triggered");
 
-        Intent intent;
-        intent = new Intent(this, AddCallTaskActivity.class);
-        startActivity(intent);
+        TapActionVolume action = new TapActionVolume(null);
+        action.performAction(MainActivity.this);
+
+//        Intent intent;
+//        intent = new Intent(this, AddCallTaskActivity.class);
+//        startActivity(intent);
     }
 
 }
