@@ -32,13 +32,12 @@ public class AccelerometerConfig {
             SensorManager.SENSOR_DELAY_FASTEST};
     public double[] sensorDelaySamplingRate = new double[sensorDelayList.length];
     public double gravityOffset = 10.0; // Rough estimate is enough
-    public double minSamplingFrequency = 90; // TODO: Test to see how low the sampling rate can go. ~200 works, 49 does not seem to work.
+    public double minSamplingFrequency = 150; // TODO: Test to see how low the sampling rate can go. ~200 works, 49 does not seem to work.
     public double samplingFrequencyToUse = 0;
     public int sensorDelayToUse = 0;
 
 
     private AccelerometerConfig() {
-        // TODO: Read from file
     }
 
     public int getSensorDelayToUse() {

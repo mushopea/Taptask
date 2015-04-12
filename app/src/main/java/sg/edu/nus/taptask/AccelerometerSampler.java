@@ -48,7 +48,7 @@ public class AccelerometerSampler implements SensorEventListener {
         accelerometerConfig.readAccelerometerConfig();
         if (accelerometerConfig.getSamplingFrequencyToUse() != 0) {
             // Already calibrated
-            return;
+            //return;
         }
 
         Log.d("accSampler", "calibrateSamplingRate: Calibrating...");
