@@ -114,6 +114,7 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
             Log.e("onClickAddButton", "Null tapAction");
             tapAction = new TapAction(firstPattern);
         }
+        tapAction.setPattern(firstPattern);
 
         tapActionManager.removeAllTasks();
         tapActionManager.addTapAction(tapAction);
@@ -205,7 +206,9 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
 
     @Override
     public void onDestroy() {
-        accelerometerSampler.stopSampling();
+        if (accelerometerSampler != null) {
+            accelerometerSampler.stopSampling();
+        }
         super.onDestroy();
     }
 
@@ -268,6 +271,6 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
     }
 
     @Override
-    public void onMatchFound(TapPattern pattern, double[] signal, double matchPct) {
+    public void onMatchFound(TapAction tapAction, double[] signal, double matchPct) {
     }
 }

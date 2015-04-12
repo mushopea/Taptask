@@ -4,6 +4,9 @@ import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import org.w3c.dom.Node;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -48,7 +51,16 @@ public class TapActionManager {
     }
 
     public void saveTapActionManager() {
-        Gson gson = new Gson();
+
+        final RuntimeTypeAdapterFactory<TapAction> typeFactory = RuntimeTypeAdapterFactory
+                .of(TapAction.class, "type") // Here you specify which is the parent class and what field particularizes the child class.
+                .registerSubtype(TapActionCall.class, "TapActionCall") // if the flag equals the class name, you can skip the second parameter. This is only necessary, when the "type" field does not equal the class name.
+                .registerSubtype(TapActionSMS.class, "TapActionSMS");
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapterFactory(typeFactory)
+                .create();
+
         String jsonTapActionManager = gson.toJson(this);
         Log.e("TapActionManager", "Saving: " + jsonTapActionManager);
         writeToFile(jsonTapActionManager);
@@ -59,7 +71,15 @@ public class TapActionManager {
         if (jsonTapActionManager.equals("")) {
             return;
         }
-        Gson gson = new Gson();
+
+        final RuntimeTypeAdapterFactory<TapAction> typeFactory = RuntimeTypeAdapterFactory
+                .of(TapAction.class, "type") // Here you specify which is the parent class and what field particularizes the child class.
+                .registerSubtype(TapActionCall.class, "TapActionCall") // if the flag equals the class name, you can skip the second parameter. This is only necessary, when the "type" field does not equal the class name.
+                .registerSubtype(TapActionSMS.class, "TapActionSMS");
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapterFactory(typeFactory)
+                .create();
         TapActionManager tapActionManager = gson.fromJson(jsonTapActionManager, TapActionManager.class);
         // Copy attributes
         this.tapActions = tapActionManager.tapActions;

@@ -3,15 +3,13 @@ package sg.edu.nus.taptask;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
-import android.os.Vibrator;
 import android.util.Log;
 import android.widget.Toast;
 
+import sg.edu.nus.taptask.model.TapAction;
 import sg.edu.nus.taptask.model.TapActionManager;
-import sg.edu.nus.taptask.model.TapPattern;
 
 public class TaptaskService extends Service implements AccelerometerSamplerListener {
 
@@ -63,22 +61,24 @@ public class TaptaskService extends Service implements AccelerometerSamplerListe
         accelerometerMatcher = new AccelerometerMatcher(this.getBaseContext());
         accelerometerMatcher.calibrateSamplingRate();
         this.accelerometerMatcher.setAccelerometerSamplerListener(this);
-        this.accelerometerMatcher.startSampling(10); // 5 sec buffer
+        this.accelerometerMatcher.startSampling(10); // 10 sec buffer
 
         // Set patterns to match
         TapActionManager tapActionManager = TapActionManager.getInstance(getBaseContext());
         Log.e("Taptask Service", "Tap Actions: " + tapActionManager.tapActions.size());
 
         if (tapActionManager.tapActions.size() > 0) {
-            accelerometerMatcher.setTapPatternToMatch(tapActionManager.tapActions.get(0).getPattern());
+            accelerometerMatcher.setTapActionToMatch(tapActionManager.tapActions.get(0));
         }
 
         return START_STICKY;
     }
 
     @Override
-    public void onMatchFound(TapPattern pattern, double[] signal, double matchPct) {
+    public void onMatchFound(TapAction tapAction, double[] signal, double matchPct) {
         Log.e("Taptask Service", "Match! " + matchPct);
+        accelerometerMatcher.clearBuffer();
+        tapAction.performAction(getBaseContext());
     }
 
     @Override

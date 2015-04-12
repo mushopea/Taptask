@@ -1,6 +1,7 @@
 package sg.edu.nus.taptask.model;
 
 import android.content.Context;
+import android.util.Log;
 
 import sg.edu.nus.taptask.model.TapPattern;
 
@@ -9,8 +10,8 @@ import sg.edu.nus.taptask.model.TapPattern;
  * Create child classes to add more actions
  */
 public class TapAction {
-
     private TapPattern pattern; // Pattern that triggers action
+
 
     // TODO: Add more attributes
 
@@ -23,6 +24,7 @@ public class TapAction {
      * e.g. call someone, etc.
      */
     public boolean performAction(Context context) {
+        Log.e("TapAction", "Performing action!");
         return true;
     }
 
