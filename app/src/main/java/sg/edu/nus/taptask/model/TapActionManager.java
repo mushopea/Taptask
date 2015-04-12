@@ -26,9 +26,16 @@ public class TapActionManager {
     private transient Context context = null;
 
     // Attributes
-    ArrayList<TapAction> tapActions = new ArrayList<TapAction>();
+    private ArrayList<TapAction> tapActions = new ArrayList<TapAction>();
+    private TapAction currentTapAction = null;
 
+    public TapAction getCurrentTapAction() {
+        return currentTapAction;
+    }
 
+    public void setCurrentTapAction(TapAction currentTapAction) {
+        this.currentTapAction = currentTapAction;
+    }
 
     public void addTapAction(TapAction tapAction) {
         tapActions.add(tapAction);
