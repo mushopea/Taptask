@@ -252,8 +252,8 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
             // Set instructions text
             this.getActivity().runOnUiThread(new Runnable() {
                 public void run() {
-                    instructionsText.setText("Pattern match: " + (int)matchPct + "%");
                     setViewState(4);
+                    instructionsText.setText("Pattern match: " + (int)matchPct + "%");
                 }
             });
         }

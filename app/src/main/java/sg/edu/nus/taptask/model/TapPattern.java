@@ -22,12 +22,16 @@ public class TapPattern {
         double[] jounce = getJounce(absAccelerationBuffer);
         // Get absolute values
         FFTHelper.abs(jounce);
-        // Apply convolution to blur with box kernel
-        jounce = FFTHelper.FFTConvolution(jounce, FFTHelper.boxKernel(jounce.length, 3));
         // Binary threshold
-        FFTHelper.binaryThreshold(jounce, 5); // TODO: tweak threshold
+        if (frequency < AccelerometerConfig.getInstance(null).minSamplingFrequency){
+            FFTHelper.binaryThreshold(jounce, 6);
+        } else {
+            // Apply convolution to blur with box kernel
+            jounce = FFTHelper.FFTConvolution(jounce, FFTHelper.boxKernel(jounce.length, 3));
+            FFTHelper.binaryThreshold(jounce, 6); // TODO: tweak threshold
+        }
         // Triangle filter
-        jounce = FFTHelper.FFTConvolution(jounce, FFTHelper.triangleKernel(jounce.length, 15)); // TODO: tweak kernel size
+        jounce = FFTHelper.FFTConvolution(jounce, FFTHelper.triangleKernel(jounce.length, 10)); // TODO: tweak kernel size
         // Clamp max value
         FFTHelper.clampMaxValue(jounce, 1);
 
@@ -122,11 +126,11 @@ public class TapPattern {
         ArrayList<Double> list = new ArrayList<Double>();
 
         for (int i=0 ; i<pattern.length ; i++) {
-            int start = FFTHelper.firstElementLargerThan(pattern, 0.001, i);
+            int start = FFTHelper.firstElementLargerThan(pattern, 0.95, i);
             if (start == -1) {
                 break;
             }
-            int end = FFTHelper.firstElementSmallerThan(pattern, 0.001, start);
+            int end = FFTHelper.firstElementSmallerThan(pattern, 0.95, start);
             if (end == -1) {
                 break;
             }
