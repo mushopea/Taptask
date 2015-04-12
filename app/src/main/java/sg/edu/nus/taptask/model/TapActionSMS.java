@@ -19,6 +19,8 @@ public class TapActionSMS extends TapAction {
     }
 
     public boolean performAction(Context context) {
+        SmsManager sms = SmsManager.getDefault();
+        sms.sendTextMessage(phoneNum, null, smsContent, null, null);
 //        audio.adjustStreamVolume(AudioManager.STREAM_MUSIC,
 //                AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
         return true;
