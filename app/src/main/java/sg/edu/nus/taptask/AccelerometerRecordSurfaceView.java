@@ -172,20 +172,20 @@ public class AccelerometerRecordSurfaceView extends SurfaceView implements Surfa
                 }
                 double[] patternBuffer = tapPattern.pattern;
 
-                /*
-                // Draw non-circle pattern
-                int patternBufferXMax = patternBuffer.length;
+
+                // Draw absAccelerationBufferCopy
+                int patternBufferXMax = absAccelerationBufferCopy.length;
                 float patternBufferXScale = (float)canvasWidth/(float)patternBufferXMax;
                 float patternBufferYOffset = canvasHeight/5.0f * 1.0f;
                 float patternBufferYScale = -(canvasHeight/5.0f)/10.0f;
                 for (int x=0 ; x<canvasWidth-1 ; x++) {
                     float x0 = x;
-                    float y0 = (float) (patternBuffer[(int)(x0/patternBufferXScale)%patternBufferXMax]*patternBufferYScale + patternBufferYOffset);
+                    float y0 = (float) (absAccelerationBufferCopy[(int)(x0/patternBufferXScale)%patternBufferXMax]*patternBufferYScale + patternBufferYOffset);
                     float x1 = x+1;
-                    float y1 = (float) (patternBuffer[(int)(x1/patternBufferXScale)%patternBufferXMax]*patternBufferYScale + patternBufferYOffset);
+                    float y1 = (float) (absAccelerationBufferCopy[(int)(x1/patternBufferXScale)%patternBufferXMax]*patternBufferYScale + patternBufferYOffset);
 
                     canvas.drawLine(x0, y0, x1, y1, redPaint);
-                }*/
+                }
 
 
                 ArrayList<Double> circlePositions = tapPattern.getCirclePositions();
