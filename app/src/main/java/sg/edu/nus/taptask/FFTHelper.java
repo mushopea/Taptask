@@ -336,6 +336,14 @@ public class FFTHelper {
         return sum;
     }
 
+    public static double absSquareSum(double[] input) {
+        double sum = 0;
+        for (int i=0 ; i<input.length ; i++) {
+            sum += Math.pow(Math.abs(input[i]), 2);
+        }
+        return sum;
+    }
+
     public static void abs(double[] input) {
         for (int i=0 ; i<input.length ; i++) {
             input[i] += Math.abs(input[i]);

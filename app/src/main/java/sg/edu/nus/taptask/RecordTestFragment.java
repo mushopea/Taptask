@@ -1,26 +1,28 @@
 package sg.edu.nus.taptask;
 
-import android.app.Fragment;
 import android.os.Bundle;
+import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import sg.edu.nus.taptask.model.TapAction;
 import sg.edu.nus.taptask.model.TapActionManager;
 import sg.edu.nus.taptask.model.TapPattern;
 
-public class RecordFragment extends Fragment implements AccelerometerSamplerListener {
-    // Views
-    private AccelerometerRecordSurfaceView accelerometerRecordSurfaceView = null;
-    private TextView instructionsText = null;
+public class RecordTestFragment extends Fragment implements AccelerometerSamplerListener {
+    // SurfaceView
+    private TestVisualizerSurfaceView testVisualizerSurfaceView = null;
+
+    // Audio
+    private SoundSampler soundSampler = null;
+    private short[] buffer = null;
 
     // Accelerometer
     AccelerometerSampler accelerometerSampler = null;
 
-    public RecordFragment() {
+    public RecordTestFragment() {
     }
 
     @Override
@@ -32,8 +34,17 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_record, container, false);
-        accelerometerRecordSurfaceView = (AccelerometerRecordSurfaceView) view.findViewById(R.id.surfaceView);
-        instructionsText = (TextView) view.findViewById(R.id.instructionsText);
+        testVisualizerSurfaceView = (TestVisualizerSurfaceView) view.findViewById(R.id.surfaceView);
+
+        // Set audio recording to start
+        soundSampler = new SoundSampler();
+        buffer = new short[soundSampler.getBufferSize()];
+        soundSampler.setBuffer(buffer);
+        soundSampler.startRecording();
+
+        // Set visualizer buffer
+        testVisualizerSurfaceView.setAudioBuffer(buffer);
+
 
         // Start accelerometer
         accelerometerSampler = new AccelerometerRecorder(this.getActivity());
@@ -42,16 +53,14 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
         accelerometerSampler.startSampling(5);
 
         // Set visualizer for absAcceleration
-        accelerometerRecordSurfaceView.setAccelerationSampler(accelerometerSampler);
-
-        // Set instructions text
-        instructionsText.setText("Hold on...");
+        testVisualizerSurfaceView.setAccelerationSampler(accelerometerSampler);
 
         return view;
     }
 
     @Override
     public void onDestroy() {
+        soundSampler.stopRecording();
         accelerometerSampler.stopSampling();
         super.onDestroy();
     }
@@ -69,13 +78,6 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
     @Override
     public void onRecordingDelayOver() {
         Log.e("RecordFragment", "onRecordingDelayOver() called");
-
-        // Set instructions text
-        this.getActivity().runOnUiThread(new Runnable() {
-            public void run() {
-                instructionsText.setText("Start Tapping!");
-            }
-        });
     }
 
     @Override
@@ -100,14 +102,7 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
         this.accelerometerSampler.startSampling(10); // 10 sec buffer
 
         // Reset visualizer
-        accelerometerRecordSurfaceView.setAccelerationSampler(accelerometerSampler);
-
-        // Set instructions text
-        this.getActivity().runOnUiThread(new Runnable() {
-            public void run() {
-                instructionsText.setText("Pattern Recorded!");
-            }
-        });
+        testVisualizerSurfaceView.setAccelerationSampler(accelerometerSampler);
 
     }
 
@@ -115,12 +110,5 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
     public void onMatchFound(TapPattern pattern, double[] signal, double matchPct) {
         Log.e("RecordFragment", "Match found!!");
         accelerometerSampler.stopSampling();
-
-        // Set instructions text
-        this.getActivity().runOnUiThread(new Runnable() {
-            public void run() {
-                instructionsText.setText("Pattern Match!");
-            }
-        });
     }
 }
