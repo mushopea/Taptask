@@ -136,21 +136,19 @@ public class AccelerometerRecordSurfaceView extends SurfaceView implements Surfa
 
         public void doDraw(Canvas canvas)
         {
-            // Copy absAccelerationBuffer
-            double[] absAccelerationBufferCopy = accelerometerSampler.getAbsAccelerationBufferSafe();
-
             canvasHeight = canvas.getHeight();
             canvasWidth = canvas.getWidth();
 
             // Clear screen
             canvas.drawPaint(transparentPaint);
 
+
             //Draw background pattern
             if (backgroundPattern != null) {
                 ArrayList<Double> circlePositions = backgroundPattern.getCirclePositions();
                 int circleXMax = backgroundPattern.pattern.length;
                 float circleXScale = (float)canvasWidth/(float)circleXMax;
-                float circleYOffset = canvasHeight/5.0f * 2.0f;
+                float circleYOffset = canvasHeight/2.0f;
                 for (int i=0 ; i<circlePositions.size() ; i++) {
                     float x = (float)(circlePositions.get(i) / circleXScale);
                     float y = circleYOffset;
@@ -160,49 +158,53 @@ public class AccelerometerRecordSurfaceView extends SurfaceView implements Surfa
             }
 
 
-            // Draw pattern being tapped
-            TapPattern tapPattern = null;
-            int timeIndex = 0;
-            synchronized (accelerometerSampler) {
-                tapPattern = TapPattern.createPattern(accelerometerSampler.getAbsAccelerationBuffer(), accelerometerSampler.samplingFrequency, 5);
-                timeIndex = ((AccelerometerRecorder) accelerometerSampler).timeIndexRecorded();
+
+            if (accelerometerSampler != null) {
+                // Copy absAccelerationBuffer
+                double[] absAccelerationBufferCopy = accelerometerSampler.getAbsAccelerationBufferSafe();
+
+                // Draw pattern being tapped
+                TapPattern tapPattern = null;
+                int timeIndex = 0;
+                synchronized (accelerometerSampler) {
+                    tapPattern = TapPattern.createPattern(accelerometerSampler.getAbsAccelerationBuffer(), accelerometerSampler.samplingFrequency, 5);
+                    timeIndex = ((AccelerometerRecorder) accelerometerSampler).timeIndexRecorded();
+                }
+                double[] patternBuffer = tapPattern.pattern;
+
+                /*
+                // Draw non-circle pattern
+                int patternBufferXMax = patternBuffer.length;
+                float patternBufferXScale = (float)canvasWidth/(float)patternBufferXMax;
+                float patternBufferYOffset = canvasHeight/5.0f * 1.0f;
+                float patternBufferYScale = -(canvasHeight/5.0f)/10.0f;
+                for (int x=0 ; x<canvasWidth-1 ; x++) {
+                    float x0 = x;
+                    float y0 = (float) (patternBuffer[(int)(x0/patternBufferXScale)%patternBufferXMax]*patternBufferYScale + patternBufferYOffset);
+                    float x1 = x+1;
+                    float y1 = (float) (patternBuffer[(int)(x1/patternBufferXScale)%patternBufferXMax]*patternBufferYScale + patternBufferYOffset);
+
+                    canvas.drawLine(x0, y0, x1, y1, redPaint);
+                }*/
+
+
+                ArrayList<Double> circlePositions = tapPattern.getCirclePositions();
+                int circleXMax = patternBuffer.length;
+                float circleXScale = (float)canvasWidth/(float)circleXMax;
+                float circleYOffset = canvasHeight/2.0f;
+                for (int i=0 ; i<circlePositions.size() ; i++) {
+                    float x = (float)(circlePositions.get(i) / circleXScale - (circleXMax - timeIndex)/circleXScale);
+                    float y = circleYOffset;
+
+                    canvas.drawCircle(x, y, (float)(canvasWidth*0.03), redPaint);
+                }
+                // Draw horizontal line
+                canvas.drawLine(0, circleYOffset, canvasWidth, circleYOffset, redPaint);
+                // Draw vertical time line
+                canvas.drawLine(timeIndex, circleYOffset-50, timeIndex, circleYOffset+50, redPaint);
             }
-            double[] patternBuffer = tapPattern.pattern;
-
-            /*
-            // Draw non-circle pattern
-            int patternBufferXMax = patternBuffer.length;
-            float patternBufferXScale = (float)canvasWidth/(float)patternBufferXMax;
-            float patternBufferYOffset = canvasHeight/5.0f * 1.0f;
-            float patternBufferYScale = -(canvasHeight/5.0f)/10.0f;
-            for (int x=0 ; x<canvasWidth-1 ; x++) {
-                float x0 = x;
-                float y0 = (float) (patternBuffer[(int)(x0/patternBufferXScale)%patternBufferXMax]*patternBufferYScale + patternBufferYOffset);
-                float x1 = x+1;
-                float y1 = (float) (patternBuffer[(int)(x1/patternBufferXScale)%patternBufferXMax]*patternBufferYScale + patternBufferYOffset);
-
-                canvas.drawLine(x0, y0, x1, y1, redPaint);
-            }*/
-
-
-            ArrayList<Double> circlePositions = tapPattern.getCirclePositions();
-            int circleXMax = patternBuffer.length;
-            float circleXScale = (float)canvasWidth/(float)circleXMax;
-            float circleYOffset = canvasHeight/5.0f * 2.5f;
-            for (int i=0 ; i<circlePositions.size() ; i++) {
-                float x = (float)(circlePositions.get(i) / circleXScale - (circleXMax - timeIndex)/circleXScale);
-                float y = circleYOffset;
-
-                canvas.drawCircle(x, y, (float)(canvasWidth*0.03), redPaint);
-            }
-            // Draw horizontal line
-            canvas.drawLine(0, circleYOffset, canvasWidth, circleYOffset, redPaint);
-            // Draw vertical time line
-            canvas.drawLine(timeIndex, circleYOffset-50, timeIndex, circleYOffset+50, redPaint);
 
         }
-
-
 
         public void setSurfaceSize(int canvasWidth, int canvasHeight)
         {

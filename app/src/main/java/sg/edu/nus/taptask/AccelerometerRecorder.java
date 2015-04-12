@@ -96,9 +96,9 @@ public class AccelerometerRecorder extends AccelerometerSampler {
                 }
                 return;
             }
-            // Attempt to locate first tap every 5/20 sec (0.25 sec) (samplingDuration/10)
+            // Attempt to locate first tap every 5/15 sec (0.3 sec) (samplingDuration/10)
             if (waitForFirstTap && timeIndexBeforeStop == -1 &&
-                    timeIndex % (absAccelerationBuffer.length / 20) == 0) {
+                    timeIndex % (absAccelerationBuffer.length / 15) == 1) {
                 TapPattern pattern = TapPattern.createPattern(this.getAbsAccelerationBuffer(), this.samplingDuration, this.samplingFrequency);
                 timeIndexBeforeStop = FFTHelper.firstElementLargerThan(pattern.pattern, 0.001, absAccelerationBuffer.length / 2);
                 if (timeIndexBeforeStop != -1) {
