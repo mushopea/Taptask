@@ -1,20 +1,37 @@
 package sg.edu.nus.taptask;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.provider.ContactsContract;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.net.Uri;
+import android.provider.Contacts;
+import android.widget.TextView;
 
 
 public class AddCallTaskActivity extends ActionBarActivity {
+
+    static final int PICK_CONTACT_REQUEST = 0;
+    private TextView targetNameField;
+    private TextView targetNumField;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_call_task);
+        this.targetNameField = (TextView) findViewById(R.id.targetName);
+        this.targetNumField = (TextView) findViewById(R.id.targetNum);
+        targetNumField.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectContact(v);
+            }
+        });
     }
 
 
@@ -42,12 +59,48 @@ public class AddCallTaskActivity extends ActionBarActivity {
 
 
     // go to add new task screen
-    public void onClickContinueButton(View view) {
-        Log.e("Meow", "Recording call activity screen activated");
+//    public void onClickContinueButton(View view) {
+//        Log.e("Meow", "Recording call activity screen activated");
+//
+//        Intent intent;
+//        intent = new Intent(this, RecordActivity.class);
+//        startActivity(intent);
+//    }
 
-        Intent intent;
-        intent = new Intent(this, RecordActivity.class);
-        startActivity(intent);
+    public void selectContact(View view){
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
+        startActivityForResult(intent, PICK_CONTACT_REQUEST);
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode,
+                                    Intent data) {
+
+        if (data != null) {
+            Uri uri = data.getData();
+
+            if (uri != null) {
+                Cursor c = null;
+                try {
+                    c = getContentResolver().query(uri, new String[]{
+                                    ContactsContract.CommonDataKinds.Phone.NUMBER,
+                                    ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME },
+                            null, null, null);
+
+                    if (c != null && c.moveToFirst()) {
+                        String number = c.getString(0);
+                        String name = c.getString(1);
+                        this.targetNumField.setText(number);
+                        this.targetNameField.setText(name);
+                    }
+                } finally {
+                    if (c != null) {
+                        c.close();
+                    }
+                }
+            }
+        }
+
     }
 
 }
