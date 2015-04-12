@@ -33,18 +33,7 @@
             android:layout_height="fill_parent"
             android:gravity="center_vertical">
 
-            <sg.edu.nus.taptask.SettingsToggle
-                xmlns:widget="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/individualTaskToggle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/activity_vertical_margin"
-                android:layout_alignParentLeft="false"
-                android:layout_alignParentTop="false"
-                android:layout_alignParentRight="true"
-                android:layout_alignWithParentIfMissing="false"
-                />
-        </RelativeLayout>
+         </RelativeLayout>
 
 
 

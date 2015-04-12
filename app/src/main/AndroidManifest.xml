@@ -4,7 +4,7 @@
 
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
         android:allowBackup="true"
@@ -54,6 +54,12 @@
         <activity
             android:name=".RecordActivity"
             android:label="@string/title_activity_record" >
+        </activity>
+        <activity
+            android:name=".OnboardingActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_onboarding"
+            android:theme="@style/FullscreenTheme" >
         </activity>
     </application>
 

@@ -21,9 +21,11 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:21.0.3'
-    compile 'com.android.support:recyclerview-v7:21.+'
-    compile 'com.getbase:floatingactionbutton:1.8.0'
     compile files('libs/jtransforms-2.4.jar')
     compile files('libs/gson-2.2.4.jar')
+    compile 'com.android.support:appcompat-v7:21.0.3'
+    compile 'com.android.support:recyclerview-v7:21.0.3'
+    compile 'com.getbase:floatingactionbutton:1.8.0'
+    compile 'com.android.support:support-v4:21.0.3'
+    compile 'com.github.medyo:fancybuttons:1.2@aar'
 }

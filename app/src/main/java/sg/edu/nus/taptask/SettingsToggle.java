@@ -45,8 +45,8 @@ public class SettingsToggle extends RelativeLayout implements View.OnClickListen
         bgDrawableOff = a.getString(R.styleable.SettingsToggle_oval_background_off);
         bgDrawableOn = a.getString(R.styleable.SettingsToggle_oval_background_on);
         _prefName = a.getString(R.styleable.SettingsToggle_prefName);
-        text = a.getString(R.styleable.SettingsToggle_text);
-        textColor = a.getString(R.styleable.SettingsToggle_textColor);
+        text = a.getString(R.styleable.SettingsToggle_toggle_text);
+        textColor = a.getString(R.styleable.SettingsToggle_toggle_textColor);
         a.recycle();
 
         background_oval_off = findViewById(R.id.background_oval_off);

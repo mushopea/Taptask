@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="SettingsToggle">
-        <attr name="text" format="string" />
-        <attr name="textColor" format="string" />
+        <attr name="toggle_text" format="string" />
+        <attr name="toggle_textColor" format="string" />
         <attr name="prefName" format="string" />
         <attr name="oval_background_off" format="string" />
         <attr name="oval_background_on" format="string" />
+    </declare-styleable>
+
+    <!-- Declare custom theme attributes that allow changing which styles are
+         used for button bars depending on the API level.
+         ?android:attr/buttonBarStyle is new as of API 11 so this is
+         necessary to support previous API levels. -->
+    <declare-styleable name="ButtonBarContainerTheme">
+        <attr name="metaButtonBarStyle" format="reference" />
+        <attr name="metaButtonBarButtonStyle" format="reference" />
     </declare-styleable>
 </resources>
