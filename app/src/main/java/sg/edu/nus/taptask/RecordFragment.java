@@ -20,6 +20,9 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
     // Accelerometer
     AccelerometerSampler accelerometerSampler = null;
 
+    TapPattern firstPattern = null;
+    TapPattern secondPattern = null;
+
     public RecordFragment() {
     }
 
@@ -89,25 +92,39 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
         tapActionManager.removeAllTasks();
         tapActionManager.addTapAction(tapAction);
 
-        // Run matcher to match pattern with itself
-        pattern.matchPatternPercentage(pattern);
+        if (firstPattern == null) {
+            firstPattern = pattern;
+        } else {
+            secondPattern = pattern;
+        }
 
+        // Run recorder second time
+        if (secondPattern == null) {
+            this.accelerometerSampler = new AccelerometerRecorder(this.getActivity());
+            this.accelerometerSampler.setAccelerometerSamplerListener(this);
+            this.accelerometerSampler.startSampling(5); // 5 sec buffer
 
-        // Run AccelerometerMatcher to match pattern
-        this.accelerometerSampler = new AccelerometerMatcher(this.getActivity());
-        this.accelerometerSampler.setAccelerometerSamplerListener(this);
-        ((AccelerometerMatcher)this.accelerometerSampler).setTapPatternToMatch(pattern);
-        this.accelerometerSampler.startSampling(10); // 10 sec buffer
+            // Reset visualizer
+            accelerometerRecordSurfaceView.setAccelerationSampler(accelerometerSampler);
+            accelerometerRecordSurfaceView.setBackgroundPattern(firstPattern);
 
-        // Reset visualizer
-        accelerometerRecordSurfaceView.setAccelerationSampler(accelerometerSampler);
+            // Set instructions text
+            this.getActivity().runOnUiThread(new Runnable() {
+                public void run() {
+                    instructionsText.setText("Tap the same pattern to confirm");
+                }
+            });
+        } else {
 
-        // Set instructions text
-        this.getActivity().runOnUiThread(new Runnable() {
-            public void run() {
-                instructionsText.setText("Pattern Recorded!");
-            }
-        });
+            // Find match percentage
+            final double matchPct = firstPattern.matchPatternPercentage(secondPattern) * 100;
+            // Set instructions text
+            this.getActivity().runOnUiThread(new Runnable() {
+                public void run() {
+                    instructionsText.setText("Pattern match: " + matchPct + "%");
+                }
+            });
+        }
 
     }
 

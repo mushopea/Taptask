@@ -20,6 +20,7 @@ import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import sg.edu.nus.taptask.model.TapActionVolume;
 import sg.edu.nus.taptask.model.TaskList;
+import sg.edu.nus.taptask.model.TapActionCall;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -141,13 +142,19 @@ public class MainActivity extends ActionBarActivity {
     // go to add new task screen
     public void onClickAddButton(View view) {
         Log.e("Meow", "Add activity button triggered");
+        Intent intent;
+        intent = new Intent(this, AddCallTaskActivity.class);
+        startActivity(intent);
+    }
 
+    public void onClickCallButton(View view){
+        TapActionCall action = new TapActionCall(null, "97936499");
+        action.performAction(MainActivity.this);
+    }
+
+    public void onClickVolButton(View view) {
         TapActionVolume action = new TapActionVolume(null);
         action.performAction(MainActivity.this);
-
-//        Intent intent;
-//        intent = new Intent(this, AddCallTaskActivity.class);
-//        startActivity(intent);
     }
 
 }

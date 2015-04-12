@@ -34,16 +34,20 @@ public class AccelerometerRecorder extends AccelerometerSampler {
         return timeIndexRemainingBeforeStop() * samplingPeriod;
     }
 
-    public double timeIndexRemainingBeforeStop() {
+    public int timeIndexRemainingBeforeStop() {
         if (waitForFirstTap) {
             if (timeIndexBeforeStop == -1) {
-                return absAccelerationBuffer.length + (remainingDelayBeforeStart / samplingPeriod);
+                return absAccelerationBuffer.length + (int)(remainingDelayBeforeStart / samplingPeriod);
             } else {
                 return timeIndexBeforeStop;
             }
         } else {
             return absAccelerationBuffer.length - filledTimeIndex;
         }
+    }
+
+    public int timeIndexRecorded() {
+        return absAccelerationBuffer.length - timeIndexRemainingBeforeStop();
     }
 
     @Override
@@ -92,11 +96,11 @@ public class AccelerometerRecorder extends AccelerometerSampler {
                 }
                 return;
             }
-            // Attempt to locate first tap every 5/10 sec (0.5 sec) (samplingDuration/10)
+            // Attempt to locate first tap every 5/20 sec (0.25 sec) (samplingDuration/10)
             if (waitForFirstTap && timeIndexBeforeStop == -1 &&
-                    timeIndex % (absAccelerationBuffer.length / 10) == 0) {
+                    timeIndex % (absAccelerationBuffer.length / 20) == 0) {
                 TapPattern pattern = TapPattern.createPattern(this.getAbsAccelerationBuffer(), this.samplingDuration, this.samplingFrequency);
-                timeIndexBeforeStop = FFTHelper.firstElementGreaterThan(pattern.pattern, 0.001, absAccelerationBuffer.length / 10);
+                timeIndexBeforeStop = FFTHelper.firstElementLargerThan(pattern.pattern, 0.001, absAccelerationBuffer.length / 2);
                 if (timeIndexBeforeStop != -1) {
                     Log.i("AccRecorder", "First tap found");
                 }

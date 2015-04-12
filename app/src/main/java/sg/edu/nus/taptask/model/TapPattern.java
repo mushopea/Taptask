@@ -2,6 +2,8 @@ package sg.edu.nus.taptask.model;
 
 import android.util.Log;
 
+import java.util.ArrayList;
+
 import sg.edu.nus.taptask.FFTHelper;
 
 /**
@@ -112,4 +114,28 @@ public class TapPattern {
 
         return pctMatch;
     }
+
+    /**
+     * Gets a list of positions to represent the pattern
+     */
+    public ArrayList<Double> getCirclePositions() {
+        ArrayList<Double> list = new ArrayList<Double>();
+
+        for (int i=0 ; i<pattern.length ; i++) {
+            int start = FFTHelper.firstElementLargerThan(pattern, 0.001, i);
+            if (start == -1) {
+                break;
+            }
+            int end = FFTHelper.firstElementSmallerThan(pattern, 0.001, start);
+            if (end == -1) {
+                break;
+            }
+            double mid = (start + end)/2.0;
+            list.add(mid);
+            i = end;
+        }
+
+        return list;
+    }
+
 }
