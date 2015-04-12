@@ -17,9 +17,9 @@ public class TapActionCall extends TapAction  {
     }
 
     public boolean performAction(Context context) {
-//        String url = CALL_URL + phoneNum;
-//        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse(url));
-//        startActivity(intent);
+        String url = CALL_URL + phoneNum;
+        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse(url));
+        context.startActivity(intent);
         return true;
     }
 

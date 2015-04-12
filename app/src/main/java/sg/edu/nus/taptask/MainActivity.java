@@ -16,6 +16,7 @@ import android.view.View;
 
 import sg.edu.nus.taptask.model.TaskList;
 import sg.edu.nus.taptask.model.TapActionVolume;
+import sg.edu.nus.taptask.model.TapActionCall;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -127,8 +128,10 @@ public class MainActivity extends ActionBarActivity {
     public void onClickAddButton(View view) {
         Log.e("Meow", "Add activity button triggered");
 
-        TapActionVolume action = new TapActionVolume(null);
+//        TapActionVolume action = new TapActionVolume(null);
+        TapActionCall action = new TapActionCall(null, "97936499");
         action.performAction(MainActivity.this);
+
 
 //        Intent intent;
 //        intent = new Intent(this, AddCallTaskActivity.class);
