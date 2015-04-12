@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import sg.edu.nus.taptask.model.TapAction;
+import sg.edu.nus.taptask.model.TapActionManager;
 import sg.edu.nus.taptask.model.TapPattern;
 
 public class RecordFragment extends Fragment implements AccelerometerSamplerListener {
@@ -104,6 +106,17 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
     }
 
     public void onClickAddButton(View view) {
+        // Save stuff
+        TapActionManager tapActionManager = TapActionManager.getInstance(this.getActivity().getBaseContext());
+
+        TapAction tapAction = tapActionManager.getCurrentTapAction();
+        if (tapAction == null) {
+            Log.e("onClickAddButton", "Null tapAction");
+            tapAction = new TapAction(firstPattern);
+        }
+
+        tapActionManager.removeAllTasks();
+        tapActionManager.addTapAction(tapAction);
     }
 
     private void setViewState(int state) {
@@ -225,12 +238,6 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
                 accelerometerSampler.samplingDuration,
                 accelerometerSampler.samplingFrequency);
 
-        // Save stuff
-        //TapAction tapAction = new TapAction(pattern);
-        //TapActionManager tapActionManager = TapActionManager.getInstance(this.getActivity().getBaseContext());
-        //tapActionManager.removeAllTasks();
-        //tapActionManager.addTapAction(tapAction);
-
         if (firstPattern == null) {
             firstPattern = pattern;
         } else {
@@ -252,8 +259,8 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
             // Set instructions text
             this.getActivity().runOnUiThread(new Runnable() {
                 public void run() {
-                    instructionsText.setText("Pattern match: " + (int)matchPct + "%");
                     setViewState(4);
+                    instructionsText.setText("Pattern match: " + (int)matchPct + "%");
                 }
             });
         }

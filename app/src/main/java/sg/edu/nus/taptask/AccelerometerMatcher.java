@@ -1,6 +1,7 @@
 package sg.edu.nus.taptask;
 
 import android.app.Activity;
+import android.content.Context;
 import android.hardware.SensorEvent;
 import android.util.Log;
 
@@ -14,8 +15,8 @@ public class AccelerometerMatcher extends AccelerometerSampler {
 
     public TapPattern tapPatternToMatch;
 
-    public AccelerometerMatcher(Activity activity) {
-        super(activity);
+    public AccelerometerMatcher(Context context) {
+        super(context);
     }
 
     @Override

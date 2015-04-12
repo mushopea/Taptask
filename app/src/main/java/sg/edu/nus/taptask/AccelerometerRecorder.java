@@ -1,6 +1,7 @@
 package sg.edu.nus.taptask;
 
 import android.app.Activity;
+import android.content.Context;
 import android.hardware.SensorEvent;
 import android.util.Log;
 
@@ -17,8 +18,8 @@ public class AccelerometerRecorder extends AccelerometerSampler {
     protected volatile int timeIndexBeforeStop = -1;
     protected volatile int filledTimeIndex = 0;
 
-    public AccelerometerRecorder(Activity activity) {
-        super(activity);
+    public AccelerometerRecorder(Context context) {
+        super(context);
         this.waitForFirstTap = true;
         this.delayBeforeStart = 0.5;
     }

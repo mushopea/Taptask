@@ -17,7 +17,7 @@ import sg.edu.nus.taptask.model.AccelerometerConfig;
 public class AccelerometerSampler implements SensorEventListener {
 
 
-    protected Activity activity;
+    protected Context context;
     protected SensorManager sensorManager;
     protected Sensor accelerometerSensor;
     protected AccelerometerSamplerListener accelerometerSamplerListener;
@@ -31,12 +31,12 @@ public class AccelerometerSampler implements SensorEventListener {
     protected double samplingPeriod = 0;
     protected double samplingDuration = 0;
 
-    public AccelerometerSampler(Activity activity) {
+    public AccelerometerSampler(Context context) {
         // Initialize
-        this.sensorManager = (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
+        this.sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         this.accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        this.activity = activity;
-        this.accelerometerConfig = AccelerometerConfig.getInstance(this.activity.getBaseContext());
+        this.context = context;
+        this.accelerometerConfig = AccelerometerConfig.getInstance(context);
     }
 
     // TODO: Call this in a separate thread as it may take some time, depending on sampleSize
@@ -48,7 +48,7 @@ public class AccelerometerSampler implements SensorEventListener {
         accelerometerConfig.readAccelerometerConfig();
         if (accelerometerConfig.getSamplingFrequencyToUse() != 0) {
             // Already calibrated
-            //return;
+            return;
         }
 
         Log.d("accSampler", "calibrateSamplingRate: Calibrating...");
