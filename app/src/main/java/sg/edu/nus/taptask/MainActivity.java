@@ -136,7 +136,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void onClickCallButton(View view){
-        TapActionCall action = new TapActionCall(null, "97936499");
+        TapActionCall action = new TapActionCall(null, "97936499", "zhang yiwen");
         action.performAction(MainActivity.this);
     }
 

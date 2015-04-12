@@ -8,16 +8,18 @@ import android.net.Uri;
  */
 public class TapActionCall extends TapAction  {
 
-    private String phoneNum;
+    private String targetNum;
+    private String targetName;
     private final String CALL_URL = "tel:";
 
-    public TapActionCall(TapPattern pattern, String phoneNum) {
+    public TapActionCall(TapPattern pattern, String targetNum, String targetName) {
         super(pattern);
-        this.phoneNum = phoneNum;
+        this.targetNum = targetNum;
+        this.targetName = targetName;
     }
 
     public boolean performAction(Context context) {
-        String url = CALL_URL + phoneNum;
+        String url = CALL_URL + targetNum;
         Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse(url));
         context.startActivity(intent);
         return true;

@@ -10,8 +10,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.net.Uri;
-import android.provider.Contacts;
 import android.widget.TextView;
+
+import sg.edu.nus.taptask.model.TapActionCall;
+import sg.edu.nus.taptask.model.TapActionManager;
 
 
 public class AddCallTaskActivity extends ActionBarActivity {
@@ -19,13 +21,15 @@ public class AddCallTaskActivity extends ActionBarActivity {
     static final int PICK_CONTACT_REQUEST = 0;
     private TextView targetNameField;
     private TextView targetNumField;
+    private TapActionManager tapActionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_call_task);
-        this.targetNameField = (TextView) findViewById(R.id.targetName);
-        this.targetNumField = (TextView) findViewById(R.id.targetNum);
+        targetNameField = (TextView) findViewById(R.id.targetName);
+        targetNumField = (TextView) findViewById(R.id.targetNum);
+        tapActionManager = TapActionManager.getInstance(getBaseContext());
         targetNumField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,13 +63,16 @@ public class AddCallTaskActivity extends ActionBarActivity {
 
 
     // go to add new task screen
-//    public void onClickContinueButton(View view) {
-//        Log.e("Meow", "Recording call activity screen activated");
-//
-//        Intent intent;
-//        intent = new Intent(this, RecordActivity.class);
-//        startActivity(intent);
-//    }
+    public void onClickContinueButton(View view) {
+        Log.e("Meow", "Recording call activity screen activated");
+
+        TapActionCall action = new TapActionCall(null, targetNumField.getText().toString(), targetNameField.getText().toString());
+        tapActionManager.setCurrentTapAction(action);
+
+        Intent intent;
+        intent = new Intent(this, RecordActivity.class);
+        startActivity(intent);
+    }
 
     public void selectContact(View view){
         Intent intent = new Intent(Intent.ACTION_PICK);
