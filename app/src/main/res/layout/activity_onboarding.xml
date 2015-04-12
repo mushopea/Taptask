@@ -18,6 +18,12 @@
         android:fitsSystemWindows="true"
         android:background="@color/PrimaryDark">
 
+        <!--<View android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:background="@drawable/circle"
+            android:alpha="0.95"
+            android:layout_gravity="center" />-->
+
         <LinearLayout android:id="@+id/fullscreen_content_controls" style="?metaButtonBarStyle"
             android:layout_width="match_parent" android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal"
@@ -28,10 +34,10 @@
                 android:id="@+id/btn_gotit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="20dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                android:paddingTop="20dp"
+                android:paddingBottom="@dimen/fullwidthbutton_top_padding"
+                android:paddingLeft="@dimen/fullwidthbutton_side_padding"
+                android:paddingRight="@dimen/fullwidthbutton_side_padding"
+                android:paddingTop="@dimen/fullwidthbutton_top_padding"
                 fancy:defaultColor="#ffffff"
                 fancy:focusColor="#eeeeee"
                 fancy:text="GOT IT"
