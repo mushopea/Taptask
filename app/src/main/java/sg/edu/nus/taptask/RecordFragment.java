@@ -94,9 +94,8 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
 
 
         // Run AccelerometerMatcher to match pattern
-        this.accelerometerSampler = new AccelerometerMatcher(this.getActivity());
+        this.accelerometerSampler = new AccelerometerRecorder(this.getActivity());
         this.accelerometerSampler.setAccelerometerSamplerListener(this);
-        ((AccelerometerMatcher)this.accelerometerSampler).setTapPatternToMatch(pattern);
         this.accelerometerSampler.startSampling(5); // 5 sec buffer
 
         // Reset visualizer

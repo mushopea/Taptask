@@ -127,8 +127,12 @@ public class AccelerometerRecordSurfaceView extends SurfaceView implements Surfa
             transparentPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
             canvas.drawPaint(transparentPaint);
 
-
-            TapPattern tapPattern = TapPattern.createPattern(accelerometerSampler.getAbsAccelerationBufferSafe(), accelerometerSampler.samplingFrequency, 5);
+            TapPattern tapPattern = null;
+            int timeIndex = 0;
+            synchronized (accelerometerSampler) {
+                tapPattern = TapPattern.createPattern(accelerometerSampler.getAbsAccelerationBuffer(), accelerometerSampler.samplingFrequency, 5);
+                timeIndex = ((AccelerometerRecorder) accelerometerSampler).timeIndexRecorded();
+            }
             double[] patternBuffer = tapPattern.pattern;
 
             Paint redPaint = new Paint();
@@ -149,17 +153,20 @@ public class AccelerometerRecordSurfaceView extends SurfaceView implements Surfa
             }
 
 
-            ArrayList<Integer> circlePositions = tapPattern.getCirclePositions();
+            ArrayList<Double> circlePositions = tapPattern.getCirclePositions();
             int circleXMax = patternBuffer.length;
             float circleXScale = (float)canvasWidth/(float)circleXMax;
             float circleYOffset = canvasHeight/5.0f * 2.0f;
             for (int i=0 ; i<circlePositions.size() ; i++) {
-                float x = circlePositions.get(i) / circleXScale;
+                float x = (float)(circlePositions.get(i) / circleXScale - (patternBuffer.length - timeIndex)/circleXScale);
                 float y = circleYOffset;
 
                 canvas.drawCircle(x, y, (float)(canvasWidth*0.03), redPaint);
             }
+            // Draw horizontal line
             canvas.drawLine(0, circleYOffset, canvasWidth, circleYOffset, redPaint);
+            // Draw vertical time line
+            canvas.drawLine(timeIndex, circleYOffset-50, timeIndex, circleYOffset+50, redPaint);
 
         }
 
