@@ -120,22 +120,9 @@ public class MainActivity extends ActionBarActivity {
             return;
         }
 
-        int dot = 200;
-        int dash = 500;
-        int short_gap = 200;
-        int medium_gap = 500;
-        int long_gap = 1000;
-
-        Vibrator v = (Vibrator) this.getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
-
         if (toggle.isOn()) {
-            // Beeeeep
-            v.vibrate(dash);
             startService(new Intent(this, TaptaskService.class));
         } else {
-            // Beep Beep Beep
-            long[] pattern = {0, dot, short_gap, dot, short_gap, dot};
-            v.vibrate(pattern, -1);
             stopService(new Intent(this, TaptaskService.class));
         }
     }

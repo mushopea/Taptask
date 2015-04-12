@@ -25,7 +25,8 @@
         <service
             android:name=".TaptaskService"
             android:enabled="true"
-            android:exported="true" >
+            android:exported="true"
+            android:process=":my_process">
         </service>
 
         <activity

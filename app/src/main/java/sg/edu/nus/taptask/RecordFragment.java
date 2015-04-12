@@ -115,7 +115,7 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
             tapAction = new TapAction(firstPattern);
         }
 
-        //tapActionManager.removeAllTasks();
+        tapActionManager.removeAllTasks();
         tapActionManager.addTapAction(tapAction);
     }
 
