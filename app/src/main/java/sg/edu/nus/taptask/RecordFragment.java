@@ -97,7 +97,7 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
         this.accelerometerSampler = new AccelerometerMatcher(this.getActivity());
         this.accelerometerSampler.setAccelerometerSamplerListener(this);
         ((AccelerometerMatcher)this.accelerometerSampler).setTapPatternToMatch(pattern);
-        this.accelerometerSampler.startSampling(10); // 10 sec buffer
+        this.accelerometerSampler.startSampling(5); // 5 sec buffer
 
         // Reset visualizer
         accelerometerRecordSurfaceView.setAccelerationSampler(accelerometerSampler);

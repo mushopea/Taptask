@@ -15,6 +15,8 @@ import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import java.util.ArrayList;
+
 import sg.edu.nus.taptask.model.TapPattern;
 
 public class AccelerometerRecordSurfaceView extends SurfaceView implements SurfaceHolder.Callback  {
@@ -131,9 +133,10 @@ public class AccelerometerRecordSurfaceView extends SurfaceView implements Surfa
 
             Paint redPaint = new Paint();
             redPaint.setColor(Color.RED);
+            redPaint.setAlpha(80);
             redPaint.setStrokeWidth(1);
             int patternBufferXMax = patternBuffer.length;
-            float patternBufferXScale =(float)canvasWidth/(float)patternBufferXMax;
+            float patternBufferXScale = (float)canvasWidth/(float)patternBufferXMax;
             float patternBufferYOffset = canvasHeight/5.0f * 1.0f;
             float patternBufferYScale = -(canvasHeight/5.0f)/10.0f;
             for (int x=0 ; x<canvasWidth-1 ; x++) {
@@ -144,6 +147,19 @@ public class AccelerometerRecordSurfaceView extends SurfaceView implements Surfa
 
                 canvas.drawLine(x0, y0, x1, y1, redPaint);
             }
+
+
+            ArrayList<Integer> circlePositions = tapPattern.getCirclePositions();
+            int circleXMax = patternBuffer.length;
+            float circleXScale = (float)canvasWidth/(float)circleXMax;
+            float circleYOffset = canvasHeight/5.0f * 2.0f;
+            for (int i=0 ; i<circlePositions.size() ; i++) {
+                float x = circlePositions.get(i) / circleXScale;
+                float y = circleYOffset;
+
+                canvas.drawCircle(x, y, (float)(canvasWidth*0.03), redPaint);
+            }
+            canvas.drawLine(0, circleYOffset, canvasWidth, circleYOffset, redPaint);
 
         }
 
