@@ -12,10 +12,14 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.RelativeLayout;
 
-import sg.edu.nus.taptask.model.TaskList;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
+
 import sg.edu.nus.taptask.model.TapActionVolume;
+import sg.edu.nus.taptask.model.TaskList;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -31,49 +35,60 @@ public class MainActivity extends ActionBarActivity {
 
         // Initialize views
         // enable taptask toggle
-        taptaskToggle = (SettingsToggle)this.findViewById(R.id.taptaskToggle);
+        taptaskToggle = (SettingsToggle) this.findViewById(R.id.taptaskToggle);
+        mRecyclerView = (RecyclerView) findViewById(R.id.taskList);
+        final View shadowView = this.findViewById(R.id.shadowView);
+        final FloatingActionsMenu fabButton = (FloatingActionsMenu)this.findViewById(R.id.multiple_actions);
+        final RelativeLayout dashView = (RelativeLayout)this.findViewById(R.id.dashboard_view);
 
         // task list recycler view
         // to do: disable recycler view when there are no tasks and show prompt (arrow pointing to (+))
-        mRecyclerView = (RecyclerView)findViewById(R.id.taskList);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         //mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mAdapter = new TaskAdapter(TaskList.getInstance().getTasks(), R.layout.row_task, this);
         mRecyclerView.setAdapter(mAdapter);
 
+
         // floating action button
+        // set shadow overlay when it's pressed
+        FloatingActionsMenu.OnFloatingActionsMenuUpdateListener listener = new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
+            @Override
+            public void onMenuExpanded() {
+                shadowView.setVisibility(View.VISIBLE);
+            }
 
+            @Override
+            public void onMenuCollapsed() {
+                shadowView.setVisibility(View.GONE);
+            }
+        };
+        fabButton.setOnFloatingActionsMenuUpdateListener(listener);
 
-        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.attachToRecyclerView(mRecyclerView);
+        // collapse menu when dashboard is pressed
+        shadowView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // ignore all touch events
+                if (fabButton.isExpanded()) {
+                    fabButton.collapse();
+                    return true;
+                }
+                return false;
+            }
+        });
 
-        // floating action button with submenus
-        ImageView icon = new ImageView(this); // Create an icon
-        icon.setImageDrawable(getResources().getDrawable(R.drawable.plus));
-        FloatingActionButton actionButton = new FloatingActionButton.Builder(this).setContentView(icon).build();
-
-        SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
-        ImageView itemIcon = new ImageView(this);
-        itemIcon.setImageDrawable(getResources().getDrawable(R.drawable.task_icon_call));
-        SubActionButton button_add_call = itemBuilder.setContentView(itemIcon).build();
-        ImageView itemIcon2 = new ImageView(this);
-        itemIcon.setImageDrawable(getResources().getDrawable(R.drawable.task_icon_call_reject));
-        SubActionButton button_add_call_reject = itemBuilder.setContentView(itemIcon).build();
-        ImageView itemIcon3 = new ImageView(this);
-        itemIcon.setImageDrawable(getResources().getDrawable(R.drawable.task_icon_message));
-        SubActionButton button_add_message = itemBuilder.setContentView(itemIcon).build();
-        ImageView itemIcon4 = new ImageView(this);
-        itemIcon.setImageDrawable(getResources().getDrawable(R.drawable.task_icon_volume));
-        SubActionButton button_add_volume = itemBuilder.setContentView(itemIcon).build();
-        FloatingActionMenu actionMenu = new FloatingActionMenu.Builder(this)
-                .addSubActionView(button_add_call)
-                .addSubActionView(button_add_call_reject)
-                .addSubActionView(button_add_message)
-                .addSubActionView(button_add_volume)
-                .attachTo(actionButton)
-                .build();*/
+        // hide fab when recycler view is scrolled
+        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int x, int y) {
+                if (y > 1) {
+                    fabButton.animate().translationY(300);
+                } else {
+                    fabButton.animate().translationY(0);
+                }
+            }
+        });
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

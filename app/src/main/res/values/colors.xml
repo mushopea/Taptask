@@ -7,7 +7,7 @@
     <color name="Accent" >#FF1744</color>
     <color name="WindowBackground" >#fff9f9f9</color>
     <color name="navigationBar">#F44336</color>
-    <color name="separator_grey">#ffc9c9c9</color>
+    <color name="separator_grey">#ffd7d7d7</color>
     <color name="disabled_grey">#ffa4a4a4</color>
     <color name="text_primary">#ffebee</color>
     <color name="text_secondary">#ffffff</color>

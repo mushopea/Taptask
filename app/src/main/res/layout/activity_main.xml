@@ -2,63 +2,77 @@
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="dcodepages.materialstyling.MainActivity">
+    tools:context="dcodepages.materialstyling.MainActivity"
+    android:id="@+id/relativeLayout">
 
     <RelativeLayout
-        android:orientation="vertical"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/WindowBackground"
-        android:layout_alignParentRight="false"
-        android:layout_alignParentLeft="false"
-        android:gravity="center_horizontal"
-        android:id="@+id/taptaskToggleContainer"
-        android:layout_marginBottom="@dimen/frame_margin">
+        android:layout_height="fill_parent"
+        android:id="@+id/dashboard_view">
 
-        <sg.edu.nus.taptask.SettingsToggle
-            xmlns:widget="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/taptaskToggle"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            widget:prefName="useTaptask"
-            android:onClick="onClickTaptaskToggle"
-            android:layout_margin="@dimen/activity_vertical_margin"
+            android:background="@color/WindowBackground"
+            android:layout_alignParentRight="false"
             android:layout_alignParentLeft="false"
-            android:layout_alignParentTop="false"
-            android:layout_alignParentRight="true" />
+            android:gravity="center_horizontal"
+            android:id="@+id/taptaskToggleContainer"
+            android:layout_marginBottom="@dimen/frame_margin">
+
+            <sg.edu.nus.taptask.SettingsToggle
+                xmlns:widget="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/taptaskToggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                widget:prefName="useTaptask"
+                android:onClick="onClickTaptaskToggle"
+                android:layout_margin="@dimen/activity_vertical_margin"
+                android:layout_alignParentLeft="false"
+                android:layout_alignParentTop="false"
+                android:layout_alignParentRight="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Enable Taptask"
+                android:id="@+id/tasptaskToggleText"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:textSize="@dimen/big_text_size"
+                android:layout_margin="@dimen/activity_vertical_margin" />
+        </RelativeLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Enable Taptask"
-            android:id="@+id/tasptaskToggleText"
+            android:text="My tasks"
+            android:id="@+id/myTasks"
+            android:layout_below="@+id/taptaskToggleContainer"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:textSize="@dimen/big_text_size"
-            android:layout_margin="@dimen/activity_vertical_margin" />
+            android:layout_margin="@dimen/frame_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:textSize="@dimen/default_text_size" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/taskList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".MainActivity"
+            android:layout_below="@+id/myTasks"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
     </RelativeLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="My tasks"
-        android:id="@+id/myTasks"
-        android:layout_below="@+id/taptaskToggleContainer"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_margin="@dimen/frame_margin"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:textSize="@dimen/default_text_size" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/taskList"
+    <View
+        android:id="@+id/shadowView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MainActivity"
-        android:layout_below="@+id/myTasks"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_above="@+id/multiple_actions_right" />
+        android:alpha="0.6"
+        android:visibility="gone"
+        android:background="@color/black" />
 
     <!--<com.melnykov.fab.FloatingActionButton
         android:id="@+id/fab"
@@ -75,17 +89,16 @@
         android:layout_margin="@dimen/activity_horizontal_margin"
         android:onClick="onClickAddButton" />-->
     <com.getbase.floatingactionbutton.FloatingActionsMenu
-        android:id="@+id/multiple_actions_right"
+        android:id="@+id/multiple_actions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         fab:fab_addButtonColorNormal="@color/Primary"
         fab:fab_addButtonColorPressed="@color/PrimaryDark"
         fab:fab_addButtonPlusIconColor="@color/white"
         fab:fab_addButtonStrokeVisible="false"
-        fab:fab_expandDirection="left"
         android:layout_marginBottom="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
+        fab:fab_labelStyle="@style/menu_labels_style"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true">
         <com.getbase.floatingactionbutton.FloatingActionButton
@@ -93,6 +106,7 @@
             android:layout_height="wrap_content"
             fab:fab_size="mini"
             fab:fab_icon="@drawable/call"
+            fab:fab_title="Call someone"
             fab:fab_colorNormal="@color/call_color"
             fab:fab_colorPressed="@color/call_color"
             android:onClick="onClickAddButton" />
@@ -101,6 +115,7 @@
             android:layout_height="wrap_content"
             fab:fab_size="mini"
             fab:fab_icon="@drawable/reject"
+            fab:fab_title="Reject call"
             fab:fab_colorNormal="@color/reject_color"
             fab:fab_colorPressed="@color/reject_color"/>
         <com.getbase.floatingactionbutton.FloatingActionButton
@@ -108,6 +123,7 @@
             android:layout_height="wrap_content"
             fab:fab_size="mini"
             fab:fab_icon="@drawable/msg"
+            fab:fab_title="Send a message"
             fab:fab_colorNormal="@color/msg_color"
             fab:fab_colorPressed="@color/msg_color"/>
         <com.getbase.floatingactionbutton.FloatingActionButton
@@ -115,6 +131,7 @@
             android:layout_height="wrap_content"
             fab:fab_size="mini"
             fab:fab_icon="@drawable/vol"
+            fab:fab_title="Toggle volume"
             fab:fab_colorNormal="@color/volume_color"
             fab:fab_colorPressed="@color/volume_color"/>
 
