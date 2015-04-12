@@ -21,6 +21,7 @@ import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import sg.edu.nus.taptask.model.TapActionVolume;
 import sg.edu.nus.taptask.model.TaskList;
 import sg.edu.nus.taptask.model.TapActionCall;
+import sg.edu.nus.taptask.model.TapActionSMS;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -154,6 +155,11 @@ public class MainActivity extends ActionBarActivity {
 
     public void onClickVolButton(View view) {
         TapActionVolume action = new TapActionVolume(null);
+        action.performAction(MainActivity.this);
+    }
+
+    public void onClickSMSButton(View view) {
+        TapActionSMS action = new TapActionSMS(null, "hello world", "97936499");
         action.performAction(MainActivity.this);
     }
 
