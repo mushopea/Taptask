@@ -96,7 +96,7 @@ public class AccelerometerRecorder extends AccelerometerSampler {
             if (waitForFirstTap && timeIndexBeforeStop == -1 &&
                     timeIndex % (absAccelerationBuffer.length / 10) == 0) {
                 TapPattern pattern = TapPattern.createPattern(this.getAbsAccelerationBuffer(), this.samplingDuration, this.samplingFrequency);
-                timeIndexBeforeStop = FFTHelper.firstElementGreaterThan(pattern.pattern, 0.001, absAccelerationBuffer.length / 10);
+                timeIndexBeforeStop = FFTHelper.firstElementLargerThan(pattern.pattern, 0.001, absAccelerationBuffer.length / 10);
                 if (timeIndexBeforeStop != -1) {
                     Log.i("AccRecorder", "First tap found");
                 }

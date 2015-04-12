@@ -234,9 +234,18 @@ public class FFTHelper {
         }
     }
 
-    public static int firstElementGreaterThan(double[] input, double limit, int startIndex) {
+    public static int firstElementLargerThan(double[] input, double limit, int startIndex) {
         for (int i=startIndex ; i<input.length ; i++) {
             if (input[i] > limit) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public static int firstElementSmallerThan(double[] input, double limit, int startIndex) {
+        for (int i=startIndex ; i<input.length ; i++) {
+            if (input[i] < limit) {
                 return i;
             }
         }
