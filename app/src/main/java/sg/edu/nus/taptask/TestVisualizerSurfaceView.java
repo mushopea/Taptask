@@ -14,7 +14,7 @@ import android.view.SurfaceView;
 
 import sg.edu.nus.taptask.model.TapPattern;
 
-public class AudioBufferVisualizerSurfaceView extends SurfaceView implements SurfaceHolder.Callback  {
+public class TestVisualizerSurfaceView extends SurfaceView implements SurfaceHolder.Callback  {
     private Context drawContext;
     public  DrawThread drawThread;
     private SurfaceHolder drawSurfaceHolder;
@@ -32,7 +32,7 @@ public class AudioBufferVisualizerSurfaceView extends SurfaceView implements Sur
         }
     };
 
-    public AudioBufferVisualizerSurfaceView(Context ctx, AttributeSet attributeSet)
+    public TestVisualizerSurfaceView(Context ctx, AttributeSet attributeSet)
     {
         super(ctx, attributeSet);
         drawContext = ctx;
