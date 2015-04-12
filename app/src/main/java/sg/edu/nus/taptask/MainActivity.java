@@ -127,12 +127,14 @@ public class MainActivity extends ActionBarActivity {
     public void onClickAddButton(View view) {
         Log.e("Meow", "Add activity button triggered");
 
+        Intent intent;
+        intent = new Intent(this, AddCallTaskActivity.class);
+        startActivity(intent);
+    }
+
+    public void onClickVolButton(View view) {
         TapActionVolume action = new TapActionVolume(null);
         action.performAction(MainActivity.this);
-
-//        Intent intent;
-//        intent = new Intent(this, AddCallTaskActivity.class);
-//        startActivity(intent);
     }
 
 }
