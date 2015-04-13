@@ -17,7 +17,13 @@ public class TapPattern {
     public double[] pattern;
 
 
+
+    private transient static double[] boxKernel = null;
+    private transient static double[] triangleKernel = null;
     public static TapPattern createPattern(double[] absAccelerationBuffer, double duration, double frequency) {
+        return createPattern(absAccelerationBuffer, duration, frequency, null);
+    }
+    public static TapPattern createPattern(double[] absAccelerationBuffer, double duration, double frequency, TapPattern pattern) {
         // Calculate jounce
         double[] jounce = getJounce(absAccelerationBuffer);
         // Get absolute values
@@ -27,18 +33,29 @@ public class TapPattern {
             FFTHelper.binaryThreshold(jounce, 6);
         } else {
             // Apply convolution to blur with box kernel
-            jounce = FFTHelper.FFTConvolution(jounce, FFTHelper.boxKernel(jounce.length, 3));
+            if (boxKernel == null || boxKernel.length != jounce.length) {
+                boxKernel = FFTHelper.boxKernel(jounce.length, 3);
+                Log.e("new", "boxKernel");
+            }
+            jounce = FFTHelper.FFTConvolution(jounce, boxKernel);
             FFTHelper.binaryThreshold(jounce, 6); // TODO: tweak threshold
         }
         // Triangle filter
-        jounce = FFTHelper.FFTConvolution(jounce, FFTHelper.triangleKernel(jounce.length, 10)); // TODO: tweak kernel size
+        if (triangleKernel == null || triangleKernel.length != jounce.length) {
+            triangleKernel = FFTHelper.triangleKernel(jounce.length, 10); // TODO: tweak kernel size
+            Log.e("new", "triangleKernel");
+        }
+        jounce = FFTHelper.FFTConvolution(jounce, triangleKernel);
         // Clamp max value
         FFTHelper.clampMaxValue(jounce, 1);
 
         // Check number of taps using threshold?
         // Check first tap at the front of buffer?
 
-        TapPattern pattern = new TapPattern();
+        if (pattern == null) {
+            pattern = new TapPattern();
+            Log.e("new", "TapPattern");
+        }
         pattern.duration = duration;
         pattern.frequency = frequency;
         pattern.pattern = jounce;
@@ -46,8 +63,12 @@ public class TapPattern {
     }
 
     // Calculates jounce from acceleration
+    private transient static double[] sobelKernel = null;
     public static double[] getJounce(double[] acceleration) {
-        double[] sobelKernel = FFTHelper.sobelKernel(acceleration.length, 1);
+        if (sobelKernel == null || sobelKernel.length != acceleration.length) {
+            sobelKernel = FFTHelper.sobelKernel(acceleration.length, 1); // TODO: tweak kernel size
+            Log.e("new", "sobelKernel");
+        }
         double[] jounce = FFTHelper.FFTConvolution(acceleration, sobelKernel, 2); // Jounce (m/s^4)
         return jounce;
     }
@@ -57,17 +78,16 @@ public class TapPattern {
     }
 
     public double matchPatternPercentage(TapPattern tapPattern) {
-        double[] pattern = this.pattern;
-        double[] signal = tapPattern.pattern;
+        double[] pattern = FFTHelper.padWithZeros(this.pattern, this.pattern.length*2, null);
+        double[] signal = FFTHelper.padWithZeros(tapPattern.pattern, tapPattern.pattern.length*2, null);
         if (this.pattern.length != signal.length) {
             // Should not happen
             Log.i("TapPattern", "matchPatternPercentage: pattern length mismatch");
         }
         // TODO: pad with zeros to possibly make correlation result better?
 
-        double[] correlationResult = FFTHelper.FFTConvolution(
-                signal,
-                FFTHelper.reverse(pattern));
+        double[] correlationResult = FFTHelper.FFTCorrelation(
+                signal, pattern);
         int maxIndex = FFTHelper.maxIndex(correlationResult);
         if (maxIndex == -1) {
             return 0;
@@ -88,19 +108,18 @@ public class TapPattern {
     public double matchSignalPercentage(double[] signal) {
         double[] pattern = this.pattern;
         if (this.pattern.length != signal.length) {
-            // TODO: Pad with zeros
+
             if (this.pattern.length > signal.length) {
                 // Something wrong..
                 Log.e("TapPattern", "Signal length shorter than pattern length.");
             } else {
-                pattern = FFTHelper.padWithZeros(pattern, signal.length);
-                Log.d("TapPattern", "Padding pattern with zeros. Lengths:" + signal.length + ", " + pattern.length);
+                // TODO: Pad with twice the length
+                pattern = FFTHelper.padWithZeros(pattern, signal.length, null);
             }
         }
 
-        double[] correlationResult = FFTHelper.FFTConvolution(
-                signal,
-                FFTHelper.reverse(pattern));
+        double[] correlationResult = FFTHelper.FFTCorrelation(
+                signal, pattern);
         int maxIndex = FFTHelper.maxIndex(correlationResult);
         if (maxIndex == -1) {
             return 0;
@@ -126,11 +145,11 @@ public class TapPattern {
         ArrayList<Double> list = new ArrayList<Double>();
 
         for (int i=0 ; i<pattern.length ; i++) {
-            int start = FFTHelper.firstElementLargerThan(pattern, 0.95, i);
+            int start = FFTHelper.firstElementLargerThan(pattern, 0.90, i);
             if (start == -1) {
                 break;
             }
-            int end = FFTHelper.firstElementSmallerThan(pattern, 0.95, start);
+            int end = FFTHelper.firstElementSmallerThan(pattern, 0.90, start);
             if (end == -1) {
                 break;
             }

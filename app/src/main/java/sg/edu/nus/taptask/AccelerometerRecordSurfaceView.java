@@ -117,6 +117,11 @@ public class AccelerometerRecordSurfaceView extends SurfaceView implements Surfa
         private Paint transparentPaint = new Paint();
         private Paint redPaint = new Paint();
 
+
+        // Pattern being tapped
+        TapPattern tapPattern = null;
+        int timeIndex = 0;
+
         public DrawThread(SurfaceHolder paramContext, Context paramHandler, Handler arg4)
         {
             surfaceHolder = paramContext;
@@ -142,13 +147,17 @@ public class AccelerometerRecordSurfaceView extends SurfaceView implements Surfa
             // Clear screen
             canvas.drawPaint(transparentPaint);
 
+            // Offsets
+            float circleYOffset = canvasHeight/2.0f;
+
+            // Draw horizontal line
+            canvas.drawLine(0, circleYOffset, canvasWidth, circleYOffset, redPaint);
 
             //Draw background pattern
             if (backgroundPattern != null) {
                 ArrayList<Double> circlePositions = backgroundPattern.getCirclePositions();
                 int circleXMax = backgroundPattern.pattern.length;
                 float circleXScale = (float)canvasWidth/(float)circleXMax;
-                float circleYOffset = canvasHeight/2.0f;
                 for (int i=0 ; i<circlePositions.size() ; i++) {
                     float x = (float)(circlePositions.get(i) * circleXScale);
                     float y = circleYOffset;
@@ -156,8 +165,6 @@ public class AccelerometerRecordSurfaceView extends SurfaceView implements Surfa
                     canvas.drawCircle(x, y, (float)(canvasWidth*0.03), redPaint);
                 }
             }
-
-
 
             if (accelerometerSampler != null) {
                 // Copy absAccelerationBuffer
@@ -167,11 +174,8 @@ public class AccelerometerRecordSurfaceView extends SurfaceView implements Surfa
                     return;
                 }
 
-                // Draw pattern being tapped
-                TapPattern tapPattern = null;
-                int timeIndex = 0;
                 synchronized (accelerometerSampler) {
-                    tapPattern = TapPattern.createPattern(accelerometerSampler.getAbsAccelerationBuffer(), accelerometerSampler.samplingFrequency, 5);
+                    tapPattern = TapPattern.createPattern(accelerometerSampler.getAbsAccelerationBuffer(), accelerometerSampler.samplingFrequency, 5, tapPattern);
                     timeIndex = ((AccelerometerRecorder) accelerometerSampler).timeIndexRecorded();
                 }
                 double[] patternBuffer = tapPattern.pattern;
@@ -193,19 +197,15 @@ public class AccelerometerRecordSurfaceView extends SurfaceView implements Surfa
                 }
                 */
 
-
                 ArrayList<Double> circlePositions = tapPattern.getCirclePositions();
                 int circleXMax = tapPattern.pattern.length;
                 float circleXScale = (float)canvasWidth/(float)circleXMax;
-                float circleYOffset = canvasHeight/2.0f;
                 for (int i=0 ; i<circlePositions.size() ; i++) {
                     float x = (float)(circlePositions.get(i) * circleXScale - (circleXMax - timeIndex)*circleXScale);
                     float y = circleYOffset;
 
                     canvas.drawCircle(x, y, (float)(canvasWidth*0.03), redPaint);
                 }
-                // Draw horizontal line
-                canvas.drawLine(0, circleYOffset, canvasWidth, circleYOffset, redPaint);
                 // Draw vertical time line
                 canvas.drawLine(timeIndex*circleXScale, circleYOffset-50, timeIndex*circleXScale, circleYOffset+50, redPaint);
             }

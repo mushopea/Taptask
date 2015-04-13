@@ -166,8 +166,11 @@ public class AccelerometerSampler implements SensorEventListener {
         }
     }
 
+    private double[] absAccelerationBufferCopy = null;
     public double[] getAbsAccelerationBufferSafe() {
-        double[] absAccelerationBufferCopy = new double[absAccelerationBuffer.length];
+        if (absAccelerationBufferCopy == null || absAccelerationBufferCopy.length != absAccelerationBuffer.length) {
+            absAccelerationBufferCopy = new double[absAccelerationBuffer.length];
+        }
         synchronized (this) {
             // Rotate and return copy of buffer
             System.arraycopy(absAccelerationBuffer, timeIndex, absAccelerationBufferCopy, 0, absAccelerationBuffer.length - timeIndex);
@@ -177,7 +180,9 @@ public class AccelerometerSampler implements SensorEventListener {
     }
 
     public double[] getAbsAccelerationBuffer() {
-        double[] absAccelerationBufferCopy = new double[absAccelerationBuffer.length];
+        if (absAccelerationBufferCopy == null || absAccelerationBufferCopy.length != absAccelerationBuffer.length) {
+            absAccelerationBufferCopy = new double[absAccelerationBuffer.length];
+        }
         // Rotate and return copy of buffer
         System.arraycopy(absAccelerationBuffer, timeIndex, absAccelerationBufferCopy, 0, absAccelerationBuffer.length - timeIndex);
         System.arraycopy(absAccelerationBuffer, 0, absAccelerationBufferCopy, absAccelerationBuffer.length - timeIndex, timeIndex);
