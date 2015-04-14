@@ -44,7 +44,9 @@
                 fancy:iconPaddingBottom="10dp"
                 fancy:fontIconResource="&#xf087;"
                 fancy:iconPosition="top"
-                fancy:textColor="@color/Primary" />
+                fancy:textColor="@color/Primary"
+                android:onClick="goToMainActivity"
+                android:nestedScrollingEnabled="false" />
 
         </LinearLayout>
     </FrameLayout>
