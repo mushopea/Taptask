@@ -119,6 +119,9 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
 
         //tapActionManager.removeAllTasks();
         tapActionManager.addTapAction(tapAction);
+
+        // Return to main activity
+        ((RecordActivity)this.getActivity()).returnToMainActivity();
     }
 
     private void setViewState(int state) {
