@@ -121,7 +121,6 @@ public class FFTHelper {
         if (convolutionRealSignal2 == null || convolutionRealSignal2.length != realSignal.length*2) {
             convolutionRealSignal2 = new double[realSignal.length*2];
             convolutionRealKernel2 = new double[realKernel.length*2];
-            Log.e("new", "convolutionRealSignal2");
         }
 
         // Double length to hold complex numbers
@@ -132,7 +131,6 @@ public class FFTHelper {
         if (convolutionFFT == null || convolutionFFTSize != realSignal.length) {
             convolutionFFT = new DoubleFFT_1D(realSignal.length);
             convolutionFFTSize = realSignal.length;
-            Log.e("new", "convolutionFFT " + realSignal.length);
         }
 
         convolutionFFT.realForwardFull(convolutionRealSignal2);
@@ -303,7 +301,6 @@ public class FFTHelper {
         } else {
             if (output == null || output.length != len) {
                 output = new double[len];
-                Log.e("new", "padWithZeros");
             }
             System.arraycopy(input, 0, output, 0, input.length);
             Arrays.fill(output, input.length, output.length, 0);

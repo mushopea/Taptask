@@ -27,6 +27,7 @@ public class AccelerometerMatcher extends AccelerometerSampler {
         }
     }
 
+    private TapPattern signalPattern = null;
     @Override
     protected void samplingStep(SensorEvent sensorEvent) {
         float x = sensorEvent.values[0];
@@ -44,7 +45,7 @@ public class AccelerometerMatcher extends AccelerometerSampler {
             // Attempt to locate match tap every 5/10 sec (0.5 sec) (samplingDuration/10)
             if (timeIndex % (absAccelerationBuffer.length / 10) == 0) {
                 if (this.tapActionToMatch != null) {
-                    TapPattern signalPattern = TapPattern.createPattern(getAbsAccelerationBuffer(), this.samplingDuration, this.samplingFrequency);
+                    signalPattern = TapPattern.createPattern(getAbsAccelerationBuffer(), this.samplingDuration, this.samplingFrequency, signalPattern);
                     matchPattern(this.tapActionToMatch, signalPattern.pattern);
                 } else {
                     Log.e("AccMatcher", "TapPatternToMatch null");

@@ -35,7 +35,6 @@ public class TapPattern {
             // Apply convolution to blur with box kernel
             if (boxKernel == null || boxKernel.length != jounce.length) {
                 boxKernel = FFTHelper.boxKernel(jounce.length, 3);
-                Log.e("new", "boxKernel");
             }
             jounce = FFTHelper.FFTConvolution(jounce, boxKernel);
             FFTHelper.binaryThreshold(jounce, 6); // TODO: tweak threshold
@@ -43,7 +42,6 @@ public class TapPattern {
         // Triangle filter
         if (triangleKernel == null || triangleKernel.length != jounce.length) {
             triangleKernel = FFTHelper.triangleKernel(jounce.length, 10); // TODO: tweak kernel size
-            Log.e("new", "triangleKernel");
         }
         jounce = FFTHelper.FFTConvolution(jounce, triangleKernel);
         // Clamp max value
@@ -67,7 +65,6 @@ public class TapPattern {
     public static double[] getJounce(double[] acceleration) {
         if (sobelKernel == null || sobelKernel.length != acceleration.length) {
             sobelKernel = FFTHelper.sobelKernel(acceleration.length, 1); // TODO: tweak kernel size
-            Log.e("new", "sobelKernel");
         }
         double[] jounce = FFTHelper.FFTConvolution(acceleration, sobelKernel, 2); // Jounce (m/s^4)
         return jounce;
@@ -80,11 +77,14 @@ public class TapPattern {
     public double matchPatternPercentage(TapPattern tapPattern) {
         double[] pattern = FFTHelper.padWithZeros(this.pattern, this.pattern.length*2, null);
         double[] signal = FFTHelper.padWithZeros(tapPattern.pattern, tapPattern.pattern.length*2, null);
-        if (this.pattern.length != signal.length) {
+        if (pattern.length != signal.length) {
             // Should not happen
-            Log.i("TapPattern", "matchPatternPercentage: pattern length mismatch");
+            Log.e("TapPattern", "matchPatternPercentage: pattern length mismatch " + pattern.length + ", " + signal.length);
         }
         // TODO: pad with zeros to possibly make correlation result better?
+
+        double normalizingFactor1 = FFTHelper.absSquareSum(pattern);
+        double normalizingFactor2 = FFTHelper.absSquareSum(signal);
 
         double[] correlationResult = FFTHelper.FFTCorrelation(
                 signal, pattern);
@@ -93,23 +93,21 @@ public class TapPattern {
             return 0;
         }
         double maxValue = correlationResult[maxIndex];
-        double normalizingFactor = FFTHelper.absSquareSum(pattern);
-        double pctMatch = maxValue / normalizingFactor;
+        double pctMatch1 = maxValue / normalizingFactor1;
+        double pctMatch2 = maxValue / normalizingFactor2;
+        double pctMatch = 1.0 / (0.5*(1.0/pctMatch1) + 0.5*(1.0/pctMatch2));
 
         Log.i("TapPattern", "Best match at pos: " + maxIndex + ", value: " + maxValue + ", pct: " + pctMatch);
-        Log.i("TapPattern", "AbsSum corr result: " + FFTHelper.absSum(correlationResult));
-        Log.i("TapPattern", "AbsSum pattern: " + FFTHelper.absSum(pattern));
-        Log.i("TapPattern", "AbsSum signal: " + FFTHelper.absSum(signal));
-        Log.i("TapPattern", "AbsSquareSum pattern: " + FFTHelper.absSquareSum(pattern));
-        Log.i("TapPattern", "AbsSquareSum signal: " + FFTHelper.absSquareSum(signal));
+        Log.i("TapPattern", "AbsSquareSum pattern: " + normalizingFactor1);
+        Log.i("TapPattern", "AbsSquareSum signal: " + normalizingFactor2);
         return pctMatch;
     }
 
     public double matchSignalPercentage(double[] signal) {
         double[] pattern = this.pattern;
-        if (this.pattern.length != signal.length) {
+        if (pattern.length != signal.length) {
 
-            if (this.pattern.length > signal.length) {
+            if (pattern.length > signal.length) {
                 // Something wrong..
                 Log.e("TapPattern", "Signal length shorter than pattern length.");
             } else {
@@ -118,6 +116,9 @@ public class TapPattern {
             }
         }
 
+        double normalizingFactor1 = FFTHelper.absSquareSum(pattern);
+        double normalizingFactor2 = FFTHelper.absSquareSum(signal);
+
         double[] correlationResult = FFTHelper.FFTCorrelation(
                 signal, pattern);
         int maxIndex = FFTHelper.maxIndex(correlationResult);
@@ -125,15 +126,13 @@ public class TapPattern {
             return 0;
         }
         double maxValue = correlationResult[maxIndex];
-        double normalizingFactor = FFTHelper.absSquareSum(pattern);
-        double pctMatch = maxValue / normalizingFactor;
+        double pctMatch1 = maxValue / normalizingFactor1;
+        double pctMatch2 = maxValue / normalizingFactor2;
+        double pctMatch = 1.0 / (0.5*(1.0/pctMatch1) + 0.5*(1.0/pctMatch2));
 
         Log.i("TapPattern", "Best match at pos: " + maxIndex + ", value: " + maxValue + ", pct: " + pctMatch);
-        Log.i("TapPattern", "AbsSum corr result: " + FFTHelper.absSum(correlationResult));
-        Log.i("TapPattern", "AbsSum pattern: " + FFTHelper.absSum(pattern));
-        Log.i("TapPattern", "AbsSum signal: " + FFTHelper.absSum(signal));
-        Log.i("TapPattern", "AbsSquareSum pattern: " + FFTHelper.absSquareSum(pattern));
-        Log.i("TapPattern", "AbsSquareSum signal: " + FFTHelper.absSquareSum(signal));
+        Log.i("TapPattern", "AbsSquareSum pattern: " + normalizingFactor1);
+        Log.i("TapPattern", "AbsSquareSum signal: " + normalizingFactor2);
 
         return pctMatch;
     }
