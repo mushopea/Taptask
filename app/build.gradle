@@ -28,5 +28,4 @@ dependencies {
     compile 'com.getbase:floatingactionbutton:1.8.0'
     compile 'com.android.support:support-v4:21.0.3'
     compile 'com.github.medyo:fancybuttons:1.2@aar'
-    compile 'com.github.chenupt.android:springindicator:1.0.1@aar'
 }
