@@ -20,6 +20,14 @@ public class TapActionCall extends TapAction  {
         this.targetName = targetName;
     }
 
+    public String getName() {
+        return "Call " + targetName + " (" + targetNum + ")";
+    }
+
+    public String getImage() {
+        return "task_icon_call";
+    }
+
     public boolean performAction(Context context) {
         String url = CALL_URL + targetNum;
         Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse(url));

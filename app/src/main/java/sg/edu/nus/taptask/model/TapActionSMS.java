@@ -21,6 +21,14 @@ public class TapActionSMS extends TapAction {
         this.phoneNum = phoneNum;
     }
 
+    public String getName() {
+        return "TapActionSMS";
+    }
+
+    public String getImage() {
+        return "task_icon_message";
+    }
+
     public boolean performAction(Context context) {
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(phoneNum, null, smsContent, null, null);

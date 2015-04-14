@@ -12,11 +12,16 @@ import sg.edu.nus.taptask.model.TapPattern;
 public class TapAction {
     private TapPattern pattern; // Pattern that triggers action
 
-
-    // TODO: Add more attributes
-
     public TapAction(TapPattern pattern) {
         this.pattern = pattern;
+    }
+
+    public String getName() {
+        return "TapAction";
+    }
+
+    public String getImage() {
+        return "task_icon_message";
     }
 
     /**

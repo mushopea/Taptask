@@ -47,7 +47,7 @@ public class MainActivity extends ActionBarActivity {
         // to do: disable recycler view when there are no tasks and show prompt (arrow pointing to (+))
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         //mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mAdapter = new TaskAdapter(TaskList.getInstance().getTasks(), R.layout.row_task, this);
+        mAdapter = new TaskAdapter(R.layout.row_task, this);
         mRecyclerView.setAdapter(mAdapter);
 
 
@@ -90,6 +90,14 @@ public class MainActivity extends ActionBarActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh the list onResume
+        mAdapter = new TaskAdapter(R.layout.row_task, this);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override

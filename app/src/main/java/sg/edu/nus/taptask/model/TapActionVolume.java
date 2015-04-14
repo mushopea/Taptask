@@ -12,6 +12,14 @@ public class TapActionVolume extends TapAction {
         super(pattern);
     }
 
+    public String getName() {
+        return "TapActionVol";
+    }
+
+    public String getImage() {
+        return "task_icon_volume";
+    }
+
     public boolean performAction(Context context) {
         AudioManager audio = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         int currentMode = audio.getRingerMode();
