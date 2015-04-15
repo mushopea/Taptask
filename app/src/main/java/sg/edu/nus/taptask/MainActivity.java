@@ -38,9 +38,9 @@ public class MainActivity extends ActionBarActivity {
 
         // task list recycler view
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setItemAnimator(new SlideInLeftAnimator());
         mAdapter = new TaskAdapter(R.layout.row_task, this);
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setItemAnimator(new SlideInLeftAnimator());
 
         initFabListeners();
         showAddTaskGuide();
@@ -87,8 +87,10 @@ public class MainActivity extends ActionBarActivity {
             // Show guide if there are no tasks
             final View addButtonGuide = this.findViewById(R.id.addbuttonguide);
             final View myTasks = this.findViewById(R.id.myTasks);
+            final View shadowView = this.findViewById(R.id.shadowView);
 
             myTasks.setVisibility(View.GONE);
+            shadowView.setVisibility(View.VISIBLE);
             addButtonGuide.setVisibility(View.VISIBLE);
             YoYo.with(Techniques.FlipInX)
                     .duration(1000)
