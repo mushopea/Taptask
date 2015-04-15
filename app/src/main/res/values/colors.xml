@@ -9,6 +9,7 @@
     <color name="navigationBar">#F44336</color>
     <color name="separator_grey">#ffd7d7d7</color>
     <color name="disabled_grey">#ffa4a4a4</color>
+    <color name="label_grey">#c80c0c0c</color>
     <color name="text_primary">#ffebee</color>
     <color name="text_secondary">#ffffff</color>
 

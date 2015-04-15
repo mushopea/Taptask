@@ -14,7 +14,7 @@
 
     <!-- This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows. -->
-    <FrameLayout android:layout_width="match_parent" android:layout_height="match_parent"
+    <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent"
         android:fitsSystemWindows="true"
         android:background="@color/PrimaryDark">
 
@@ -27,36 +27,65 @@
         <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/pager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="450dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="0dp"
+            android:layout_alignParentTop="true"
+            android:layout_above="@+id/btn_gotit">
+
+
         </android.support.v4.view.ViewPager>
 
-        
+
 
         <LinearLayout android:id="@+id/fullscreen_content_controls" style="?metaButtonBarStyle"
             android:layout_width="match_parent" android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal"
             android:background="@color/black_overlay" android:orientation="horizontal"
-            tools:ignore="UselessParent">
-
-            <mehdi.sakout.fancybuttons.FancyButton
-                android:id="@+id/btn_gotit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/fullwidthbutton_top_padding"
-                android:paddingLeft="@dimen/fullwidthbutton_side_padding"
-                android:paddingRight="@dimen/fullwidthbutton_side_padding"
-                android:paddingTop="@dimen/fullwidthbutton_top_padding"
-                fancy:defaultColor="#ffffff"
-                fancy:focusColor="#eeeeee"
-                fancy:text="GOT IT"
-                fancy:iconPaddingBottom="10dp"
-                fancy:fontIconResource="&#xf087;"
-                fancy:iconPosition="top"
-                fancy:textColor="@color/Primary"
-                android:onClick="goToMainActivity"
-                android:nestedScrollingEnabled="false" />
+            tools:ignore="UselessParent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true">
 
         </LinearLayout>
-    </FrameLayout>
+
+        <mehdi.sakout.fancybuttons.FancyButton
+            android:id="@+id/btn_gotit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/fullwidthbutton_top_padding"
+            android:paddingLeft="@dimen/fullwidthbutton_side_padding"
+            android:paddingRight="@dimen/fullwidthbutton_side_padding"
+            android:paddingTop="@dimen/fullwidthbutton_top_padding"
+            fancy:defaultColor="#ffffff"
+            fancy:focusColor="#eeeeee"
+            fancy:text="GOT IT"
+            fancy:iconPaddingBottom="10dp"
+            fancy:fontIconResource="&#xf087;"
+            fancy:iconPosition="top"
+            fancy:textColor="@color/Primary"
+            android:onClick="goToMainActivity"
+            android:nestedScrollingEnabled="false"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="o o o o o"
+            android:id="@+id/circleText"
+            android:layout_above="@+id/btn_gotit"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_centerInParent="true"
+            android:gravity="center_horizontal"
+            android:textColor="@android:color/white"
+            android:singleLine="true"
+            android:textSize="10dp"
+            android:paddingBottom="@dimen/fullwidthbutton_side_padding" />
+    </RelativeLayout>
 
 </FrameLayout>

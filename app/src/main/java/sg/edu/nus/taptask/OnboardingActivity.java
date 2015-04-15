@@ -3,9 +3,11 @@ package sg.edu.nus.taptask;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import sg.edu.nus.taptask.util.SystemUiHider;
 
@@ -47,6 +50,30 @@ public class OnboardingActivity extends Activity {
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mSlideShowPagerAdapter = new SlideShowPagerAdapter(this);
         mViewPager.setAdapter(mSlideShowPagerAdapter);
+        refreshCircleIndicator(0);
+
+        // Set event for view pager
+        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                refreshCircleIndicator(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+        });
+
+        // Customize circle indicator
+        TextView circleText = (TextView) findViewById(R.id.circleText);
+        Typeface fontawesome = Typeface.createFromAsset(this.getAssets(), "fonts/fontawesome-webfont.ttf");
+        circleText.setTypeface(fontawesome);
     }
 
     // Slide show adapter
@@ -76,15 +103,18 @@ public class OnboardingActivity extends Activity {
 
             ImageView imageView = (ImageView) itemView.findViewById(R.id.imageView);
             imageView.setImageResource(mResources[position]);
-
             container.addView(itemView);
-
             return itemView;
         }
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
             container.removeView((LinearLayout) object);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return "Page " + (position + 1);
         }
     }
 
@@ -93,6 +123,26 @@ public class OnboardingActivity extends Activity {
         Intent intent;
         intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+    }
+
+    // draws the circle indicators that indicates current page of the tutorial slider
+    public void refreshCircleIndicator(int currPage) {
+        Log.e("Refreshing circles", "CURRPAGE: " + currPage);
+        // declare variables
+        TextView circleText = (TextView) findViewById(R.id.circleText);
+        int totalPages = mSlideShowPagerAdapter.getCount();
+
+        // clear current circle text
+        circleText.setText("");
+
+        // draw the circles
+        for (int i = 0; i < totalPages; i++) {
+            if (i == currPage) {
+                circleText.append(getString(R.string.filledcircle) + "  ");
+            } else {
+                circleText.append(getString(R.string.circle) + "  ");
+            }
+        }
     }
 
 }
