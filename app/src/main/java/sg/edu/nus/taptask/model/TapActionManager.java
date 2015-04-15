@@ -6,8 +6,6 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import org.w3c.dom.Node;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -48,6 +46,10 @@ public class TapActionManager {
     public void removeAllTasks() {
         tapActions.clear();
         saveTapActionManager();
+    }
+
+    public boolean isTasksEmpty() {
+        return tapActions.isEmpty();
     }
 
     public void saveTapActionManager() {

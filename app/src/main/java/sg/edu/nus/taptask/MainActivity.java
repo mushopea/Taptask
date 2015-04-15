@@ -43,7 +43,7 @@ public class MainActivity extends ActionBarActivity {
         mRecyclerView.setAdapter(mAdapter);
 
         initFabListeners();
-        initGuideListeners();
+        showAddTaskGuide();
     }
 
     @Override
@@ -76,18 +76,32 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    // Determines whether to show the "Add Task here!" guide or not.
+    public void showAddTaskGuide() {
+        boolean tasksEmpty = false;
+        if (mAdapter.getItemCount() == 0) {
+            tasksEmpty = true;
+        }
 
-    public void initGuideListeners() {
-        // Show guide if there are no tasks
-        YoYo.with(Techniques.FlipInX)
-                .duration(1000)
-                .playOn(findViewById(R.id.addbuttonguide));
+        if (tasksEmpty) {
+            // Show guide if there are no tasks
+            final View addButtonGuide = this.findViewById(R.id.addbuttonguide);
+            final View myTasks = this.findViewById(R.id.myTasks);
+
+            myTasks.setVisibility(View.GONE);
+            addButtonGuide.setVisibility(View.VISIBLE);
+            YoYo.with(Techniques.FlipInX)
+                    .duration(1000)
+                    .playOn(addButtonGuide);
+        }
     }
-    
+
     // Listens for scrolling/pressing on the screen and modifies the FAB accordingly
     public void initFabListeners() {
         final View shadowView = this.findViewById(R.id.shadowView);
         final FloatingActionsMenu fabButton = (FloatingActionsMenu)this.findViewById(R.id.multiple_actions);
+        final View addButtonGuide = this.findViewById(R.id.addbuttonguide);
+
 
         // floating action button
         // set shadow overlay when it's pressed
@@ -95,6 +109,7 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onMenuExpanded() {
                 shadowView.setVisibility(View.VISIBLE);
+                addButtonGuide.setVisibility(View.GONE);
             }
 
             @Override
