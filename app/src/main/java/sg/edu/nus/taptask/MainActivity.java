@@ -1,11 +1,8 @@
 package sg.edu.nus.taptask;
 
 
-import android.content.Context;
 import android.content.Intent;
-import android.media.AudioManager;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,14 +11,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.RelativeLayout;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
-import sg.edu.nus.taptask.model.TapActionVolume;
-import sg.edu.nus.taptask.model.TaskList;
+import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 import sg.edu.nus.taptask.model.TapActionCall;
 import sg.edu.nus.taptask.model.TapActionSMS;
+import sg.edu.nus.taptask.model.TapActionVolume;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -34,21 +32,62 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Initialize views
         // enable taptask toggle
         taptaskToggle = (SettingsToggle) this.findViewById(R.id.taptaskToggle);
         mRecyclerView = (RecyclerView) findViewById(R.id.taskList);
-        final View shadowView = this.findViewById(R.id.shadowView);
-        final FloatingActionsMenu fabButton = (FloatingActionsMenu)this.findViewById(R.id.multiple_actions);
-        final RelativeLayout dashView = (RelativeLayout)this.findViewById(R.id.dashboard_view);
 
         // task list recycler view
-        // to do: disable recycler view when there are no tasks and show prompt (arrow pointing to (+))
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        //mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setItemAnimator(new SlideInLeftAnimator());
         mAdapter = new TaskAdapter(R.layout.row_task, this);
         mRecyclerView.setAdapter(mAdapter);
 
+        initFabListeners();
+        initGuideListeners();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh the list onResume
+        mAdapter = new TaskAdapter(R.layout.row_task, this);
+        mRecyclerView.setAdapter(mAdapter);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    public void initGuideListeners() {
+        // Show guide if there are no tasks
+        YoYo.with(Techniques.FlipInX)
+                .duration(1000)
+                .playOn(findViewById(R.id.addbuttonguide));
+    }
+    
+    // Listens for scrolling/pressing on the screen and modifies the FAB accordingly
+    public void initFabListeners() {
+        final View shadowView = this.findViewById(R.id.shadowView);
+        final FloatingActionsMenu fabButton = (FloatingActionsMenu)this.findViewById(R.id.multiple_actions);
 
         // floating action button
         // set shadow overlay when it's pressed
@@ -89,36 +128,6 @@ public class MainActivity extends ActionBarActivity {
                 }
             }
         });
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // Refresh the list onResume
-        mAdapter = new TaskAdapter(R.layout.row_task, this);
-        mRecyclerView.setAdapter(mAdapter);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     public void onClickTaptaskToggle(View view) {
