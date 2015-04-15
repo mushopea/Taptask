@@ -126,6 +126,7 @@ public class AccelerometerSampler implements SensorEventListener {
             this.timeIndex = 0;
             this.samplingFrequency = samplingFrequency;
             this.samplingPeriod = 1.0 / samplingFrequency;
+            this.samplingDuration = bufferSizeInSeconds;
 
             // Set up buffer
             double period = 1.0 / samplingFrequency;

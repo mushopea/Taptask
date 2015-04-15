@@ -1,8 +1,11 @@
 package sg.edu.nus.taptask.model;
 
+import android.content.Context;
+import android.os.Vibrator;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import sg.edu.nus.taptask.FFTHelper;
 
@@ -160,4 +163,25 @@ public class TapPattern {
         return list;
     }
 
+    public long[] getVibrationPattern() {
+        final long tap = 100;
+        ArrayList<Double> circlePositions = getCirclePositions();
+        long [] vibrationPattern = new long[circlePositions.size()*2];
+        double delta = (duration / pattern.length) * 1000;
+        for (int i = 0 ; i<circlePositions.size() ; i++) {
+            if (i == 0) {
+                vibrationPattern[i * 2] = 0;
+            } else if (i<circlePositions.size()) {
+                vibrationPattern[i * 2] = (long) ((circlePositions.get(i) - circlePositions.get(i-1)) * delta);
+            }
+            vibrationPattern[i*2+1] = tap;
+        }
+        return vibrationPattern;
+    }
+
+    public void vibratePattern(Context context) {
+        long[] vibrationPattern = getVibrationPattern();
+        Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        v.vibrate(vibrationPattern, -1);
+    }
 }
