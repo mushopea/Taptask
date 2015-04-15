@@ -8,15 +8,30 @@
 
     <TextView android:text="Number to Call" android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textView2" />
+        android:id="@+id/targetNumHeader" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="phone"
         android:ems="10"
-        android:id="@+id/editText"
-        android:layout_below="@+id/textView2"
+        android:id="@+id/targetNum"
+        android:layout_below="@+id/targetNumHeader"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView android:text="Name" android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/targetNum"
+        android:layout_marginTop="30dp"
+        android:id="@+id/targetNameHeader" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:id="@+id/targetName"
+        android:layout_below="@+id/targetNameHeader"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -25,7 +40,7 @@
         android:layout_height="wrap_content"
         android:text="Record this task"
         android:id="@+id/button"
-        android:layout_below="@+id/editText"
+        android:layout_below="@+id/targetName"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginTop="62dp"

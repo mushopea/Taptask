@@ -82,11 +82,17 @@ public class AccelerometerConfig {
                 break;
             }
         }
-        if (samplingFrequency < minSamplingFrequency) {
-            Log.w("AccelerometerConfig", "Sampling frequency of " + samplingFrequency + " less than minimum of " + minSamplingFrequency + "\n");
-        }
+
         samplingFrequencyToUse = samplingFrequency;
         sensorDelayToUse = minSensorDelay;
+        if (samplingFrequency == 0) {
+            samplingFrequencyToUse = sensorDelaySamplingRate[sensorDelaySamplingRate.length-1];
+            sensorDelayToUse = SensorManager.SENSOR_DELAY_FASTEST;
+        }
+        if (samplingFrequencyToUse < minSamplingFrequency) {
+            Log.w("AccelerometerConfig", "Sampling frequency of " + samplingFrequency + " less than minimum of " + minSamplingFrequency + "\n");
+        }
+
     }
 
     // From: http://stackoverflow.com/questions/14376807/how-to-read-write-string-from-a-file-in-android

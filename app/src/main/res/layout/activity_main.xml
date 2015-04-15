@@ -126,7 +126,8 @@
             fab:fab_icon="@drawable/msg"
             fab:fab_title="Send a message"
             fab:fab_colorNormal="@color/msg_color"
-            fab:fab_colorPressed="@color/msg_color"/>
+            fab:fab_colorPressed="@color/msg_color"
+            android:onClick="onClickSMSButton"/>
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -102,7 +102,12 @@ public class FFTHelper {
         return FFTConvolution(realSignal, realKernel, 1);
     }
 
-    public static double[] FFTConvolution(double[] realSignal, double[] realKernel, int times) {
+
+    private static double[] convolutionRealSignal2 = null;
+    private static double[] convolutionRealKernel2 = null;
+    private static DoubleFFT_1D convolutionFFT = null;
+    private static int convolutionFFTSize = 0;
+    public static synchronized double[] FFTConvolution(double[] realSignal, double[] realKernel, int times) {
         if (realSignal.length != realKernel.length) {
             Log.e("FFT", "FFTConvolution: Signal length mismatch!");
             return null;
@@ -111,29 +116,106 @@ public class FFTHelper {
             Log.e("FFT", "FFTConvolution: Invalid number of times to do convolution!");
             return null;
         }
-        double[] complexSignal = FFTHelper.realToComplex(realSignal);
-        double[] complexKernel = FFTHelper.realToComplex(realKernel);
-        double[] FFTSignal = FFTHelper.FFT(complexSignal);
-        double[] FFTKernel = FFTHelper.FFT(complexKernel);
-        double[] FFTProduct = null;
-        for (int i=0 ; i<times ; i++) {
-            FFTProduct = FFTHelper.complexMultiply(FFTSignal, FFTKernel);
+
+        // Cache arrays
+        if (convolutionRealSignal2 == null || convolutionRealSignal2.length != realSignal.length*2) {
+            convolutionRealSignal2 = new double[realSignal.length*2];
+            convolutionRealKernel2 = new double[realKernel.length*2];
         }
-        double[] FFTInverse = FFTHelper.FFTInverse(FFTProduct);
-        double[] realConvolutionResult = FFTHelper.complexRealPart(FFTInverse);
+
+        // Double length to hold complex numbers
+        convolutionRealSignal2 = FFTHelper.padWithZeros(realSignal, realSignal.length*2, convolutionRealSignal2);
+        convolutionRealKernel2 = FFTHelper.padWithZeros(realKernel, realKernel.length*2, convolutionRealKernel2);
+
+        // Cache DoubleFFT_1D
+        if (convolutionFFT == null || convolutionFFTSize != realSignal.length) {
+            convolutionFFT = new DoubleFFT_1D(realSignal.length);
+            convolutionFFTSize = realSignal.length;
+        }
+
+        convolutionFFT.realForwardFull(convolutionRealSignal2);
+        convolutionFFT.realForwardFull(convolutionRealKernel2);
+        double[] FFTSignal = convolutionRealSignal2;
+        double[] FFTKernel = convolutionRealKernel2;
+
+        double[] FFTProduct = FFTSignal;
+        for (int i=0 ; i<times ; i++) {
+            FFTProduct = FFTHelper.complexMultiply(FFTProduct, FFTKernel, FFTProduct);
+        }
+        double[] FFTInverse = FFTProduct;
+        convolutionFFT.complexInverse(FFTInverse, true);
+
+        double[] realConvolutionResult = FFTHelper.complexRealPart(FFTInverse, realSignal);
         return realConvolutionResult;
     }
 
-    public static double[] complexMultiply(double[] input0, double[] input1) {
+
+    private static double[] correlationRealSignal2 = null;
+    private static double[] correlationRealKernel2 = null;
+    private static DoubleFFT_1D correlationFFT = null;
+    private static int correlationFFTSize = 0;
+    public static synchronized double[] FFTCorrelation(double[] realSignal, double[] realKernel) {
+        if (realSignal.length != realKernel.length) {
+            Log.e("FFT", "FFTCorrelation: Signal length mismatch!");
+            return null;
+        }
+
+        // Cache arrays
+        if (correlationRealSignal2 == null || correlationRealSignal2.length != realSignal.length*2) {
+            correlationRealSignal2 = new double[realSignal.length*2];
+            correlationRealKernel2 = new double[realKernel.length*2];
+        }
+
+        // Double length to hold complex numbers
+        correlationRealSignal2 = FFTHelper.padWithZeros(realSignal, realSignal.length*2, correlationRealSignal2);
+        correlationRealKernel2 = FFTHelper.padWithZeros(realKernel, realKernel.length*2, correlationRealKernel2);
+
+        // Cache DoubleFFT_1D
+        if (correlationFFT == null || correlationFFTSize != realSignal.length) {
+            correlationFFT = new DoubleFFT_1D(realSignal.length);
+            correlationFFTSize = realSignal.length;
+        }
+        correlationFFT.realForwardFull(correlationRealSignal2);
+        correlationFFT.realForwardFull(correlationRealKernel2);
+        double[] FFTSignal = correlationRealSignal2;
+        double[] FFTKernel = correlationRealKernel2;
+
+        double[] FFTProduct = FFTHelper.complexMultiplyConjugate(FFTSignal, FFTKernel, FFTSignal);
+        double[] FFTInverse = FFTProduct;
+        correlationFFT.complexInverse(FFTInverse, true);
+
+        double[] realCorrelationResult = FFTHelper.complexRealPart(FFTInverse, realSignal);
+        return realCorrelationResult;
+    }
+
+    public static double[] complexMultiply(double[] input0, double[] input1, double[] output) {
         if (input0.length != input1.length) {
             return null;
         }
         // Multiply FFTs together
         // complex multiplication: (a + bj) * (c + dj) = (ac - bd) + (bc + ad)j
-        double[] FFTProduct = new double[input0.length];
+        double[] FFTProduct = output;
         for (int i=0 ; i<input0.length/2 ; i++) {
             double a = input0[i*2];
             double b = input0[i*2+1];
+            double c = input1[i*2];
+            double d = input1[i*2+1];
+
+            FFTProduct[i*2] = a*c - b*d;
+            FFTProduct[i*2+1] = b*c + a*d;
+        }
+        return FFTProduct;
+    }
+
+    public static double[] complexMultiplyConjugate(double[] input0, double[] input1, double[] output) {
+        if (input0.length != input1.length) {
+            return null;
+        }
+        // Same as complex multiply but take conjugate of input0
+        double[] FFTProduct = output;
+        for (int i=0 ; i<input0.length/2 ; i++) {
+            double a = input0[i*2];
+            double b = -input0[i*2+1]; // Conjugate
             double c = input1[i*2];
             double d = input1[i*2+1];
 
@@ -179,8 +261,8 @@ public class FFTHelper {
         return complexOutput;
     }
 
-    public static double[] complexRealPart(double[] complexInput) {
-        double[] realOutput = new double[complexInput.length/2];
+    public static double[] complexRealPart(double[] complexInput, double[] output) {
+        double[] realOutput = output;
         for (int i=0; i<complexInput.length/2; i++) {
             realOutput[i] = complexInput[2*i];
         }
@@ -210,14 +292,16 @@ public class FFTHelper {
 
     public static double[] padWithZerosPower2(double[] input) {
         int len = nextPowerOf2(input.length);
-        return padWithZeros(input, len);
+        return padWithZeros(input, len, null);
     }
 
-    public static double[] padWithZeros(double[] input, int len) {
+    public static double[] padWithZeros(double[] input, int len, double[] output) {
         if (len <= input.length) {
             return input;
         } else {
-            double[] output = new double[len];
+            if (output == null || output.length != len) {
+                output = new double[len];
+            }
             System.arraycopy(input, 0, output, 0, input.length);
             Arrays.fill(output, input.length, output.length, 0);
             return output;

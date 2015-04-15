@@ -1,10 +1,12 @@
 package sg.edu.nus.taptask;
 
-import android.app.Activity;
+import android.content.Context;
 import android.hardware.SensorEvent;
 import android.util.Log;
 
-import sg.edu.nus.taptask.model.AccelerometerConfig;
+import java.util.Arrays;
+
+import sg.edu.nus.taptask.model.TapAction;
 import sg.edu.nus.taptask.model.TapPattern;
 
 /**
@@ -12,12 +14,20 @@ import sg.edu.nus.taptask.model.TapPattern;
  */
 public class AccelerometerMatcher extends AccelerometerSampler {
 
-    public TapPattern tapPatternToMatch;
+    public TapAction tapActionToMatch;
 
-    public AccelerometerMatcher(Activity activity) {
-        super(activity);
+    public AccelerometerMatcher(Context context) {
+        super(context);
     }
 
+
+    public void clearBuffer() {
+        synchronized (this) {
+            Arrays.fill(absAccelerationBuffer, 0);
+        }
+    }
+
+    private TapPattern signalPattern = null;
     @Override
     protected void samplingStep(SensorEvent sensorEvent) {
         float x = sensorEvent.values[0];
@@ -34,9 +44,9 @@ public class AccelerometerMatcher extends AccelerometerSampler {
 
             // Attempt to locate match tap every 5/10 sec (0.5 sec) (samplingDuration/10)
             if (timeIndex % (absAccelerationBuffer.length / 10) == 0) {
-                if (this.tapPatternToMatch != null) {
-                    TapPattern signalPattern = TapPattern.createPattern(getAbsAccelerationBuffer(), this.samplingDuration, this.samplingFrequency);
-                    matchPattern(this.tapPatternToMatch, signalPattern.pattern);
+                if (this.tapActionToMatch != null) {
+                    signalPattern = TapPattern.createPattern(getAbsAccelerationBuffer(), this.samplingDuration, this.samplingFrequency, signalPattern);
+                    matchPattern(this.tapActionToMatch, signalPattern.pattern);
                 } else {
                     Log.e("AccMatcher", "TapPatternToMatch null");
                 }
@@ -45,20 +55,21 @@ public class AccelerometerMatcher extends AccelerometerSampler {
         }
     }
 
-    protected void matchPattern(TapPattern tapPattern, double[] signal) {
+    protected void matchPattern(TapAction tapAction, double[] signal) {
+        TapPattern tapPattern = tapAction.getPattern();
         double matchPct = tapPattern.matchSignalPercentage(signal);
         if (matchPct > TapPattern.MATCH_PERCENTAGE_THRESHOLD) {
             if (this.accelerometerSamplerListener != null) {
-                accelerometerSamplerListener.onMatchFound(tapPattern, signal, matchPct);
+                accelerometerSamplerListener.onMatchFound(tapAction, signal, matchPct);
             }
         }
     }
 
-    public TapPattern getTapPatternToMatch() {
-        return tapPatternToMatch;
+    public TapAction getTapActionToMatch() {
+        return tapActionToMatch;
     }
 
-    public void setTapPatternToMatch(TapPattern tapPatternToMatch) {
-        this.tapPatternToMatch = tapPatternToMatch;
+    public void setTapActionToMatch(TapAction tapActionToMatch) {
+        this.tapActionToMatch = tapActionToMatch;
     }
 }

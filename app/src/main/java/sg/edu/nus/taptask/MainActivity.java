@@ -21,13 +21,13 @@ import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import sg.edu.nus.taptask.model.TapActionVolume;
 import sg.edu.nus.taptask.model.TaskList;
 import sg.edu.nus.taptask.model.TapActionCall;
+import sg.edu.nus.taptask.model.TapActionSMS;
 
 public class MainActivity extends ActionBarActivity {
 
     private SettingsToggle taptaskToggle;
     private RecyclerView mRecyclerView;
     private TaskAdapter mAdapter;
-    private AudioManager audioManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +46,7 @@ public class MainActivity extends ActionBarActivity {
         // to do: disable recycler view when there are no tasks and show prompt (arrow pointing to (+))
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         //mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mAdapter = new TaskAdapter(TaskList.getInstance().getTasks(), R.layout.row_task, this);
+        mAdapter = new TaskAdapter(R.layout.row_task, this);
         mRecyclerView.setAdapter(mAdapter);
 
 
@@ -92,6 +92,14 @@ public class MainActivity extends ActionBarActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh the list onResume
+        mAdapter = new TaskAdapter(R.layout.row_task, this);
+        mRecyclerView.setAdapter(mAdapter);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -119,22 +127,9 @@ public class MainActivity extends ActionBarActivity {
             return;
         }
 
-        int dot = 200;
-        int dash = 500;
-        int short_gap = 200;
-        int medium_gap = 500;
-        int long_gap = 1000;
-
-        Vibrator v = (Vibrator) this.getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
-
         if (toggle.isOn()) {
-            // Beeeeep
-            v.vibrate(dash);
             startService(new Intent(this, TaptaskService.class));
         } else {
-            // Beep Beep Beep
-            long[] pattern = {0, dot, short_gap, dot, short_gap, dot};
-            v.vibrate(pattern, -1);
             stopService(new Intent(this, TaptaskService.class));
         }
     }
@@ -148,12 +143,17 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void onClickCallButton(View view){
-        TapActionCall action = new TapActionCall(null, "97936499");
+        TapActionCall action = new TapActionCall(null, "97936499", "zhang yiwen");
         action.performAction(MainActivity.this);
     }
 
     public void onClickVolButton(View view) {
         TapActionVolume action = new TapActionVolume(null);
+        action.performAction(MainActivity.this);
+    }
+
+    public void onClickSMSButton(View view) {
+        TapActionSMS action = new TapActionSMS(null, "hello world", "97936499");
         action.performAction(MainActivity.this);
     }
 

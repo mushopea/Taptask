@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import sg.edu.nus.taptask.model.TapAction;
+import sg.edu.nus.taptask.model.TapActionManager;
 import sg.edu.nus.taptask.model.TapPattern;
 
 public class RecordFragment extends Fragment implements AccelerometerSamplerListener {
@@ -100,10 +102,26 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
 
     public void onClickResetButton(View view) {
         firstPattern = null;
+        accelerometerRecordSurfaceView.setBackgroundPattern(null);
         setViewState(0);
     }
 
     public void onClickAddButton(View view) {
+        // Save stuff
+        TapActionManager tapActionManager = TapActionManager.getInstance(this.getActivity().getBaseContext());
+
+        TapAction tapAction = tapActionManager.getCurrentTapAction();
+        if (tapAction == null) {
+            Log.e("onClickAddButton", "Null tapAction");
+            tapAction = new TapAction(firstPattern);
+        }
+        tapAction.setPattern(firstPattern);
+
+        //tapActionManager.removeAllTasks();
+        tapActionManager.addTapAction(tapAction);
+
+        // Return to main activity
+        ((RecordActivity)this.getActivity()).returnToMainActivity();
     }
 
     private void setViewState(int state) {
@@ -185,14 +203,15 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
 
         // Reset visualizer
         accelerometerRecordSurfaceView.setAccelerationSampler(accelerometerSampler);
-        accelerometerRecordSurfaceView.setBackgroundPattern(firstPattern);
 
         setViewState(1);
     }
 
     @Override
     public void onDestroy() {
-        accelerometerSampler.stopSampling();
+        if (accelerometerSampler != null) {
+            accelerometerSampler.stopSampling();
+        }
         super.onDestroy();
     }
 
@@ -225,21 +244,15 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
                 accelerometerSampler.samplingDuration,
                 accelerometerSampler.samplingFrequency);
 
-        // Save stuff
-        //TapAction tapAction = new TapAction(pattern);
-        //TapActionManager tapActionManager = TapActionManager.getInstance(this.getActivity().getBaseContext());
-        //tapActionManager.removeAllTasks();
-        //tapActionManager.addTapAction(tapAction);
-
         if (firstPattern == null) {
             firstPattern = pattern;
+            accelerometerRecordSurfaceView.setBackgroundPattern(firstPattern);
         } else {
             secondPattern = pattern;
         }
 
         // Run recorder second time
         if (secondPattern == null) {
-
             this.getActivity().runOnUiThread(new Runnable() {
                 public void run() {
                     setViewState(2);
@@ -252,8 +265,8 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
             // Set instructions text
             this.getActivity().runOnUiThread(new Runnable() {
                 public void run() {
-                    instructionsText.setText("Pattern match: " + (int)matchPct + "%");
                     setViewState(4);
+                    instructionsText.setText("Pattern match: " + (int)matchPct + "%");
                 }
             });
         }
@@ -261,6 +274,6 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
     }
 
     @Override
-    public void onMatchFound(TapPattern pattern, double[] signal, double matchPct) {
+    public void onMatchFound(TapAction tapAction, double[] signal, double matchPct) {
     }
 }

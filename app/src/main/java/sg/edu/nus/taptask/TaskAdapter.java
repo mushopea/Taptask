@@ -1,30 +1,30 @@
 package sg.edu.nus.taptask;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.List;
-
-import sg.edu.nus.taptask.model.Task;
+import sg.edu.nus.taptask.model.TapAction;
+import sg.edu.nus.taptask.model.TapActionManager;
 
 /**
  * Created by musho on 24/3/2015.
  */
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
-    private List<Task> tasks;
     private int rowLayout;
     private Context mContext;
+    private TapActionManager tapActionManager;
 
-    public TaskAdapter(List<Task> tasks, int rowLayout, Context context) {
-        this.tasks = tasks;
+
+    public TaskAdapter(int rowLayout, Context context) {
         this.rowLayout = rowLayout;
         this.mContext = context;
+        this.tapActionManager = TapActionManager.getInstance(mContext);
     }
 
     @Override
@@ -35,32 +35,30 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
-        String imageName;
-        Task task = tasks.get(i);
+
+        final TapAction tapAction = tapActionManager.tapActions.get(i);
 
         // set name
-        viewHolder.taskName.setText(task.name);
+        viewHolder.taskName.setText(tapAction.getName());
 
         // set icon
-        switch (task.type) {
-            case 1: imageName = "task_icon_call";
-                break;
-            case 2: imageName = "task_icon_call_reject";
-                break;
-            case 3: imageName = "task_icon_message";
-                break;
-            case 4: imageName = "task_icon_volume";
-                break;
-            default: imageName = "task_icon_message";
-                Log.e("Invalid task type", "Invalid task type");
-                break;
-        }
+        String imageName = tapAction.getImage();
         viewHolder.taskImage.setImageDrawable(mContext.getResources().getDrawable(mContext.getResources().getIdentifier(imageName, "drawable", mContext.getPackageName())));
+
+        // Set icon onClickListener
+        // Vibrate pattern when icon is clicked.
+        viewHolder.taskImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tapAction.getPattern().vibratePattern(mContext);
+            }
+        });
+
     }
 
     @Override
     public int getItemCount() {
-        return tasks == null ? 0 : tasks.size();
+        return tapActionManager.tapActions.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

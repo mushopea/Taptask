@@ -17,7 +17,7 @@ import sg.edu.nus.taptask.model.AccelerometerConfig;
 public class AccelerometerSampler implements SensorEventListener {
 
 
-    protected Activity activity;
+    protected Context context;
     protected SensorManager sensorManager;
     protected Sensor accelerometerSensor;
     protected AccelerometerSamplerListener accelerometerSamplerListener;
@@ -31,12 +31,12 @@ public class AccelerometerSampler implements SensorEventListener {
     protected double samplingPeriod = 0;
     protected double samplingDuration = 0;
 
-    public AccelerometerSampler(Activity activity) {
+    public AccelerometerSampler(Context context) {
         // Initialize
-        this.sensorManager = (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
+        this.sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         this.accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        this.activity = activity;
-        this.accelerometerConfig = AccelerometerConfig.getInstance(this.activity.getBaseContext());
+        this.context = context;
+        this.accelerometerConfig = AccelerometerConfig.getInstance(context);
     }
 
     // TODO: Call this in a separate thread as it may take some time, depending on sampleSize
@@ -48,7 +48,7 @@ public class AccelerometerSampler implements SensorEventListener {
         accelerometerConfig.readAccelerometerConfig();
         if (accelerometerConfig.getSamplingFrequencyToUse() != 0) {
             // Already calibrated
-            //return;
+            return;
         }
 
         Log.d("accSampler", "calibrateSamplingRate: Calibrating...");
@@ -126,6 +126,7 @@ public class AccelerometerSampler implements SensorEventListener {
             this.timeIndex = 0;
             this.samplingFrequency = samplingFrequency;
             this.samplingPeriod = 1.0 / samplingFrequency;
+            this.samplingDuration = bufferSizeInSeconds;
 
             // Set up buffer
             double period = 1.0 / samplingFrequency;
@@ -166,8 +167,11 @@ public class AccelerometerSampler implements SensorEventListener {
         }
     }
 
+    private double[] absAccelerationBufferCopy = null;
     public double[] getAbsAccelerationBufferSafe() {
-        double[] absAccelerationBufferCopy = new double[absAccelerationBuffer.length];
+        if (absAccelerationBufferCopy == null || absAccelerationBufferCopy.length != absAccelerationBuffer.length) {
+            absAccelerationBufferCopy = new double[absAccelerationBuffer.length];
+        }
         synchronized (this) {
             // Rotate and return copy of buffer
             System.arraycopy(absAccelerationBuffer, timeIndex, absAccelerationBufferCopy, 0, absAccelerationBuffer.length - timeIndex);
@@ -177,7 +181,9 @@ public class AccelerometerSampler implements SensorEventListener {
     }
 
     public double[] getAbsAccelerationBuffer() {
-        double[] absAccelerationBufferCopy = new double[absAccelerationBuffer.length];
+        if (absAccelerationBufferCopy == null || absAccelerationBufferCopy.length != absAccelerationBuffer.length) {
+            absAccelerationBufferCopy = new double[absAccelerationBuffer.length];
+        }
         // Rotate and return copy of buffer
         System.arraycopy(absAccelerationBuffer, timeIndex, absAccelerationBufferCopy, 0, absAccelerationBuffer.length - timeIndex);
         System.arraycopy(absAccelerationBuffer, 0, absAccelerationBufferCopy, absAccelerationBuffer.length - timeIndex, timeIndex);
