@@ -1,6 +1,7 @@
 package sg.edu.nus.taptask;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,7 +36,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
 
-        TapAction tapAction = tapActionManager.tapActions.get(i);
+        final TapAction tapAction = tapActionManager.tapActions.get(i);
 
         // set name
         viewHolder.taskName.setText(tapAction.getName());
@@ -43,6 +44,16 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         // set icon
         String imageName = tapAction.getImage();
         viewHolder.taskImage.setImageDrawable(mContext.getResources().getDrawable(mContext.getResources().getIdentifier(imageName, "drawable", mContext.getPackageName())));
+
+        // Set icon onClickListener
+        // Vibrate pattern when icon is clicked.
+        viewHolder.taskImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tapAction.getPattern().vibratePattern(mContext);
+            }
+        });
+
     }
 
     @Override

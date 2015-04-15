@@ -164,7 +164,7 @@ public class TapPattern {
     }
 
     public long[] getVibrationPattern() {
-        final long tap = 100;
+        final long tap = 75;
         ArrayList<Double> circlePositions = getCirclePositions();
         long [] vibrationPattern = new long[circlePositions.size()*2];
         double delta = (duration / pattern.length) * 1000;

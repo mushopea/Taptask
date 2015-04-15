@@ -28,7 +28,6 @@ public class MainActivity extends ActionBarActivity {
     private SettingsToggle taptaskToggle;
     private RecyclerView mRecyclerView;
     private TaskAdapter mAdapter;
-    private AudioManager audioManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
