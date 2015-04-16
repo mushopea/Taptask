@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import sg.edu.nus.taptask.model.TapAction;
 import sg.edu.nus.taptask.util.SystemUiHider;
 
 
@@ -26,10 +27,11 @@ import sg.edu.nus.taptask.util.SystemUiHider;
  *
  * @see SystemUiHider
  */
-public class OnboardingActivity extends Activity {
+public class OnboardingActivity extends Activity implements AccelerometerSamplerListener{
 
     ViewPager mViewPager;
     SlideShowPagerAdapter mSlideShowPagerAdapter;
+    mehdi.sakout.fancybuttons.FancyButton gotItButton;
 
     int[] mResources = {
             R.drawable.task_icon_volume,
@@ -74,6 +76,18 @@ public class OnboardingActivity extends Activity {
         TextView circleText = (TextView) findViewById(R.id.circleText);
         Typeface fontawesome = Typeface.createFromAsset(this.getAssets(), "fonts/fontawesome-webfont.ttf");
         circleText.setTypeface(fontawesome);
+
+
+        // Disable got it button
+        gotItButton = (mehdi.sakout.fancybuttons.FancyButton) findViewById(R.id.btn_gotit);
+        gotItButton.setText("Calibrating...");
+        gotItButton.setEnabled(false);
+
+        // Start accelerometer calibration
+        AccelerometerSampler accelerometerSampler = new AccelerometerSampler(this.getBaseContext());
+        accelerometerSampler.setAccelerometerSamplerListener(this);
+        accelerometerSampler.calibrateSamplingRate();
+
     }
 
     // Slide show adapter
@@ -145,4 +159,24 @@ public class OnboardingActivity extends Activity {
         }
     }
 
+    @Override
+    public void onCalibrationDone() {
+        gotItButton.setText("GOT IT!");
+        gotItButton.setEnabled(true);
+    }
+
+    @Override
+    public void onRecordingDelayOver() {}
+
+    @Override
+    public void onSamplingStart() {}
+
+    @Override
+    public void onSamplingStop() {}
+
+    @Override
+    public void onRecordingDone() {}
+
+    @Override
+    public void onMatchFound(TapAction tapAction, double[] signal, double matchPct) {}
 }

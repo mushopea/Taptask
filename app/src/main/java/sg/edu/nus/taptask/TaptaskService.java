@@ -93,6 +93,10 @@ public class TaptaskService extends Service implements AccelerometerSamplerListe
     public void onRecordingDone() {}
     @Override
     public void onRecordingDelayOver() {}
+    @Override
+    public void onCalibrationDone() {
+        Log.e("Taptask Service", "Calibration Done");
+    }
 
     @Override
     public void onDestroy() {
