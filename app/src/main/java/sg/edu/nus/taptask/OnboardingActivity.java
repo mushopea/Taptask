@@ -136,7 +136,9 @@ public class OnboardingActivity extends Activity implements AccelerometerSampler
     public void goToMainActivity(View v) {
         Intent intent;
         intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+        finish();
     }
 
     // draws the circle indicators that indicates current page of the tutorial slider
