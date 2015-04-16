@@ -29,6 +29,11 @@ public class MainActivity extends ActionBarActivity {
     private RecyclerView mRecyclerView;
     private TaskAdapter mAdapter;
 
+    private View shadowView;
+    private FloatingActionsMenu fabButton;
+    private View addButtonGuide;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,9 +107,9 @@ public class MainActivity extends ActionBarActivity {
 
     // Listens for scrolling/pressing on the screen and modifies the FAB accordingly
     public void initFabListeners() {
-        final View shadowView = this.findViewById(R.id.shadowView);
-        final FloatingActionsMenu fabButton = (FloatingActionsMenu)this.findViewById(R.id.multiple_actions);
-        final View addButtonGuide = this.findViewById(R.id.addbuttonguide);
+        shadowView = this.findViewById(R.id.shadowView);
+        fabButton = (FloatingActionsMenu)this.findViewById(R.id.multiple_actions);
+        addButtonGuide = this.findViewById(R.id.addbuttonguide);
 
 
         // floating action button
@@ -192,4 +197,13 @@ public class MainActivity extends ActionBarActivity {
         action.performAction(MainActivity.this);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (fabButton.isExpanded()) {
+            // Collapse floating menu if open
+            fabButton.collapse();
+        } else {
+            super.onBackPressed();
+        }
+    }
 }
