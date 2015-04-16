@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ import java.util.List;
 
 import sg.edu.nus.taptask.model.TapActionApp;
 import sg.edu.nus.taptask.model.TapActionManager;
-
+import sg.edu.nus.taptask.util.ArrayAdapterWithIcon;
 
 
 public class AddAppTaskActivity extends ActionBarActivity {
@@ -25,8 +26,9 @@ public class AddAppTaskActivity extends ActionBarActivity {
     private TextView appNameField;
     private String appPackageName;
     private TapActionManager tapActionManager;
-    private List<String> packageName = new ArrayList<>();
-    private List<String> packageDisplayName = new ArrayList<>();
+    private List<String> packageNames;
+    private List<String> appNames;
+    private List<Integer> packageIcons;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,24 +87,44 @@ public class AddAppTaskActivity extends ActionBarActivity {
     }
 
     public void selectApp(View view){
+
+        packageNames = new ArrayList<>();
+        appNames = new ArrayList<>();
+        packageIcons = new ArrayList<>();
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         final PackageManager pm = getPackageManager();
         List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
 
-        for (ApplicationInfo packageInfo : packages) {
-            packageName.add(packageInfo.packageName);
-            packageDisplayName.add((String) (packageInfo != null ? pm.getApplicationLabel(packageInfo) : "(unknown)"));
-        }
 
-        final CharSequence[] charSequenceItems = packageDisplayName.toArray(new CharSequence[packageName.size()]);
+
+        for (ApplicationInfo packageInfo : packages) {
+            boolean isLaunchable = (pm.getLaunchIntentForPackage(packageInfo.packageName) != null );
+            if (isLaunchable) {
+                packageNames.add(packageInfo.packageName);
+                appNames.add((String) (packageInfo != null ? pm.getApplicationLabel(packageInfo) : "(unknown)"));
+                if(true){
+                    packageIcons.add(R.drawable.reject);
+                } else {
+                    packageIcons.add(packageInfo.icon);
+                }
+            }
+
+        }
+        System.out.println(packageIcons);
+
+        final String[] appNameItems = appNames.toArray(new String[appNames.size()]);
+        final Integer[] iconItems = packageIcons.toArray(new Integer[packageIcons.size()]);
+
+        ListAdapter adapter = new ArrayAdapterWithIcon(this, appNameItems, iconItems);
 
         builder.setTitle("Select an App")
-            .setItems(charSequenceItems, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    appNameField.setText((charSequenceItems[which]).toString());
-                    appPackageName = packageName.get(which);
-                }
-            });
+                .setAdapter(adapter, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        appNameField.setText((appNameItems[which]).toString());
+                        appPackageName = packageNames.get(which);
+                    }
+                });
 
         AlertDialog choose = builder.create();
         choose.show();
