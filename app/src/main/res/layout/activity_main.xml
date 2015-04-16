@@ -104,7 +104,7 @@
             fab:fab_title="Reject call"
             fab:fab_colorNormal="@color/reject_color"
             fab:fab_colorPressed="@color/reject_color"
-            android:onClick="onClickCallButton" />
+            android:onClick="onClickAppButton" />
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

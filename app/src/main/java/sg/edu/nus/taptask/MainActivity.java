@@ -16,6 +16,8 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
+import java.util.List;
+
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 import sg.edu.nus.taptask.model.TapActionCall;
 import sg.edu.nus.taptask.model.TapActionSMS;
@@ -165,6 +167,13 @@ public class MainActivity extends ActionBarActivity {
         Log.e("Meow", "Add activity button triggered");
         Intent intent;
         intent = new Intent(this, AddCallTaskActivity.class);
+        startActivity(intent);
+    }
+
+    public void onClickAppButton(View view){
+        Log.e("Meow", "App activity button triggered");
+        Intent intent;
+        intent = new Intent(this, AddAppTaskActivity.class);
         startActivity(intent);
     }
 
