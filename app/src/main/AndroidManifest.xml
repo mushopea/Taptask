@@ -51,6 +51,22 @@
                 android:value="sg.edu.nus.taptask.MainActivity" />
         </activity>
         <activity
+            android:name=".AddSMSTaskActivity"
+            android:label="@string/title_activity_add_sms_task"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="sg.edu.nus.taptask.MainActivity" />
+        </activity>
+        <activity
+            android:name=".AddVolumeTaskActivity"
+            android:label="@string/title_activity_add_volume_task"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="sg.edu.nus.taptask.MainActivity" />
+        </activity>
+        <activity
             android:name=".AddCallTaskActivity"
             android:label="@string/title_activity_add_call_task"
             android:parentActivityName=".MainActivity" >

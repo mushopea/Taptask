@@ -2,8 +2,10 @@ package sg.edu.nus.taptask;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,7 +30,7 @@ public class AddAppTaskActivity extends ActionBarActivity {
     private TapActionManager tapActionManager;
     private List<String> packageNames;
     private List<String> appNames;
-    private List<Integer> packageIcons;
+    private List<Drawable> packageIcons;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,27 +72,20 @@ public class AddAppTaskActivity extends ActionBarActivity {
 
     // go to add new task screen
     public void onClickContinueButton(View view) {
-        Log.e("Meow", "Recording call activity screen activated");
+        Log.e("Meow", "Recording app activity screen activated");
         String appName = appNameField.getText().toString();
         TapActionApp action = new TapActionApp(null, appName, appPackageName);
-        action.performAction(this);
-        /**
-         * Commented out for testing
-
-         tapActionManager.setCurrentTapAction(action);
-
-         Intent intent;
-         intent = new Intent(this, RecordActivity.class);
-         startActivity(intent);
-
-         */
+        tapActionManager.setCurrentTapAction(action);
+        Intent intent;
+        intent = new Intent(this, RecordActivity.class);
+        startActivity(intent);
     }
 
     public void selectApp(View view){
 
         packageNames = new ArrayList<>();
         appNames = new ArrayList<>();
-        packageIcons = new ArrayList<>();
+        packageIcons = new ArrayList<Drawable>();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         final PackageManager pm = getPackageManager();
@@ -103,18 +98,13 @@ public class AddAppTaskActivity extends ActionBarActivity {
             if (isLaunchable) {
                 packageNames.add(packageInfo.packageName);
                 appNames.add((String) (packageInfo != null ? pm.getApplicationLabel(packageInfo) : "(unknown)"));
-                if(true){
-                    packageIcons.add(R.drawable.reject);
-                } else {
-                    packageIcons.add(packageInfo.icon);
-                }
+                Drawable appIcon = packageInfo.loadIcon (getPackageManager ());
+                packageIcons.add(appIcon);
             }
 
         }
-        System.out.println(packageIcons);
-
         final String[] appNameItems = appNames.toArray(new String[appNames.size()]);
-        final Integer[] iconItems = packageIcons.toArray(new Integer[packageIcons.size()]);
+        final Drawable[] iconItems = packageIcons.toArray(new Drawable[packageIcons.size()]);
 
         ListAdapter adapter = new ArrayAdapterWithIcon(this, appNameItems, iconItems);
 

@@ -15,7 +15,7 @@ public class TapActionSMS extends TapAction {
     //private final String SMS_URL = "sms:";
 
 
-    public TapActionSMS(TapPattern pattern, String smsContent, String phoneNum) {
+    public TapActionSMS(TapPattern pattern, String smsContent, String phoneNum, String targetName) {
         super(pattern);
         this.smsContent = smsContent;
         this.phoneNum = phoneNum;

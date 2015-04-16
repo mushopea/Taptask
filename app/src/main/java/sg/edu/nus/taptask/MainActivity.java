@@ -183,13 +183,17 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void onClickVolButton(View view) {
-        TapActionVolume action = new TapActionVolume(null);
-        action.performAction(MainActivity.this);
+        Log.e("Meow", "Volume activity button triggered");
+        Intent intent;
+        intent = new Intent(this, AddVolumeTaskActivity.class);
+        startActivity(intent);
     }
 
     public void onClickSMSButton(View view) {
-        TapActionSMS action = new TapActionSMS(null, "hello world", "97936499");
-        action.performAction(MainActivity.this);
+        Log.e("Meow", "SMS activity button triggered");
+        Intent intent;
+        intent = new Intent(this, AddSMSTaskActivity.class);
+        startActivity(intent);
     }
 
 }

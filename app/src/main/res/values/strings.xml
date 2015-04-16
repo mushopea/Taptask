@@ -9,6 +9,8 @@
     <string name="title_activity_add_task">AddTaskActivity</string>
     <string name="title_activity_add_call_task">AddCallTaskActivity</string>
     <string name="title_activity_add_app_task">AddAppTaskActivity</string>
+    <string name="title_activity_add_volume_task">AddVolumeTaskActivity</string>
+    <string name="title_activity_add_sms_task">AddSMSTaskActivity</string>
     <string name="title_activity_record">RecordActivity</string>
 
     <string name="title_activity_onboarding">OnboardingActivity</string>
