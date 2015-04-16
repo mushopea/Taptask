@@ -4,9 +4,13 @@
 
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+<<<<<<< HEAD
     <uses-permission android:name="android.permission.CALL_PHONE" />
+=======
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
     <uses-permission android:name="android.permission.SEND_SMS"/>
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
+>>>>>>> 7a52b3b2c97e488f57cfbd460a3318abf998b54b
 
     <application
         android:allowBackup="true"
@@ -37,14 +41,6 @@
         <activity
             android:name=".AddTaskActivity"
             android:label="@string/title_activity_add_task"
-            android:parentActivityName=".MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="sg.edu.nus.taptask.MainActivity" />
-        </activity>
-        <activity
-            android:name=".AddAppTaskActivity"
-            android:label="@string/title_activity_add_app_task"
             android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

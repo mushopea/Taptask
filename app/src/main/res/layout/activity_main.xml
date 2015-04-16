@@ -74,20 +74,6 @@
         android:visibility="gone"
         android:background="@color/black" />
 
-    <!--<com.melnykov.fab.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="bottom|right"
-        android:src="@drawable/add"
-        fab:fab_colorNormal="@color/Primary"
-        fab:fab_colorPressed="@color/Primary_pressed"
-        fab:fab_colorRipple="@color/Ripple"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_margin="@dimen/activity_horizontal_margin"
-        android:onClick="onClickAddButton" />-->
     <com.getbase.floatingactionbutton.FloatingActionsMenu
         android:id="@+id/multiple_actions"
         android:layout_width="wrap_content"
@@ -118,7 +104,7 @@
             fab:fab_title="Reject call"
             fab:fab_colorNormal="@color/reject_color"
             fab:fab_colorPressed="@color/reject_color"
-            android:onClick="onClickCallButton" />
+            android:onClick="onClickAppButton" />
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -139,5 +125,18 @@
             android:onClick="onClickVolButton"/>
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/addbuttonguide"
+        android:layout_alignBottom="@+id/multiple_actions"
+        android:src="@drawable/add_task_guide"
+        android:visibility="gone"
+        android:layout_alignTop="@+id/multiple_actions"
+        android:layout_alignLeft="@+id/multiple_actions"
+        android:layout_alignStart="@+id/multiple_actions"
+        android:layout_marginTop="200dp"
+        android:layout_marginBottom="55dp" />
 
 </RelativeLayout>
