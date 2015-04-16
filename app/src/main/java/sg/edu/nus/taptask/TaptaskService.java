@@ -1,8 +1,10 @@
 package sg.edu.nus.taptask;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
@@ -14,6 +16,7 @@ import sg.edu.nus.taptask.model.TapActionManager;
 public class TaptaskService extends Service implements AccelerometerSamplerListener {
 
     AccelerometerMatcher accelerometerMatcher = null;
+    private NotificationManager notificationManager;
 
     public TaptaskService() {
     }
@@ -31,7 +34,9 @@ public class TaptaskService extends Service implements AccelerometerSamplerListe
     public int onStartCommand(Intent intent, int flags, int startId) {
         Toast.makeText(this, "Taptask service started", Toast.LENGTH_SHORT).show();
 
-        Notification notification = new Notification(R.drawable.task_icon_call, "Taptask", System.currentTimeMillis());
+        /*
+
+        Notification notification = new Notification(R.drawable.reject, "Taptask", System.currentTimeMillis());
         Intent i=new Intent(this, MainActivity.class);
 
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|
@@ -42,6 +47,30 @@ public class TaptaskService extends Service implements AccelerometerSamplerListe
         notification.setLatestEventInfo(this, "Taptask", "Taptask", pi);
         notification.flags|=Notification.FLAG_NO_CLEAR;
         startForeground(0, notification);
+
+        */
+
+        notificationManager = (NotificationManager)
+                getSystemService(Context.NOTIFICATION_SERVICE);
+
+        int icon = R.drawable.ic_stat_name;
+        CharSequence tickerText = "TapTask is enabled";
+        long when = System.currentTimeMillis();
+
+        Notification notification = new Notification(icon, tickerText, when);
+        notification.flags|=Notification.FLAG_NO_CLEAR;
+        Context context = getApplicationContext();
+        CharSequence contentTitle = "TapTask is enabled";
+        CharSequence contentText = "Big brother is watching you";
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(this,
+                0, notificationIntent, 0);
+
+        notification.setLatestEventInfo(context, contentTitle,
+                contentText, contentIntent);
+
+        notificationManager.notify(1, notification);
+
 
         /*
         int dot = 200;
@@ -98,6 +127,7 @@ public class TaptaskService extends Service implements AccelerometerSamplerListe
     public void onDestroy() {
         accelerometerMatcher.stopSampling();
         Toast.makeText(this, "Taptask service stopped", Toast.LENGTH_SHORT).show();
-        stopForeground(true);
+        notificationManager.cancel(1);
+        //stopForeground(true);
     }
 }
