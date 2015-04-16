@@ -48,6 +48,9 @@ public class AccelerometerSampler implements SensorEventListener {
         accelerometerConfig.readAccelerometerConfig();
         if (accelerometerConfig.getSamplingFrequencyToUse() != 0) {
             // Already calibrated
+            if (accelerometerSamplerListener != null) {
+                accelerometerSamplerListener.onCalibrationDone();
+            }
             return;
         }
 
@@ -62,6 +65,10 @@ public class AccelerometerSampler implements SensorEventListener {
         accelerometerConfig.calculateFrequencyToUse();
         // Store results after calibration
         accelerometerConfig.saveAccelerometerConfig();
+
+        if (accelerometerSamplerListener != null) {
+            accelerometerSamplerListener.onCalibrationDone();
+        }
     }
 
 

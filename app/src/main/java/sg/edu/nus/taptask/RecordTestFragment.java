@@ -81,6 +81,9 @@ public class RecordTestFragment extends Fragment implements AccelerometerSampler
     }
 
     @Override
+    public void onCalibrationDone() {}
+
+    @Override
     public void onRecordingDone() {
         Log.e("RecordFragment", "onRecordingDone() called");
         TapPattern pattern = TapPattern.createPattern(accelerometerSampler.getAbsAccelerationBuffer(),

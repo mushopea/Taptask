@@ -226,6 +226,9 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
     }
 
     @Override
+    public void onCalibrationDone() {}
+
+    @Override
     public void onRecordingDelayOver() {
         Log.i("RecordFragment", "onRecordingDelayOver() called");
 
