@@ -7,6 +7,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
+import android.os.Vibrator;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -106,8 +107,16 @@ public class TaptaskService extends Service implements AccelerometerSamplerListe
     @Override
     public void onMatchFound(TapAction tapAction, double[] signal, double matchPct) {
         Log.e("Taptask Service", "Match! " + matchPct);
+        notificationManager = (NotificationManager)
+                getSystemService(Context.NOTIFICATION_SERVICE);
+
         accelerometerMatcher.clearBuffer();
         tapAction.performAction(getBaseContext());
+
+        Toast.makeText(this, "Taptask Action: " + tapAction.getName(), Toast.LENGTH_SHORT).show();
+        Vibrator v = (Vibrator) this.getBaseContext().getSystemService(Context.VIBRATOR_SERVICE);
+        v.vibrate(200);
+
     }
 
     @Override
