@@ -18,7 +18,7 @@ public class TapActionApp extends TapAction {
     }
 
     public String getName() {
-        return "TapActionApp";
+        return "Open " + appName;
     }
 
     public String getImage() {

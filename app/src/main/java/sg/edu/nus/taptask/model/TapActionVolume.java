@@ -13,7 +13,7 @@ public class TapActionVolume extends TapAction {
     }
 
     public String getName() {
-        return "TapActionVol";
+        return "Toggle Silent Mode";
     }
 
     public String getImage() {

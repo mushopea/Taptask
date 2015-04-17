@@ -11,18 +11,20 @@ import android.net.Uri;
 public class TapActionSMS extends TapAction {
 
     private String smsContent;
-    private String phoneNum;
+    private String targetNum;
+    private String targetName;
     //private final String SMS_URL = "sms:";
 
 
-    public TapActionSMS(TapPattern pattern, String smsContent, String phoneNum, String targetName) {
+    public TapActionSMS(TapPattern pattern, String smsContent, String targetNum, String targetName) {
         super(pattern);
         this.smsContent = smsContent;
-        this.phoneNum = phoneNum;
+        this.targetNum = targetNum;
+        this.targetName = targetName;
     }
 
     public String getName() {
-        return "TapActionSMS";
+        return "SMS " + targetName + " (" + targetNum + ")";
     }
 
     public String getImage() {
@@ -31,7 +33,7 @@ public class TapActionSMS extends TapAction {
 
     public boolean performAction(Context context) {
         SmsManager sms = SmsManager.getDefault();
-        sms.sendTextMessage(phoneNum, null, smsContent, null, null);
+        sms.sendTextMessage(targetNum, null, smsContent, null, null);
         return true;
     }
 
