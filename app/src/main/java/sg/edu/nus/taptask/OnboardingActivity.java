@@ -84,9 +84,15 @@ public class OnboardingActivity extends Activity implements AccelerometerSampler
         gotItButton.setEnabled(false);
 
         // Start accelerometer calibration
-        AccelerometerSampler accelerometerSampler = new AccelerometerSampler(this.getBaseContext());
+        final AccelerometerSampler accelerometerSampler = new AccelerometerSampler(this.getBaseContext());
         accelerometerSampler.setAccelerometerSamplerListener(this);
-        accelerometerSampler.calibrateSamplingRate();
+
+        // Run calibration on new thread
+        new Thread(new Runnable() {
+            public void run(){
+                accelerometerSampler.calibrateSamplingRate();
+            }
+        }).start();
 
     }
 
@@ -163,8 +169,12 @@ public class OnboardingActivity extends Activity implements AccelerometerSampler
 
     @Override
     public void onCalibrationDone() {
-        gotItButton.setText("GOT IT!");
-        gotItButton.setEnabled(true);
+        runOnUiThread(new Runnable() {
+            public void run() {
+                gotItButton.setText("GOT IT!");
+                gotItButton.setEnabled(true);
+            }
+        });
     }
 
     @Override
