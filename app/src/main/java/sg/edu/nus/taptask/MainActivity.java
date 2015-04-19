@@ -1,6 +1,7 @@
 package sg.edu.nus.taptask;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -16,18 +17,13 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
-import com.daimajia.swipe.util.Attributes;
-import sg.edu.nus.taptask.util.RecyclerViewAdapter;
-
-
-import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator;
+import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 import sg.edu.nus.taptask.model.TapActionCall;
-import sg.edu.nus.taptask.model.TapActionManager;
-import sg.edu.nus.taptask.model.TapActionSMS;
-import sg.edu.nus.taptask.model.TapActionVolume;
+import sg.edu.nus.taptask.util.RecyclerViewAdapter;
 import sg.edu.nus.taptask.util.Utils;
-
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -45,6 +41,13 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // font
+        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
+                        .setDefaultFontPath("fonts/Roboto-Regular.ttf")
+                        .setFontAttrId(R.attr.fontPath)
+                        .build()
+        );
 
         // Initialize views
         taptaskToggle = (SettingsToggle) this.findViewById(R.id.taptaskToggle);
@@ -66,6 +69,11 @@ public class MainActivity extends ActionBarActivity {
             startService(new Intent(this, TaptaskService.class));
         }
 
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
     @Override

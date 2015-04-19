@@ -1,20 +1,23 @@
 package sg.edu.nus.taptask;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
+import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.net.Uri;
 import android.widget.TextView;
 
 import sg.edu.nus.taptask.model.TapActionCall;
 import sg.edu.nus.taptask.model.TapActionManager;
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 
 public class AddCallTaskActivity extends ActionBarActivity {
@@ -26,19 +29,24 @@ public class AddCallTaskActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState); // font
+        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
+                        .setDefaultFontPath("fonts/Roboto-Regular.ttf")
+                        .setFontAttrId(R.attr.fontPath)
+                        .build()
+        );
         setContentView(R.layout.activity_add_call_task);
         targetNameField = (TextView) findViewById(R.id.targetName);
         targetNumField = (TextView) findViewById(R.id.targetNum);
         tapActionManager = TapActionManager.getInstance(getBaseContext());
-        targetNumField.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectContact(v);
-            }
-        });
+
     }
 
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

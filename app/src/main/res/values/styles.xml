@@ -5,12 +5,20 @@
         <item name="colorPrimary" >@color/Primary</item>
         <item name="colorPrimaryDark">@color/PrimaryDark</item>
         <item name="colorAccent">@color/Accent</item>
+        <item name="android:textViewStyle">@style/AppTheme.Widget.TextView</item>
         <!--<item name="windowBackground">@color/WindowBackground</item>-->
+    </style>
+
+    <style name="AppTheme.Widget"/>
+
+    <style name="AppTheme.Widget.TextView" parent="android:Widget.TextView">
+        <item name="fontPath">fonts/Roboto-Light.ttf</item>
     </style>
 
     <style name="menu_labels_style">
         <item name="android:background">@drawable/fab_label_background</item>
         <item name="android:textColor">@color/white</item>
+        <item name="fontPath">fonts/Roboto-Light.ttf</item>
     </style>
 
     <style name="BaseTheme" parent="Theme.AppCompat.Light.DarkActionBar">
