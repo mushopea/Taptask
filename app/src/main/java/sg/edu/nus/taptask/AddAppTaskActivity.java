@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
@@ -32,12 +33,15 @@ public class AddAppTaskActivity extends ActionBarActivity {
     private List<String> appNames;
     private List<Drawable> packageIcons;
     private AlertDialog choose;
+    private Button continueButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_app_task);
         appNameField = (TextView) findViewById(R.id.appName);
+        continueButton = (Button) findViewById(R.id.button);
+        continueButton.setEnabled(false);
         tapActionManager = TapActionManager.getInstance(getBaseContext());
         appNameField.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,6 +84,7 @@ public class AddAppTaskActivity extends ActionBarActivity {
                 });
 
         choose = builder.create();
+
     }
 
 
@@ -118,7 +123,14 @@ public class AddAppTaskActivity extends ActionBarActivity {
     }
 
     public void selectApp(){
+
         choose.show();
+        if(appNameField != null){
+            continueButton.setEnabled(true);
+        } else {
+            continueButton.setEnabled(false);
+        }
+
     }
 
 }

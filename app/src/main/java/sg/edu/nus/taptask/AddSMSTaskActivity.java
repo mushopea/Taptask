@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.net.Uri;
+import android.widget.Button;
 import android.widget.TextView;
 
 import sg.edu.nus.taptask.model.TapActionManager;
@@ -24,6 +25,7 @@ public class AddSMSTaskActivity extends ActionBarActivity {
     private TextView targetNumField;
     private TextView targetContentField;
     private TapActionManager tapActionManager;
+    private Button continueButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +34,8 @@ public class AddSMSTaskActivity extends ActionBarActivity {
         targetNameField = (TextView) findViewById(R.id.targetName);
         targetNumField = (TextView) findViewById(R.id.targetNum);
         targetContentField = (TextView) findViewById(R.id.targetContent);
+        continueButton = (Button) findViewById(R.id.button);
+        continueButton.setEnabled(false);
         tapActionManager = TapActionManager.getInstance(getBaseContext());
         targetNumField.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,10 +90,13 @@ public class AddSMSTaskActivity extends ActionBarActivity {
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent data) {
 
+
         if (data != null) {
             Uri uri = data.getData();
 
+
             if (uri != null) {
+
                 Cursor c = null;
                 try {
                     c = getContentResolver().query(uri, new String[]{
@@ -102,6 +109,11 @@ public class AddSMSTaskActivity extends ActionBarActivity {
                         String name = c.getString(1);
                         this.targetNumField.setText(number);
                         this.targetNameField.setText(name);
+                        if(targetNumField.getText().toString() != null && targetNameField.getText().toString() !=null){
+                            continueButton.setEnabled(true);
+                        } else {
+                            continueButton.setEnabled(false);
+                        }
                     }
                 } finally {
                     if (c != null) {

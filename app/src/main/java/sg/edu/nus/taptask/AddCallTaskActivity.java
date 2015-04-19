@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.net.Uri;
+import android.widget.Button;
 import android.widget.TextView;
 
 import sg.edu.nus.taptask.model.TapActionCall;
@@ -23,6 +24,7 @@ public class AddCallTaskActivity extends ActionBarActivity {
     private TextView targetNameField;
     private TextView targetNumField;
     private TapActionManager tapActionManager;
+    private Button continueButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +32,8 @@ public class AddCallTaskActivity extends ActionBarActivity {
         setContentView(R.layout.activity_add_call_task);
         targetNameField = (TextView) findViewById(R.id.targetName);
         targetNumField = (TextView) findViewById(R.id.targetNum);
+        continueButton = (Button) findViewById(R.id.button);
+        continueButton.setEnabled(false);
         tapActionManager = TapActionManager.getInstance(getBaseContext());
         targetNumField.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,6 +104,11 @@ public class AddCallTaskActivity extends ActionBarActivity {
                         String name = c.getString(1);
                         this.targetNumField.setText(number);
                         this.targetNameField.setText(name);
+                        if(targetNumField.getText().toString() != null && targetNameField.getText().toString() !=null){
+                            continueButton.setEnabled(true);
+                        } else {
+                            continueButton.setEnabled(false);
+                        }
                     }
                 } finally {
                     if (c != null) {
