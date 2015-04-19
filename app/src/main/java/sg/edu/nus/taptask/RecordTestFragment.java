@@ -110,7 +110,7 @@ public class RecordTestFragment extends Fragment implements AccelerometerSampler
     }
 
     @Override
-    public void onMatchFound(TapAction tapAction, double[] signal, double matchPct) {
+    public void onMatchFound(TapAction tapAction, TapPattern signalPattern, double matchPct) {
         Log.e("RecordFragment", "Match found!!");
         accelerometerSampler.stopSampling();
     }

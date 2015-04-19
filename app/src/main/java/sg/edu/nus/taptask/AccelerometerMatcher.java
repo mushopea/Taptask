@@ -46,7 +46,7 @@ public class AccelerometerMatcher extends AccelerometerSampler {
             if (timeIndex % (absAccelerationBuffer.length / 10) == 0) {
                 if (this.tapActionToMatch != null) {
                     signalPattern = TapPattern.createPattern(getAbsAccelerationBuffer(), this.samplingDuration, this.samplingFrequency, signalPattern);
-                    matchPattern(this.tapActionToMatch, signalPattern.pattern);
+                    matchPattern(this.tapActionToMatch, signalPattern);
                 } else {
                     Log.e("AccMatcher", "TapPatternToMatch null");
                 }
@@ -55,12 +55,12 @@ public class AccelerometerMatcher extends AccelerometerSampler {
         }
     }
 
-    protected void matchPattern(TapAction tapAction, double[] signal) {
+    protected void matchPattern(TapAction tapAction, TapPattern signalPattern) {
         TapPattern tapPattern = tapAction.getPattern();
-        double matchPct = tapPattern.matchSignalPercentage(signal);
+        double matchPct = tapPattern.matchSignalPercentage(signalPattern);
         if (matchPct > TapPattern.MATCH_PERCENTAGE_THRESHOLD) {
             if (this.accelerometerSamplerListener != null) {
-                accelerometerSamplerListener.onMatchFound(tapAction, signal, matchPct);
+                accelerometerSamplerListener.onMatchFound(tapAction, signalPattern, matchPct);
             }
         }
     }

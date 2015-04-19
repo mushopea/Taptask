@@ -155,7 +155,7 @@ public class AccelerometerRecordSurfaceView extends SurfaceView implements Surfa
 
             //Draw background pattern
             if (backgroundPattern != null) {
-                ArrayList<Double> circlePositions = backgroundPattern.getCirclePositions();
+                ArrayList<Double> circlePositions = backgroundPattern.tapPositions;
                 int circleXMax = backgroundPattern.pattern.length;
                 float circleXScale = (float)canvasWidth/(float)circleXMax;
                 for (int i=0 ; i<circlePositions.size() ; i++) {
@@ -197,7 +197,8 @@ public class AccelerometerRecordSurfaceView extends SurfaceView implements Surfa
                 }
                 */
 
-                ArrayList<Double> circlePositions = tapPattern.getCirclePositions();
+                // Draw circles of ongoing taps
+                ArrayList<Double> circlePositions = tapPattern.tapPositions;
                 int circleXMax = tapPattern.pattern.length;
                 float circleXScale = (float)canvasWidth/(float)circleXMax;
                 for (int i=0 ; i<circlePositions.size() ; i++) {

@@ -1,6 +1,7 @@
 package sg.edu.nus.taptask;
 
 import sg.edu.nus.taptask.model.TapAction;
+import sg.edu.nus.taptask.model.TapPattern;
 
 public interface AccelerometerSamplerListener {
     public void onSamplingStart();
@@ -8,6 +9,6 @@ public interface AccelerometerSamplerListener {
     public void onCalibrationDone();
     public void onRecordingDelayOver();
     public void onRecordingDone();
-    public void onMatchFound(TapAction tapAction, double[] signal, double matchPct);
+    public void onMatchFound(TapAction tapAction, TapPattern signalPattern, double matchPct);
 
 }
