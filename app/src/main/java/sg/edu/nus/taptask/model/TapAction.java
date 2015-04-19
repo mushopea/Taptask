@@ -10,6 +10,7 @@ import android.util.Log;
  */
 public class TapAction {
     private TapPattern pattern; // Pattern that triggers action
+    private boolean enabled = true;    // Enabled for matching
 
     public TapAction(TapPattern pattern) {
         this.pattern = pattern;
@@ -38,5 +39,13 @@ public class TapAction {
 
     public void setPattern(TapPattern pattern) {
         this.pattern = pattern;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

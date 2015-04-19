@@ -21,13 +21,6 @@ public class AccelerometerMatcher extends AccelerometerSampler {
         super(context);
     }
 
-
-    public void clearBuffer() {
-        synchronized (this) {
-            Arrays.fill(absAccelerationBuffer, 0);
-        }
-    }
-
     private TapPattern signalPattern = null;
     @Override
     protected void samplingStep(SensorEvent sensorEvent) {
@@ -61,6 +54,11 @@ public class AccelerometerMatcher extends AccelerometerSampler {
         TapAction bestMatchTapAction = null;
         for (int i=0 ; i<tapActionsToMatch.size() ; i++) {
             TapAction tapActionToMatch = tapActionsToMatch.get(i);
+            // Check if enabled
+            if (!tapActionToMatch.isEnabled()) {
+                continue;
+            }
+            // Find match pct
             TapPattern tapPattern = tapActionToMatch.getPattern();
             double matchPct = tapPattern.matchSignalPercentage(signalPattern);
             if (matchPct > bestMatchPct) {
@@ -69,6 +67,7 @@ public class AccelerometerMatcher extends AccelerometerSampler {
             }
         }
 
+        // Match best action, if above threshold.
         if (bestMatchPct > TapPattern.MATCH_PERCENTAGE_THRESHOLD) {
             if (this.accelerometerSamplerListener != null) {
                 accelerometerSamplerListener.onMatchFound(bestMatchTapAction, signalPattern, bestMatchPct);
