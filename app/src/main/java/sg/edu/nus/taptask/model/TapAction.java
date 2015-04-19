@@ -1,8 +1,15 @@
 package sg.edu.nus.taptask.model;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
+import sg.edu.nus.taptask.util.Utils;
 
 
 /**
@@ -12,6 +19,7 @@ import android.widget.Toast;
 public class TapAction {
     private TapPattern pattern; // Pattern that triggers action
     private boolean enabled = true;    // Enabled for matching
+    private Date lastTriggerTime = null;
 
     public TapAction(TapPattern pattern) {
         this.pattern = pattern;
@@ -32,6 +40,24 @@ public class TapAction {
     public boolean performAction(Context context) {
         Log.e("TapAction", "Performing action!");
         return true;
+    }
+
+    public String getLastTriggerTime(){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            TimeZone tz = TimeZone.getDefault();
+            sdf.setTimeZone(tz);
+            Log.e("TapAction", "get last trigger action");
+            return "Last Triggered: " + sdf.format(lastTriggerTime);
+        } catch(NullPointerException e) {
+            return "Last Triggered: Never";
+        }
+
+    }
+
+    public void updateLastTriggerTime(){
+        Log.e("TapAction", "update last trigger action");
+        lastTriggerTime = new Date();
     }
 
     public TapPattern getPattern() {

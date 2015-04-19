@@ -14,13 +14,16 @@ import android.widget.Toast;
 import sg.edu.nus.taptask.model.TapAction;
 import sg.edu.nus.taptask.model.TapActionManager;
 import sg.edu.nus.taptask.model.TapPattern;
+import sg.edu.nus.taptask.util.Utils;
 
 public class TaptaskService extends Service implements AccelerometerSamplerListener {
 
     AccelerometerMatcher accelerometerMatcher = null;
+    private TapActionManager tapActionManager;
     private NotificationManager notificationManager;
 
     public TaptaskService() {
+
     }
 
     @Override
@@ -30,7 +33,7 @@ public class TaptaskService extends Service implements AccelerometerSamplerListe
 
     @Override
     public void onCreate() {
-
+        this.tapActionManager = TapActionManager.getInstance(getBaseContext());
     }
 
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -80,6 +83,12 @@ public class TaptaskService extends Service implements AccelerometerSamplerListe
     @Override
     public void onMatchFound(TapAction tapAction, TapPattern signalPattern, double matchPct) {
         Log.e("Taptask Service", "Match! " + matchPct);
+        tapAction.updateLastTriggerTime();
+        new Thread(new Runnable() {
+            public void run(){
+                tapActionManager.saveTapActionManager();
+            }
+        }).start();
 
         accelerometerMatcher.clearBuffer();
         tapAction.performAction(getBaseContext());
@@ -87,7 +96,6 @@ public class TaptaskService extends Service implements AccelerometerSamplerListe
         Toast.makeText(this, "Taptask Action: " + tapAction.getName(), Toast.LENGTH_SHORT).show();
         Vibrator v = (Vibrator) this.getBaseContext().getSystemService(Context.VIBRATOR_SERVICE);
         v.vibrate(200);
-
     }
 
     @Override

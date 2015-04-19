@@ -27,10 +27,10 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
 
     public static class SimpleViewHolder extends RecyclerView.ViewHolder {
         SwipeLayout swipeLayout;
-        Button buttonDelete;
         public TextView taskName;
         public ImageView taskImage;
         public TextView onOffTextView;
+        public TextView lastTrigger;
 
         public SimpleViewHolder(View itemView) {
             super(itemView);
@@ -38,6 +38,7 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
             taskName = (TextView) itemView.findViewById(R.id.taskName);
             taskImage = (ImageView)itemView.findViewById(R.id.taskImage);
             onOffTextView = (TextView) itemView.findViewById(R.id.toggleOnOff);
+            lastTrigger = (TextView) itemView.findViewById(R.id.lastTriggered);
         }
     }
 
@@ -65,6 +66,10 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
 
         // set name
         viewHolder.taskName.setText(tapAction.getName());
+
+        // set lastTrigger
+
+        viewHolder.lastTrigger.setText(tapAction.getLastTriggerTime());
 
         // set icon
         String imageName = tapAction.getImage();
