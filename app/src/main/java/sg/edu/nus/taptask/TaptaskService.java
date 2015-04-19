@@ -80,8 +80,6 @@ public class TaptaskService extends Service implements AccelerometerSamplerListe
     @Override
     public void onMatchFound(TapAction tapAction, TapPattern signalPattern, double matchPct) {
         Log.e("Taptask Service", "Match! " + matchPct);
-        notificationManager = (NotificationManager)
-                getSystemService(Context.NOTIFICATION_SERVICE);
 
         accelerometerMatcher.clearBuffer();
         tapAction.performAction(getBaseContext());
