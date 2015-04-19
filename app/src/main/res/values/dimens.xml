@@ -7,6 +7,12 @@
     <dimen name="task_row_padding">3dp</dimen>
     <dimen name="toggle_onoff_top_padding">2dp</dimen>
     <dimen name="toggle_onoff_side_padding">6dp</dimen>
+    <dimen name="add_task_outer_padding">10dp</dimen>
+    <dimen name="btn_padding">10dp</dimen>
+    <dimen name="btn_padding_top">50dp</dimen>
+
+
+
 
     <dimen name="frame_margin">10dp</dimen>
     <dimen name="settings_toggle_width">44dp</dimen>

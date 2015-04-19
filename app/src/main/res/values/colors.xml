@@ -38,6 +38,7 @@
     <color name="mediumGray">#333333</color>
     <color name="darkGray">#4F4F4F</color>
     <color name="ultraDarkGray">#222222</color>
+    <color name="paleRed">#fffff8f6</color>
     <color name="lightRed">#FA9191</color>
     <color name="lightRed_Pressed">#dc8080</color>
     <color name="lightRed_Disabled">#eaeaea</color>

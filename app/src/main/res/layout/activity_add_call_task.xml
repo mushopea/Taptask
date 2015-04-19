@@ -8,75 +8,93 @@
     android:background="@color/white"
     tools:context="sg.edu.nus.taptask.AddCallTaskActivity">
 
-    <TextView android:text="Number to Call" android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/targetNumHeader" />
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_margin="@dimen/add_task_outer_padding">
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="phone"
-        android:ems="10"
-        android:id="@+id/targetNum"
-        android:layout_below="@+id/targetNumHeader"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_toStartOf="@+id/contacts_button"
-        android:layout_toLeftOf="@+id/contacts_button" />
+        <TextView android:text="Number to Call" android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/targetNumHeader" />
 
-    <TextView android:text="Name" android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/targetNum"
-        android:layout_marginTop="30dp"
-        android:id="@+id/targetNameHeader" />
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="phone"
+            android:ems="10"
+            android:id="@+id/targetNum"
+            android:layout_below="@+id/targetNumHeader"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@+id/contacts_button"
+            android:layout_toLeftOf="@+id/contacts_button" />
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:id="@+id/targetName"
-        android:layout_below="@+id/targetNameHeader"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/contacts_button"
-        android:layout_alignEnd="@+id/contacts_button" />
+        <TextView android:text="Name" android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/targetNum"
+            android:layout_marginTop="30dp"
+            android:id="@+id/targetNameHeader" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Record this task"
-        android:id="@+id/button"
-        android:layout_below="@+id/targetName"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="62dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:onClick="onClickContinueButton" />
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:id="@+id/targetName"
+            android:layout_below="@+id/targetNameHeader"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignRight="@+id/contacts_button"
+            android:layout_alignEnd="@+id/contacts_button" />
 
-    <mehdi.sakout.fancybuttons.FancyButton
-        android:id="@+id/contacts_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        fancy:borderColor="#FFFFFF"
-        fancy:defaultColor="@color/disabled_grey"
-        fancy:focusColor="@color/Primary"
-        fancy:fontIconResource="@string/contacts"
-        fancy:fontIconSize="4sp"
-        fancy:radius="3dp"
-        fancy:iconPosition="top"
-        fancy:text="CONTACTS"
-        fancy:textColor="#FFFFFF"
-        fancy:textSize="3dp"
-        android:layout_alignBottom="@+id/targetNum"
-        android:layout_alignRight="@+id/button"
-        android:layout_alignEnd="@+id/button"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
-        android:onClick="selectContact"
-        android:layout_marginLeft="5dp"
-        android:layout_marginBottom="5dp" />
+        <mehdi.sakout.fancybuttons.FancyButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/button"
+            android:onClick="onClickContinueButton"
+            android:layout_below="@+id/targetName"
+            android:paddingBottom="20dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="20dp"
+            fancy:borderColor="@color/Primary"
+            fancy:borderWidth="1dp"
+            fancy:defaultColor="#ffffff"
+            fancy:focusColor="@color/paleRed"
+            fancy:radius="30dp"
+            fancy:text="RECORD THIS TASK"
+            fancy:textColor="@color/Primary"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="@dimen/btn_padding_top"
+            android:layout_marginLeft="@dimen/btn_padding"
+            android:layout_marginRight="@dimen/btn_padding" />
+
+        <mehdi.sakout.fancybuttons.FancyButton
+            android:id="@+id/contacts_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fancy:borderColor="#FFFFFF"
+            fancy:defaultColor="@color/disabled_grey"
+            fancy:focusColor="@color/Primary"
+            fancy:fontIconResource="@string/contacts"
+            fancy:fontIconSize="4sp"
+            fancy:radius="3dp"
+            fancy:iconPosition="top"
+            fancy:text="CONTACTS"
+            fancy:textColor="#FFFFFF"
+            fancy:textSize="3dp"
+            android:layout_alignBottom="@+id/targetNum"
+            android:layout_alignRight="@+id/button"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:onClick="selectContact"
+            android:layout_marginLeft="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_alignParentEnd="true" />
+    </RelativeLayout>
 
 </RelativeLayout>

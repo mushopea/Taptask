@@ -21,6 +21,14 @@
         <item name="fontPath">fonts/Roboto-Light.ttf</item>
     </style>
 
+
+    <style name="default_button_style">
+        <item name="android:background">@drawable/fab_label_background</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="fontPath">fonts/Roboto-Light.ttf</item>
+    </style>
+
+
     <style name="BaseTheme" parent="Theme.AppCompat.Light.DarkActionBar">
     </style>
 
