@@ -22,7 +22,6 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
     private Button confirmButton = null;
     private Button resetButton = null;
     private Button addButton = null;
-    private Button cancelButton = null;
 
 
     // Accelerometer
@@ -49,7 +48,6 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
         confirmButton = (Button) view.findViewById(R.id.confirmButton);
         resetButton = (Button) view.findViewById(R.id.resetButton);
         addButton = (Button) view.findViewById(R.id.addButton);
-        cancelButton = (Button) view.findViewById(R.id.cancelButton);
 
         // Add listeners
         startButton.setOnClickListener(new View.OnClickListener() {
@@ -74,12 +72,6 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
             @Override
             public void onClick(View v) {
                 onClickAddButton(v);
-            }
-        });
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickCancelButton(v);
             }
         });
 
@@ -131,7 +123,6 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
                 // Waiting for first recording to start
                 instructionsText.setText("Press start to record pattern.");
                 startButton.setVisibility(View.VISIBLE);
-                cancelButton.setVisibility(View.VISIBLE);
                 resetButton.setVisibility(View.GONE);
                 confirmButton.setVisibility(View.GONE);
                 addButton.setVisibility(View.GONE);
@@ -140,7 +131,6 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
                 // Recording
                 instructionsText.setText("Hold on...");
                 startButton.setVisibility(View.INVISIBLE);
-                cancelButton.setVisibility(View.GONE);
                 resetButton.setVisibility(View.GONE);
                 confirmButton.setVisibility(View.GONE);
                 addButton.setVisibility(View.GONE);
@@ -150,7 +140,6 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
                 instructionsText.setText("Pattern recorded!");
                 confirmButton.setVisibility(View.VISIBLE);
                 resetButton.setVisibility(View.VISIBLE);
-                cancelButton.setVisibility(View.VISIBLE);
                 startButton.setVisibility(View.INVISIBLE);
                 addButton.setVisibility(View.GONE);
                 break;
@@ -158,7 +147,6 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
                 // Waiting for second recording to start
                 instructionsText.setText("Press start to confirm pattern.");
                 startButton.setVisibility(View.VISIBLE);
-                cancelButton.setVisibility(View.VISIBLE);
                 confirmButton.setVisibility(View.GONE);
                 resetButton.setVisibility(View.GONE);
                 addButton.setVisibility(View.GONE);
@@ -167,7 +155,6 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
                 // Done recording second, success
                 instructionsText.setText("All Done!");
                 addButton.setVisibility(View.VISIBLE);
-                cancelButton.setVisibility(View.VISIBLE);
                 startButton.setVisibility(View.GONE);
                 confirmButton.setVisibility(View.GONE);
                 resetButton.setVisibility(View.GONE);
@@ -175,11 +162,6 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
             default:
         }
 
-    }
-
-    public void onClickCancelButton(View view) {
-        // Just go back to previous activity.
-        this.getActivity().finish();
     }
 
     private void startRecording() {
