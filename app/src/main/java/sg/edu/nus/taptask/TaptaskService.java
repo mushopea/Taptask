@@ -99,7 +99,7 @@ public class TaptaskService extends Service implements AccelerometerSamplerListe
         Log.e("Taptask Service", "Tap Actions: " + tapActionManager.tapActions.size());
 
         if (tapActionManager.tapActions.size() > 0) {
-            accelerometerMatcher.setTapActionToMatch(tapActionManager.tapActions.get(0));
+            accelerometerMatcher.setTapActionsToMatch(tapActionManager.tapActions);
         }
 
         return START_STICKY;

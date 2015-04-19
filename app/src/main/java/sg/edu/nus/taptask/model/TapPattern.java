@@ -95,6 +95,36 @@ public class TapPattern {
         double magnitudeMatchPct =  1 - Math.abs(magnitude0 - magnitude1) / (magnitude0 + magnitude1);
         double matchPct = (Math.PI - angle)/Math.PI * magnitudeMatchPct;
 
+        Log.d("matchPatternPercentage", "pct: " + matchPct);
+
+        return matchPct;
+    }
+
+    public double matchSignalPercentage(TapPattern signalTapPattern, int len) {
+        // Get len taps
+        ArrayList<Double> tapIntervals0 = new ArrayList<Double>(this.tapIntervals);
+        ArrayList<Double> tapIntervals1 = new ArrayList<Double>(signalTapPattern.tapIntervals);
+        while (tapIntervals0.size() > len) {
+            tapIntervals0.remove(tapIntervals0.size()-1);
+        }
+        while (tapIntervals1.size() > len) {
+            tapIntervals1.remove(0);
+        }
+        if (tapIntervals0.size() != tapIntervals1.size()) {
+            return 0;
+        }
+
+        double magnitude0 = magnitude(tapIntervals0);
+        double magnitude1 = magnitude(tapIntervals1);
+        double dotProduct = dot(tapIntervals0, tapIntervals1);
+        double angle = Math.acos(dotProduct/(magnitude0*magnitude1));
+
+        // Factor in magnitude difference
+        double magnitudeMatchPct =  1 - Math.abs(magnitude0 - magnitude1) / (magnitude0 + magnitude1);
+        double matchPct = (Math.PI - angle)/Math.PI * magnitudeMatchPct;
+
+        Log.d("matchPFrontPercentage", "pct: " + matchPct);
+
         return matchPct;
     }
 
