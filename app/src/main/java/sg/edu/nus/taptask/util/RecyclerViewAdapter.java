@@ -35,7 +35,6 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
         public SimpleViewHolder(View itemView) {
             super(itemView);
             swipeLayout = (SwipeLayout) itemView.findViewById(R.id.swipe);
-            buttonDelete = (Button) itemView.findViewById(R.id.delete);
             taskName = (TextView) itemView.findViewById(R.id.taskName);
             taskImage = (ImageView)itemView.findViewById(R.id.taskImage);
 
@@ -87,16 +86,21 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
 
         viewHolder.swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
         viewHolder.swipeLayout.addSwipeListener(new SimpleSwipeListener() {
+
+            @Override
+            public void onStartOpen(SwipeLayout layout){
+               YoYo.with(Techniques.Tada).duration(500).delay(100).playOn(layout.findViewById(R.id.trash));
+            }
+
             @Override
             public void onOpen(SwipeLayout layout) {
-                YoYo.with(Techniques.Tada).duration(500).delay(100).playOn(layout.findViewById(R.id.trash));
-            }
-            @Override
-            public void onHandRelease(SwipeLayout layout, float xvel, float yvel){
-
-                Log.e("x value", "xvalue: " + xvel);
-                Log.e("y value", "yvalue: " + yvel);
-
+                mItemManger.closeAllItems();
+                mItemManger.removeShownLayouts(viewHolder.swipeLayout);
+                //tapActionManager.tapActions.remove(position);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, tapActionManager.tapActions.size());
+                Toast.makeText(mContext, "Deleted " + viewHolder.taskName.getText().toString() + "!", Toast.LENGTH_SHORT).show();
+                //YoYo.with(Techniques.Tada).duration(500).delay(100).playOn(layout.findViewById(R.id.trash));
             }
         });
         viewHolder.swipeLayout.setOnDoubleClickListener(new SwipeLayout.DoubleClickListener() {
@@ -105,17 +109,7 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
                 Toast.makeText(mContext, "DoubleClick", Toast.LENGTH_SHORT).show();
             }
         });
-        viewHolder.buttonDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mItemManger.removeShownLayouts(viewHolder.swipeLayout);
-                tapActionManager.tapActions.remove(position);
-                notifyItemRemoved(position);
-                notifyItemRangeChanged(position, tapActionManager.tapActions.size());
-                mItemManger.closeAllItems();
-                Toast.makeText(view.getContext(), "Deleted " + viewHolder.taskName.getText().toString() + "!", Toast.LENGTH_SHORT).show();
-            }
-        });
+
         mItemManger.bindView(viewHolder.itemView, position);
     }
 
