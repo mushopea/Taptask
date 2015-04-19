@@ -47,29 +47,17 @@
             android:layout_alignEnd="@+id/contacts_button" />
 
         <mehdi.sakout.fancybuttons.FancyButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/default_button_style"
             android:id="@+id/button"
             android:onClick="onClickContinueButton"
             android:layout_below="@+id/targetName"
-            android:paddingBottom="20dp"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:paddingTop="20dp"
             fancy:borderColor="@color/Primary"
-            fancy:borderWidth="1dp"
-            fancy:defaultColor="#ffffff"
+            fancy:borderWidth="@dimen/btn_border"
+            fancy:defaultColor="@color/white"
             fancy:focusColor="@color/paleRed"
             fancy:radius="30dp"
             fancy:text="RECORD THIS TASK"
-            fancy:textColor="@color/Primary"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="@dimen/btn_padding_top"
-            android:layout_marginLeft="@dimen/btn_padding"
-            android:layout_marginRight="@dimen/btn_padding" />
+            fancy:textColor="@color/Primary"/>
 
         <mehdi.sakout.fancybuttons.FancyButton
             android:id="@+id/contacts_button"
