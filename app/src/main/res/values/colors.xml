@@ -46,6 +46,7 @@
     <color name="lightBlue_Disabled">#eaeaea</color>
     <color name="darkBlue">#00698b</color>
     <color name="green">#64911c</color>
+    <color name="lightgreen">#ff86c523</color>
 
     <color name="black_overlay">#66000000</color>
 </resources>
