@@ -4,6 +4,7 @@ import android.content.Context;
 import android.hardware.SensorEvent;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import sg.edu.nus.taptask.model.TapAction;
@@ -14,7 +15,7 @@ import sg.edu.nus.taptask.model.TapPattern;
  */
 public class AccelerometerMatcher extends AccelerometerSampler {
 
-    public TapAction tapActionToMatch;
+    public ArrayList<TapAction> tapActionsToMatch;
 
     public AccelerometerMatcher(Context context) {
         super(context);
@@ -44,9 +45,9 @@ public class AccelerometerMatcher extends AccelerometerSampler {
 
             // Attempt to locate match tap every 5/10 sec (0.5 sec) (samplingDuration/10)
             if (timeIndex % (absAccelerationBuffer.length / 10) == 0) {
-                if (this.tapActionToMatch != null) {
+                if (this.tapActionsToMatch != null && this.tapActionsToMatch.size() > 0) {
                     signalPattern = TapPattern.createPattern(getAbsAccelerationBuffer(), this.samplingDuration, this.samplingFrequency, signalPattern);
-                    matchPattern(this.tapActionToMatch, signalPattern.pattern);
+                    matchPattern(signalPattern);
                 } else {
                     Log.e("AccMatcher", "TapPatternToMatch null");
                 }
@@ -55,21 +56,32 @@ public class AccelerometerMatcher extends AccelerometerSampler {
         }
     }
 
-    protected void matchPattern(TapAction tapAction, double[] signal) {
-        TapPattern tapPattern = tapAction.getPattern();
-        double matchPct = tapPattern.matchSignalPercentage(signal);
-        if (matchPct > TapPattern.MATCH_PERCENTAGE_THRESHOLD) {
-            if (this.accelerometerSamplerListener != null) {
-                accelerometerSamplerListener.onMatchFound(tapAction, signal, matchPct);
+    protected void matchPattern(TapPattern signalPattern) {
+        double bestMatchPct = -1;
+        TapAction bestMatchTapAction = null;
+        for (int i=0 ; i<tapActionsToMatch.size() ; i++) {
+            TapAction tapActionToMatch = tapActionsToMatch.get(i);
+            TapPattern tapPattern = tapActionToMatch.getPattern();
+            double matchPct = tapPattern.matchSignalPercentage(signalPattern);
+            if (matchPct > bestMatchPct) {
+                bestMatchPct = matchPct;
+                bestMatchTapAction = tapActionToMatch;
             }
         }
+
+        if (bestMatchPct > TapPattern.MATCH_PERCENTAGE_THRESHOLD) {
+            if (this.accelerometerSamplerListener != null) {
+                accelerometerSamplerListener.onMatchFound(bestMatchTapAction, signalPattern, bestMatchPct);
+            }
+        }
+
     }
 
-    public TapAction getTapActionToMatch() {
-        return tapActionToMatch;
+    public ArrayList<TapAction> getTapActionsToMatch() {
+        return tapActionsToMatch;
     }
 
-    public void setTapActionToMatch(TapAction tapActionToMatch) {
-        this.tapActionToMatch = tapActionToMatch;
+    public void setTapActionsToMatch(ArrayList<TapAction> tapActionsToMatch) {
+        this.tapActionsToMatch = tapActionsToMatch;
     }
 }

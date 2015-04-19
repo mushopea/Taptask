@@ -277,6 +277,6 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
     }
 
     @Override
-    public void onMatchFound(TapAction tapAction, double[] signal, double matchPct) {
+    public void onMatchFound(TapAction tapAction, TapPattern signalPattern, double matchPct) {
     }
 }

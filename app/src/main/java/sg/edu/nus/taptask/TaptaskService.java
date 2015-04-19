@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import sg.edu.nus.taptask.model.TapAction;
 import sg.edu.nus.taptask.model.TapActionManager;
+import sg.edu.nus.taptask.model.TapPattern;
 
 public class TaptaskService extends Service implements AccelerometerSamplerListener {
 
@@ -91,21 +92,21 @@ public class TaptaskService extends Service implements AccelerometerSamplerListe
         accelerometerMatcher = new AccelerometerMatcher(this.getBaseContext());
         accelerometerMatcher.calibrateSamplingRate();
         this.accelerometerMatcher.setAccelerometerSamplerListener(this);
-        this.accelerometerMatcher.startSampling(10); // 10 sec buffer
+        this.accelerometerMatcher.startSampling(5);
 
         // Set patterns to match
         TapActionManager tapActionManager = TapActionManager.getInstance(getBaseContext());
         Log.e("Taptask Service", "Tap Actions: " + tapActionManager.tapActions.size());
 
         if (tapActionManager.tapActions.size() > 0) {
-            accelerometerMatcher.setTapActionToMatch(tapActionManager.tapActions.get(0));
+            accelerometerMatcher.setTapActionsToMatch(tapActionManager.tapActions);
         }
 
         return START_STICKY;
     }
 
     @Override
-    public void onMatchFound(TapAction tapAction, double[] signal, double matchPct) {
+    public void onMatchFound(TapAction tapAction, TapPattern signalPattern, double matchPct) {
         Log.e("Taptask Service", "Match! " + matchPct);
         notificationManager = (NotificationManager)
                 getSystemService(Context.NOTIFICATION_SERVICE);

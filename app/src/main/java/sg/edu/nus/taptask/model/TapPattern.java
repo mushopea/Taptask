@@ -5,7 +5,6 @@ import android.os.Vibrator;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import sg.edu.nus.taptask.FFTHelper;
 
@@ -13,12 +12,13 @@ import sg.edu.nus.taptask.FFTHelper;
  * Class representing a tap pattern
  */
 public class TapPattern {
-    public static final double MATCH_PERCENTAGE_THRESHOLD = 0.50; // TODO: test what values are good or let user decide.
+    public static final double MATCH_PERCENTAGE_THRESHOLD = 0.75; // TODO: test what values are good or let user decide.
 
     public double duration;
     public double frequency;
     public double[] pattern;
-
+    public ArrayList<Double> tapPositions;
+    public ArrayList<Double> tapIntervals;
 
 
     private transient static double[] boxKernel = null;
@@ -60,6 +60,9 @@ public class TapPattern {
         pattern.duration = duration;
         pattern.frequency = frequency;
         pattern.pattern = jounce;
+        pattern.tapPositions = pattern.calculateTapPositions();
+        pattern.tapIntervals = pattern.calculateTapIntervals();
+
         return pattern;
     }
 
@@ -78,72 +81,81 @@ public class TapPattern {
     }
 
     public double matchPatternPercentage(TapPattern tapPattern) {
-        double[] pattern = FFTHelper.padWithZeros(this.pattern, this.pattern.length*2, null);
-        double[] signal = FFTHelper.padWithZeros(tapPattern.pattern, tapPattern.pattern.length*2, null);
-        if (pattern.length != signal.length) {
-            // Should not happen
-            Log.e("TapPattern", "matchPatternPercentage: pattern length mismatch " + pattern.length + ", " + signal.length);
-        }
-        // TODO: pad with zeros to possibly make correlation result better?
-
-        double normalizingFactor1 = FFTHelper.absSquareSum(pattern);
-        double normalizingFactor2 = FFTHelper.absSquareSum(signal);
-
-        double[] correlationResult = FFTHelper.FFTCorrelation(
-                signal, pattern);
-        int maxIndex = FFTHelper.maxIndex(correlationResult);
-        if (maxIndex == -1) {
+        if (this.tapIntervals.size() != tapPattern.tapIntervals.size()) {
+            Log.e("matchPatternPercentage", "Num of taps different.");
             return 0;
         }
-        double maxValue = correlationResult[maxIndex];
-        double pctMatch1 = maxValue / normalizingFactor1;
-        double pctMatch2 = maxValue / normalizingFactor2;
-        double pctMatch = 1.0 / (0.5*(1.0/pctMatch1) + 0.5*(1.0/pctMatch2));
 
-        Log.i("TapPattern", "Best match at pos: " + maxIndex + ", value: " + maxValue + ", pct: " + pctMatch);
-        Log.i("TapPattern", "AbsSquareSum pattern: " + normalizingFactor1);
-        Log.i("TapPattern", "AbsSquareSum signal: " + normalizingFactor2);
-        return pctMatch;
+        double magnitude0 = magnitude(this.tapIntervals);
+        double magnitude1 = magnitude(tapPattern.tapIntervals);
+        double dotProduct = dot(this.tapIntervals, tapPattern.tapIntervals);
+        double angle = Math.acos(dotProduct/(magnitude0*magnitude1));
+
+        // Factor in magnitude difference
+        double magnitudeMatchPct =  1 - Math.abs(magnitude0 - magnitude1) / (magnitude0 + magnitude1);
+        double matchPct = (Math.PI - angle)/Math.PI * magnitudeMatchPct;
+
+        Log.d("matchPatternPercentage", "pct: " + matchPct);
+
+        return matchPct;
     }
 
-    public double matchSignalPercentage(double[] signal) {
-        double[] pattern = this.pattern;
-        if (pattern.length != signal.length) {
-
-            if (pattern.length > signal.length) {
-                // Something wrong..
-                Log.e("TapPattern", "Signal length shorter than pattern length.");
-            } else {
-                // TODO: Pad with twice the length
-                pattern = FFTHelper.padWithZeros(pattern, signal.length, null);
-            }
+    public double matchSignalPercentage(TapPattern signalTapPattern, int len) {
+        // Get len taps
+        ArrayList<Double> tapIntervals0 = new ArrayList<Double>(this.tapIntervals);
+        ArrayList<Double> tapIntervals1 = new ArrayList<Double>(signalTapPattern.tapIntervals);
+        while (tapIntervals0.size() > len) {
+            tapIntervals0.remove(tapIntervals0.size()-1);
         }
-
-        double normalizingFactor1 = FFTHelper.absSquareSum(pattern);
-        double normalizingFactor2 = FFTHelper.absSquareSum(signal);
-
-        double[] correlationResult = FFTHelper.FFTCorrelation(
-                signal, pattern);
-        int maxIndex = FFTHelper.maxIndex(correlationResult);
-        if (maxIndex == -1) {
+        while (tapIntervals1.size() > len) {
+            tapIntervals1.remove(0);
+        }
+        if (tapIntervals0.size() != tapIntervals1.size()) {
             return 0;
         }
-        double maxValue = correlationResult[maxIndex];
-        double pctMatch1 = maxValue / normalizingFactor1;
-        double pctMatch2 = maxValue / normalizingFactor2;
-        double pctMatch = 1.0 / (0.5*(1.0/pctMatch1) + 0.5*(1.0/pctMatch2));
 
-        Log.i("TapPattern", "Best match at pos: " + maxIndex + ", value: " + maxValue + ", pct: " + pctMatch);
-        Log.i("TapPattern", "AbsSquareSum pattern: " + normalizingFactor1);
-        Log.i("TapPattern", "AbsSquareSum signal: " + normalizingFactor2);
+        double magnitude0 = magnitude(tapIntervals0);
+        double magnitude1 = magnitude(tapIntervals1);
+        double dotProduct = dot(tapIntervals0, tapIntervals1);
+        double angle = Math.acos(dotProduct/(magnitude0*magnitude1));
 
-        return pctMatch;
+        // Factor in magnitude difference
+        double magnitudeMatchPct =  1 - Math.abs(magnitude0 - magnitude1) / (magnitude0 + magnitude1);
+        double matchPct = (Math.PI - angle)/Math.PI * magnitudeMatchPct;
+
+        Log.d("matchPFrontPercentage", "pct: " + matchPct);
+
+        return matchPct;
+    }
+
+    public double matchSignalPercentage(TapPattern signalTapPattern) {
+        // Get last taps in signal
+        ArrayList<Double> tapIntervals = new ArrayList<Double>(signalTapPattern.tapIntervals);
+        while (tapIntervals.size() > this.tapIntervals.size()) {
+            tapIntervals.remove(0);
+        }
+        if (this.tapIntervals.size() != tapIntervals.size()) {
+            return 0;
+        }
+
+        double magnitude0 = magnitude(this.tapIntervals);
+        double magnitude1 = magnitude(tapIntervals);
+        double dotProduct = dot(this.tapIntervals, tapIntervals);
+        double angle = Math.acos(dotProduct/(magnitude0*magnitude1));
+
+        // Factor in magnitude difference
+        double magnitudeMatchPct =  1 - Math.abs(magnitude0 - magnitude1) / (magnitude0 + magnitude1);
+        double matchPct = (Math.PI - angle)/Math.PI * magnitudeMatchPct;
+
+        Log.d("matchSignalPercentage", "pct: " + matchPct);
+
+        return matchPct;
     }
 
     /**
      * Gets a list of positions to represent the pattern
      */
-    public ArrayList<Double> getCirclePositions() {
+    public ArrayList<Double> calculateTapPositions() {
         ArrayList<Double> list = new ArrayList<Double>();
 
         for (int i=0 ; i<pattern.length ; i++) {
@@ -163,16 +175,30 @@ public class TapPattern {
         return list;
     }
 
+    /**
+     * Gets a list of interval durations between tap positions
+     * Requires tapPositions to be calculated before hand
+     */
+    public ArrayList<Double> calculateTapIntervals() {
+        ArrayList<Double> list = new ArrayList<Double>();
+
+        for (int i=0 ; i<tapPositions.size()-1 ; i++) {
+            list.add(tapPositions.get(i+1) - tapPositions.get(i));
+        }
+
+        return list;
+    }
+
     public long[] getVibrationPattern() {
         final long tap = 75;
-        ArrayList<Double> circlePositions = getCirclePositions();
-        long [] vibrationPattern = new long[circlePositions.size()*2];
+        ArrayList<Double> tapPositions = this.tapPositions;
+        long [] vibrationPattern = new long[tapPositions.size()*2];
         double delta = (duration / pattern.length) * 1000;
-        for (int i = 0 ; i<circlePositions.size() ; i++) {
+        for (int i = 0 ; i<tapPositions.size() ; i++) {
             if (i == 0) {
                 vibrationPattern[i * 2] = 0;
-            } else if (i<circlePositions.size()) {
-                vibrationPattern[i * 2] = (long) ((circlePositions.get(i) - circlePositions.get(i-1)) * delta);
+            } else if (i<tapPositions.size()) {
+                vibrationPattern[i * 2] = (long) ((tapPositions.get(i) - tapPositions.get(i-1)) * delta);
             }
             vibrationPattern[i*2+1] = tap;
         }
@@ -184,4 +210,27 @@ public class TapPattern {
         Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         v.vibrate(vibrationPattern, -1);
     }
+
+
+    // Helper functions
+    public static double magnitude(ArrayList<Double> vector) {
+        double magnitude = 0;
+        for (Double d : vector) {
+            magnitude += d*d;
+        }
+        return Math.sqrt(magnitude);
+    }
+
+    public static double dot(ArrayList<Double> vector0, ArrayList<Double> vector1) {
+        if (vector0.size() != vector1.size()) {
+            Log.e("dot", "size mismatch");
+            return 0;
+        }
+        double dotProduct = 0;
+        for (int i=0 ; i<vector0.size() ; i++) {
+            dotProduct += vector0.get(i) * vector1.get(i);
+        }
+        return dotProduct;
+    }
+
 }

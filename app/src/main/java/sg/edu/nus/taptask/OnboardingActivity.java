@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import sg.edu.nus.taptask.model.TapAction;
+import sg.edu.nus.taptask.model.TapPattern;
 import sg.edu.nus.taptask.util.SystemUiHider;
 
 
@@ -190,5 +191,5 @@ public class OnboardingActivity extends Activity implements AccelerometerSampler
     public void onRecordingDone() {}
 
     @Override
-    public void onMatchFound(TapAction tapAction, double[] signal, double matchPct) {}
+    public void onMatchFound(TapAction tapAction, TapPattern signalPattern, double matchPct) {}
 }
