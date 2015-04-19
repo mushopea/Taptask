@@ -51,7 +51,7 @@ public class RecordActivity extends ActionBarActivity {
 
     @Override
     protected void onDestroy() {
-        if (serviceWasRunning) {
+        if (serviceWasRunning && !Utils.isMyServiceRunning(getBaseContext(), TaptaskService.class)) {
             // Restart service if it was running
             startService(new Intent(this, TaptaskService.class));
         }

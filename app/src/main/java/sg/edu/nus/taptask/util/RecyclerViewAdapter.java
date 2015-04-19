@@ -120,7 +120,9 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
                             Intent stopIntent = new Intent(mContext, TaptaskService.class);
                             Intent startIntent = new Intent(mContext, TaptaskService.class);
                             mContext.stopService(stopIntent);
-                            mContext.startService(startIntent);
+                            if (!Utils.isMyServiceRunning(mContext, TaptaskService.class)) {
+                                mContext.startService(startIntent);
+                            }
                         }
                     }
                 }).start();
@@ -151,7 +153,9 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
                         tapActionManager.saveTapActionManager();
                         if (Utils.isMyServiceRunning(mContext, TaptaskService.class)) {
                             mContext.stopService(new Intent(mContext, TaptaskService.class));
-                            mContext.startService(new Intent(mContext, TaptaskService.class));
+                            if (!Utils.isMyServiceRunning(mContext, TaptaskService.class)) {
+                                mContext.startService(new Intent(mContext, TaptaskService.class));
+                            }
                         }
                     }
                 }).start();
