@@ -4,6 +4,10 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="enable_taptask">Enable Taptask</string>
+    <string name="on">ON</string>
+    <string name="off">OFF</string>
+    <string name="lasttriggered">Last Triggered: </string>
+
     <string name="preferences_key">sg.edu.nus.taptask.androidtogglebutton</string>
     <string name="title_activity_add_new_task">add_new_task</string>
     <string name="title_activity_add_task">AddTaskActivity</string>
@@ -19,6 +23,8 @@
 
     <string name="circle">&#xf1db;</string>
     <string name="filledcircle">&#xf111;</string>
+    <string name="trash">&#xf1f8;</string>
+
 
 
 </resources>

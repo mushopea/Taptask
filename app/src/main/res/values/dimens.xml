@@ -4,6 +4,9 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fullwidthbutton_side_padding">20dp</dimen>
     <dimen name="fullwidthbutton_top_padding">16dp</dimen>
+    <dimen name="task_row_padding">5dp</dimen>
+    <dimen name="toggle_onoff_top_padding">3dp</dimen>
+    <dimen name="toggle_onoff_side_padding">8dp</dimen>
 
     <dimen name="frame_margin">10dp</dimen>
     <dimen name="settings_toggle_width">44dp</dimen>
@@ -14,6 +17,7 @@
     <dimen name="task_icon_diameter">40dp</dimen>
     <dimen name="list_separator_height">1px</dimen>
     <dimen name="default_text_size">14sp</dimen>
+    <dimen name="med_text_size">16sp</dimen>
     <dimen name="big_text_size">20sp</dimen>
     <dimen name="small_text_size">11sp</dimen>
 
