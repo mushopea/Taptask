@@ -44,7 +44,6 @@
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="textMultiLine"
         android:ems="10"
         android:id="@+id/targetContent"
         android:layout_below="@+id/targetContentHeader"
@@ -52,9 +51,10 @@
         android:layout_alignParentStart="true"
         android:layout_alignRight="@+id/button"
         android:layout_alignEnd="@+id/button"
-        android:editable="false"
+        android:editable="true"
         android:height="80dp"
-        android:gravity="top" />
+        android:gravity="top"
+        android:autoText="false" />
 
     <Button
         android:layout_width="wrap_content"

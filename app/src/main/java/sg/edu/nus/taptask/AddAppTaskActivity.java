@@ -12,7 +12,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
@@ -26,7 +28,7 @@ import sg.edu.nus.taptask.util.ArrayAdapterWithIcon;
 
 public class AddAppTaskActivity extends ActionBarActivity {
 
-    private TextView appNameField;
+    private EditText appNameField;
     private String appPackageName;
     private TapActionManager tapActionManager;
     private List<String> packageNames;
@@ -35,11 +37,17 @@ public class AddAppTaskActivity extends ActionBarActivity {
     private AlertDialog choose;
     private Button continueButton;
 
+    private boolean isFormValid(){
+        boolean isAppNameValid = appNameField.getText().toString().length() > 0;
+        boolean isValid = isAppNameValid;
+        return isValid;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_app_task);
-        appNameField = (TextView) findViewById(R.id.appName);
+        appNameField = (EditText) findViewById(R.id.appName);
         continueButton = (Button) findViewById(R.id.button);
         continueButton.setEnabled(false);
         tapActionManager = TapActionManager.getInstance(getBaseContext());
@@ -80,8 +88,15 @@ public class AddAppTaskActivity extends ActionBarActivity {
                         appNameField.setText((appNameItems[which]).toString());
                         appPackageName = packageNames.get(which);
                         Log.e("appPackageName", appPackageName);
+                        if(isFormValid()){
+                            continueButton.setEnabled(true);
+                        } else {
+                            continueButton.setEnabled(false);
+                        }
                     }
                 });
+
+
 
         choose = builder.create();
 
@@ -125,7 +140,7 @@ public class AddAppTaskActivity extends ActionBarActivity {
     public void selectApp(){
 
         choose.show();
-        if(appNameField != null){
+        if(isFormValid()){
             continueButton.setEnabled(true);
         } else {
             continueButton.setEnabled(false);
