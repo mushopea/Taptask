@@ -121,6 +121,8 @@ public class AccelerometerRecordSurfaceView extends SurfaceView implements Surfa
         // Paints
         private Paint transparentPaint = new Paint();
         private Paint redPaint = new Paint();
+        private Paint redPaint2 = new Paint();
+        private Paint grayPaint = new Paint();
 
 
         // Pattern being tapped
@@ -140,7 +142,14 @@ public class AccelerometerRecordSurfaceView extends SurfaceView implements Surfa
             // Red paint
             redPaint.setColor(Color.RED);
             redPaint.setAlpha(80);
-            redPaint.setStrokeWidth(1);
+            redPaint.setStrokeWidth(3);
+
+            // Red paint 2
+            redPaint2.setColor(Color.RED);
+            redPaint2.setAlpha(20);
+
+            // Gray paint
+            grayPaint.setColor(Color.rgb(230,230,230));
 
         }
 
@@ -154,6 +163,11 @@ public class AccelerometerRecordSurfaceView extends SurfaceView implements Surfa
 
             // Offsets
             float circleYOffset = canvasHeight/2.0f;
+            float circleRadius = canvasWidth*0.03f;
+            float backgroundHeight = circleRadius * 9;
+
+            // Draw background rectangle
+            canvas.drawRect(0, circleYOffset-backgroundHeight, canvasWidth, circleYOffset+backgroundHeight, grayPaint);
 
             // Draw horizontal line
             canvas.drawLine(0, circleYOffset, canvasWidth, circleYOffset, redPaint);
@@ -167,7 +181,7 @@ public class AccelerometerRecordSurfaceView extends SurfaceView implements Surfa
                     float x = (float)(circlePositions.get(i) * circleXScale);
                     float y = circleYOffset;
 
-                    canvas.drawCircle(x, y, (float)(canvasWidth*0.03), redPaint);
+                    canvas.drawCircle(x, y, circleRadius, redPaint);
                 }
             }
 
@@ -180,7 +194,7 @@ public class AccelerometerRecordSurfaceView extends SurfaceView implements Surfa
                     float x = (float)(circlePositions.get(i) * circleXScale);
                     float y = circleYOffset;
 
-                    canvas.drawCircle(x, y, (float)(canvasWidth*0.03), redPaint);
+                    canvas.drawCircle(x, y, circleRadius, redPaint);
                 }
             }
 
@@ -223,10 +237,10 @@ public class AccelerometerRecordSurfaceView extends SurfaceView implements Surfa
                     float x = (float)(circlePositions.get(i) * circleXScale - (circleXMax - timeIndex)*circleXScale);
                     float y = circleYOffset;
 
-                    canvas.drawCircle(x, y, (float)(canvasWidth*0.03), redPaint);
+                    canvas.drawCircle(x, y, circleRadius, redPaint);
                 }
                 // Draw vertical time line
-                canvas.drawLine(timeIndex*circleXScale, circleYOffset-50, timeIndex*circleXScale, circleYOffset+50, redPaint);
+                canvas.drawRect(0, circleYOffset-backgroundHeight, timeIndex*circleXScale, circleYOffset+backgroundHeight, redPaint2);
             }
 
         }

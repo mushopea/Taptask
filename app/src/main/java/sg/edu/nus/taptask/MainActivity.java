@@ -53,6 +53,7 @@ public class MainActivity extends ActionBarActivity {
         taptaskToggle = (SettingsToggle) this.findViewById(R.id.taptaskToggle);
         mRecyclerView = (RecyclerView) findViewById(R.id.taskList);
 
+
         // task list recycler view
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setItemAnimator(new FadeInLeftAnimator());

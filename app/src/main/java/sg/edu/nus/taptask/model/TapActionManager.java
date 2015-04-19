@@ -55,21 +55,22 @@ public class TapActionManager {
     }
 
     public void saveTapActionManager() {
+        synchronized (this) {
+            final RuntimeTypeAdapterFactory<TapAction> typeFactory = RuntimeTypeAdapterFactory
+                    .of(TapAction.class, "type") // Here you specify which is the parent class and what field particularizes the child class.
+                    .registerSubtype(TapActionCall.class, "TapActionCall") // if the flag equals the class name, you can skip the second parameter. This is only necessary, when the "type" field does not equal the class name.
+                    .registerSubtype(TapActionSMS.class, "TapActionSMS")
+                    .registerSubtype(TapActionApp.class, "TapActionApp")
+                    .registerSubtype(TapActionVolume.class, "TapActionVolume");
 
-        final RuntimeTypeAdapterFactory<TapAction> typeFactory = RuntimeTypeAdapterFactory
-                .of(TapAction.class, "type") // Here you specify which is the parent class and what field particularizes the child class.
-                .registerSubtype(TapActionCall.class, "TapActionCall") // if the flag equals the class name, you can skip the second parameter. This is only necessary, when the "type" field does not equal the class name.
-                .registerSubtype(TapActionSMS.class, "TapActionSMS")
-                .registerSubtype(TapActionApp.class, "TapActionApp")
-                .registerSubtype(TapActionVolume.class, "TapActionVolume");
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapterFactory(typeFactory)
+                    .create();
 
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapterFactory(typeFactory)
-                .create();
-
-        String jsonTapActionManager = gson.toJson(this);
-        Log.e("TapActionManager", "Saving: " + jsonTapActionManager);
-        writeToFile(jsonTapActionManager);
+            String jsonTapActionManager = gson.toJson(this);
+            Log.e("TapActionManager", "Saving: " + jsonTapActionManager);
+            writeToFile(jsonTapActionManager);
+        }
     }
 
     public void readTapActionManager() {

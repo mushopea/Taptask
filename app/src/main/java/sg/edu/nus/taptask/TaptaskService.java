@@ -14,13 +14,16 @@ import android.widget.Toast;
 import sg.edu.nus.taptask.model.TapAction;
 import sg.edu.nus.taptask.model.TapActionManager;
 import sg.edu.nus.taptask.model.TapPattern;
+import sg.edu.nus.taptask.util.Utils;
 
 public class TaptaskService extends Service implements AccelerometerSamplerListener {
 
     AccelerometerMatcher accelerometerMatcher = null;
+    private TapActionManager tapActionManager;
     private NotificationManager notificationManager;
 
     public TaptaskService() {
+
     }
 
     @Override
@@ -30,28 +33,12 @@ public class TaptaskService extends Service implements AccelerometerSamplerListe
 
     @Override
     public void onCreate() {
-        Toast.makeText(this, "Taptask service created", Toast.LENGTH_SHORT).show();
+        this.tapActionManager = TapActionManager.getInstance(getBaseContext());
     }
 
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Toast.makeText(this, "Taptask service started", Toast.LENGTH_SHORT).show();
 
-        /*
-
-        Notification notification = new Notification(R.drawable.reject, "Taptask", System.currentTimeMillis());
-        Intent i=new Intent(this, MainActivity.class);
-
-        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|
-                Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
-        PendingIntent pi=PendingIntent.getActivity(this, 0, i, 0);
-
-        notification.setLatestEventInfo(this, "Taptask", "Taptask", pi);
-        notification.flags|=Notification.FLAG_NO_CLEAR;
-        startForeground(0, notification);
-
-        */
-
+        // Start notification
         notificationManager = (NotificationManager)
                 getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -63,7 +50,7 @@ public class TaptaskService extends Service implements AccelerometerSamplerListe
         notification.flags|=Notification.FLAG_NO_CLEAR;
         Context context = getApplicationContext();
         CharSequence contentTitle = "TapTask is enabled";
-        CharSequence contentText = "Big brother is watching you";
+        CharSequence contentText = "Big brother is wadstching you";
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this,
                 0, notificationIntent, 0);
@@ -74,20 +61,7 @@ public class TaptaskService extends Service implements AccelerometerSamplerListe
         notificationManager.notify(1, notification);
 
 
-        /*
-        int dot = 200;
-        int dash = 500;
-        int short_gap = 200;
-        int medium_gap = 500;
-        int long_gap = 1000;
-        // Beeeeep
-        Vibrator v = (Vibrator) this.getBaseContext().getSystemService(Context.VIBRATOR_SERVICE);
-        v.vibrate(dash);
-
-        // Keep vibrating.
-        long[] pattern = {long_gap, dot};
-        v.vibrate(pattern, 0);
-        */
+        // Start accelerometer
 
         accelerometerMatcher = new AccelerometerMatcher(this.getBaseContext());
         accelerometerMatcher.calibrateSamplingRate();
@@ -96,7 +70,7 @@ public class TaptaskService extends Service implements AccelerometerSamplerListe
 
         // Set patterns to match
         TapActionManager tapActionManager = TapActionManager.getInstance(getBaseContext());
-        Log.e("Taptask Service", "Tap Actions: " + tapActionManager.tapActions.size());
+        Log.e("Taptask Service", "Number of Tap Actions: " + tapActionManager.tapActions.size());
 
         if (tapActionManager.tapActions.size() > 0) {
             accelerometerMatcher.setTapActionsToMatch(tapActionManager.tapActions);
@@ -105,11 +79,16 @@ public class TaptaskService extends Service implements AccelerometerSamplerListe
         return START_STICKY;
     }
 
+
     @Override
     public void onMatchFound(TapAction tapAction, TapPattern signalPattern, double matchPct) {
         Log.e("Taptask Service", "Match! " + matchPct);
-        notificationManager = (NotificationManager)
-                getSystemService(Context.NOTIFICATION_SERVICE);
+        tapAction.updateLastTriggerTime();
+        new Thread(new Runnable() {
+            public void run(){
+                tapActionManager.saveTapActionManager();
+            }
+        }).start();
 
         accelerometerMatcher.clearBuffer();
         tapAction.performAction(getBaseContext());
@@ -117,7 +96,6 @@ public class TaptaskService extends Service implements AccelerometerSamplerListe
         Toast.makeText(this, "Taptask Action: " + tapAction.getName(), Toast.LENGTH_SHORT).show();
         Vibrator v = (Vibrator) this.getBaseContext().getSystemService(Context.VIBRATOR_SERVICE);
         v.vibrate(200);
-
     }
 
     @Override
@@ -139,8 +117,8 @@ public class TaptaskService extends Service implements AccelerometerSamplerListe
 
     @Override
     public void onDestroy() {
+        Log.e("Taptask Service", "Service Destroyed");
         accelerometerMatcher.stopSampling();
-        Toast.makeText(this, "Taptask service stopped", Toast.LENGTH_SHORT).show();
         notificationManager.cancel(1);
         stopForeground(true);
     }

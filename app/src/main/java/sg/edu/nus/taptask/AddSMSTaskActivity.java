@@ -6,11 +6,17 @@ import android.database.Cursor;
 import android.provider.ContactsContract;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.net.Uri;
+import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import sg.edu.nus.taptask.model.TapActionManager;
@@ -20,18 +26,29 @@ import sg.edu.nus.taptask.model.TapActionSMS;
 public class AddSMSTaskActivity extends ActionBarActivity {
 
     static final int PICK_CONTACT_REQUEST = 0;
-    private TextView targetNameField;
-    private TextView targetNumField;
-    private TextView targetContentField;
+    private EditText targetNameField;
+    private EditText targetNumField;
+    private EditText targetContentField;
     private TapActionManager tapActionManager;
+    private Button continueButton;
+
+    private boolean isFormValid(){
+        boolean isNumValid = targetNumField.getText().toString().length() > 0;
+        boolean isNameValid = targetNameField.getText().toString().length() > 0;
+        boolean isContentValid = targetContentField.getText().toString().length() > 0;
+        boolean isValid = isNumValid && isNameValid && isContentValid;
+        return isValid;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_sms_task);
-        targetNameField = (TextView) findViewById(R.id.targetName);
-        targetNumField = (TextView) findViewById(R.id.targetNum);
-        targetContentField = (TextView) findViewById(R.id.targetContent);
+        targetNameField = (EditText) findViewById(R.id.targetName);
+        targetNumField = (EditText) findViewById(R.id.targetNum);
+        targetContentField = (EditText) findViewById(R.id.targetContent);
+        continueButton = (Button) findViewById(R.id.button);
+        continueButton.setEnabled(false);
         tapActionManager = TapActionManager.getInstance(getBaseContext());
         targetNumField.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -39,6 +56,37 @@ public class AddSMSTaskActivity extends ActionBarActivity {
                 selectContact(v);
             }
         });
+        targetContentField.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+                if (isFormValid()) {
+                    continueButton.setEnabled(true);
+                } else {
+                    continueButton.setEnabled(false);
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+
+//        targetContentField.setOnKeyListener(
+//                new View.OnKeyListener() {
+//                    @Override
+//                    public boolean onKey(View v, int keyCode, KeyEvent event) {
+//                        Log.e("Form Validation", "validate");
+//                        if (isFormValid()) {
+//                            continueButton.setEnabled(true);
+//                        } else {
+//                            continueButton.setEnabled(false);
+//                        }
+//                        return true;
+//                    }
+//                }
+//        );
+
     }
 
 
@@ -86,10 +134,12 @@ public class AddSMSTaskActivity extends ActionBarActivity {
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent data) {
 
+
         if (data != null) {
             Uri uri = data.getData();
 
             if (uri != null) {
+
                 Cursor c = null;
                 try {
                     c = getContentResolver().query(uri, new String[]{
@@ -102,6 +152,11 @@ public class AddSMSTaskActivity extends ActionBarActivity {
                         String name = c.getString(1);
                         this.targetNumField.setText(number);
                         this.targetNameField.setText(name);
+                        if(isFormValid()){
+                            continueButton.setEnabled(true);
+                        } else {
+                            continueButton.setEnabled(false);
+                        }
                     }
                 } finally {
                     if (c != null) {

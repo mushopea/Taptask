@@ -17,7 +17,9 @@
         android:id="@+id/appName"
         android:layout_below="@+id/appNameHeader"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:editable="false"
+        android:inputType="none" />
 
     <Button
         android:layout_width="wrap_content"
@@ -30,6 +32,6 @@
         android:layout_marginTop="62dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:onClick="onClickContinueButton" />
+        android:onClick="onClickContinueButton"/>
 
 </RelativeLayout>

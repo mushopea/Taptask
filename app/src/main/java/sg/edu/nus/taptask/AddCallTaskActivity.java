@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import sg.edu.nus.taptask.model.TapActionCall;
@@ -23,9 +25,17 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 public class AddCallTaskActivity extends ActionBarActivity {
 
     static final int PICK_CONTACT_REQUEST = 0;
-    private TextView targetNameField;
-    private TextView targetNumField;
+    private EditText targetNameField;
+    private EditText targetNumField;
     private TapActionManager tapActionManager;
+    private Button continueButton;
+
+    private boolean isFormValid(){
+        boolean isNumValid = targetNumField.getText().toString().length() > 0;
+        boolean isNameValid = targetNameField.getText().toString().length() > 0;
+        boolean isValid = isNumValid && isNameValid;
+        return isValid;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,9 +46,12 @@ public class AddCallTaskActivity extends ActionBarActivity {
                         .build()
         );
         setContentView(R.layout.activity_add_call_task);
-        targetNameField = (TextView) findViewById(R.id.targetName);
-        targetNumField = (TextView) findViewById(R.id.targetNum);
+        targetNameField = (EditText) findViewById(R.id.targetName);
+        targetNumField = (EditText) findViewById(R.id.targetNum);
+        continueButton = (Button) findViewById(R.id.button);
+        continueButton.setEnabled(false);
         tapActionManager = TapActionManager.getInstance(getBaseContext());
+
 
     }
 
@@ -108,6 +121,11 @@ public class AddCallTaskActivity extends ActionBarActivity {
                         String name = c.getString(1);
                         this.targetNumField.setText(number);
                         this.targetNameField.setText(name);
+                        if(isFormValid()){
+                            continueButton.setEnabled(true);
+                        } else {
+                            continueButton.setEnabled(false);
+                        }
                     }
                 } finally {
                     if (c != null) {
