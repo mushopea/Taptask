@@ -79,7 +79,9 @@
                         android:layout_alignParentTop="true"
                         android:textSize="@dimen/med_text_size"
                         android:gravity="center_vertical"
-                        android:padding="@dimen/task_row_padding">
+                        android:padding="@dimen/task_row_padding"
+                        android:ellipsize="end"
+                        android:maxLines="1">
                     </TextView>
 
                     <RelativeLayout

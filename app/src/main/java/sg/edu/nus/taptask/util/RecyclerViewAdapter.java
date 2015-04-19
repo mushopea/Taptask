@@ -145,6 +145,7 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
                 notifyItemRangeChanged(position, tapActionManager.tapActions.size());
                 notifyItemRemoved(position);
                 Toast.makeText(mContext, "Deleted " + viewHolder.taskName.getText().toString() + "!", Toast.LENGTH_SHORT).show();
+
                 new Thread(new Runnable() {
                     public void run(){
                         tapActionManager.saveTapActionManager();
@@ -154,12 +155,13 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
                         }
                     }
                 }).start();
+
             }
         });
         viewHolder.swipeLayout.setOnDoubleClickListener(new SwipeLayout.DoubleClickListener() {
             @Override
             public void onDoubleClick(SwipeLayout layout, boolean surface) {
-                Toast.makeText(mContext, "DoubleClick", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, tapAction.getDetails(), Toast.LENGTH_SHORT).show();
             }
         });
 

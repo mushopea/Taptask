@@ -33,6 +33,10 @@ public class TapAction {
         return "task_icon_message";
     }
 
+    public String getDetails(){
+        return getName();
+    }
+
     /**
      * Stuff to be done when the action is triggered.
      * e.g. call someone, etc.

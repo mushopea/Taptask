@@ -23,6 +23,10 @@ public class TapActionSMS extends TapAction {
         this.targetName = targetName;
     }
 
+    public String getDetails(){
+        return smsContent;
+    }
+
     public String getName() {
         return "SMS " + targetName + " (" + targetNum + ")";
     }
