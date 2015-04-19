@@ -15,6 +15,8 @@ import sg.edu.nus.taptask.model.TapActionManager;
 /**
  * Created by musho on 24/3/2015.
  */
+
+@Deprecated
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     private int rowLayout;
     private Context mContext;

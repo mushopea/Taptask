@@ -18,7 +18,6 @@ import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import com.daimajia.swipe.util.Attributes;
 import sg.edu.nus.taptask.util.RecyclerViewAdapter;
-import sg.edu.nus.taptask.util.DividerItemDecoration;
 
 
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
@@ -51,7 +50,6 @@ public class MainActivity extends ActionBarActivity {
 
         // task list recycler view
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(getResources().getDrawable(R.drawable.divider)));
         mRecyclerView.setItemAnimator(new FadeInLeftAnimator());
 
         mAdapter = new RecyclerViewAdapter(R.layout.row_task, this);

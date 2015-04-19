@@ -91,6 +91,13 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
             public void onOpen(SwipeLayout layout) {
                 YoYo.with(Techniques.Tada).duration(500).delay(100).playOn(layout.findViewById(R.id.trash));
             }
+            @Override
+            public void onHandRelease(SwipeLayout layout, float xvel, float yvel){
+                
+                Log.e("x value", "xvalue: " + xvel);
+                Log.e("y value", "yvalue: " + yvel);
+
+            }
         });
         viewHolder.swipeLayout.setOnDoubleClickListener(new SwipeLayout.DoubleClickListener() {
             @Override

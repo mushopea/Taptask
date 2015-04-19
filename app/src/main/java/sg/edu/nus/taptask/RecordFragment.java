@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import sg.edu.nus.taptask.model.TapAction;
 import sg.edu.nus.taptask.model.TapActionManager;
@@ -248,23 +249,40 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
                 accelerometerSampler.samplingFrequency);
 
         if (firstPattern == null) {
-            firstPattern = pattern;
-            accelerometerRecordSurfaceView.setFirstPattern(firstPattern);
-            accelerometerSampler.clearBuffer();
+            // Enforce minimum of 2 taps
+            if (pattern.tapPositions.size() < 2) {
+                Log.e("RecordFragment", "Lesser taps than minimum requirement. " + pattern.tapPositions.size());
+                this.getActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+                        Toast.makeText(getActivity().getBaseContext(),
+                                "Minimum of 2 taps required!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                accelerometerSampler.clearBuffer();
+            } else {
+                firstPattern = pattern;
+                accelerometerRecordSurfaceView.setFirstPattern(firstPattern);
+                accelerometerSampler.clearBuffer();
+            }
         } else {
             secondPattern = pattern;
             accelerometerRecordSurfaceView.setSecondPattern(secondPattern);
             accelerometerSampler.clearBuffer();
         }
 
-        // Run recorder second time
-        if (secondPattern == null) {
+        // Run recorder again
+        if (firstPattern == null) {
+            this.getActivity().runOnUiThread(new Runnable() {
+                public void run() {
+                    setViewState(0);
+                }
+            });
+        } else if (secondPattern == null) {
             this.getActivity().runOnUiThread(new Runnable() {
                 public void run() {
                     setViewState(2);
                 }
             });
-
         } else {
             // Find match percentage
             final double matchPct = firstPattern.matchPatternPercentage(secondPattern) * 100;
