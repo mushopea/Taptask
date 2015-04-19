@@ -24,7 +24,7 @@ public class TapActionApp extends TapAction {
     }
 
     public String getImage() {
-        return "task_icon_volume";
+        return "task_icon_open_app";
     }
 
     public boolean performAction(Context context) {
