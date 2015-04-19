@@ -22,7 +22,6 @@ import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 import sg.edu.nus.taptask.model.TapActionCall;
 import sg.edu.nus.taptask.util.RecyclerViewAdapter;
 import sg.edu.nus.taptask.util.Utils;
-import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 
@@ -42,17 +41,9 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // font
-        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
-                        .setDefaultFontPath("fonts/Roboto-Regular.ttf")
-                        .setFontAttrId(R.attr.fontPath)
-                        .build()
-        );
-
         // Initialize views
         taptaskToggle = (SettingsToggle) this.findViewById(R.id.taptaskToggle);
         mRecyclerView = (RecyclerView) findViewById(R.id.taskList);
-
 
         // task list recycler view
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));

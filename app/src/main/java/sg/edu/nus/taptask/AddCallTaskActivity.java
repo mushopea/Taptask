@@ -20,7 +20,6 @@ import com.daimajia.androidanimations.library.YoYo;
 import mehdi.sakout.fancybuttons.FancyButton;
 import sg.edu.nus.taptask.model.TapActionCall;
 import sg.edu.nus.taptask.model.TapActionManager;
-import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 
@@ -42,14 +41,6 @@ public class AddCallTaskActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // font
-        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
-                        .setDefaultFontPath("fonts/Roboto-Regular.ttf")
-                        .setFontAttrId(R.attr.fontPath)
-                        .build()
-        );
-
-
         setContentView(R.layout.activity_add_call_task);
         targetNameField = (EditText) findViewById(R.id.targetName);
         targetNumField = (EditText) findViewById(R.id.targetNum);
@@ -57,8 +48,6 @@ public class AddCallTaskActivity extends ActionBarActivity {
         continueButton.setEnabled(false);
         continueButton.setVisibility(View.GONE);
         tapActionManager = TapActionManager.getInstance(getBaseContext());
-
-
     }
 
 
