@@ -10,6 +10,7 @@
     <dimen name="add_task_outer_padding">15dp</dimen>
     <dimen name="btn_padding">10dp</dimen>
     <dimen name="btn_padding_top">50dp</dimen>
+    <dimen name="btn_padding_top2">25dp</dimen>
     <dimen name="btn_border">1dp</dimen>
     <dimen name="btn_inner_padding">20dp</dimen>
 

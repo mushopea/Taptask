@@ -13,6 +13,12 @@
     <color name="label_grey">#c80c0c0c</color>
     <color name="text_primary">#ffebee</color>
     <color name="text_secondary">#ffffff</color>
+    <color name="btn_yellow">#f39c12</color>
+    <color name="btn_yellow_hover">#fffefbe9</color>
+    <color name="btn_grey">#f1c40f</color>
+    <color name="btn_grey_hover">#fff1e9d9</color>
+    <color name="btn_blue">#3498db</color>
+    <color name="btn_blue_hover">#fff0f1f9</color>
 
     <color name="call_color">#42a5f5</color>
     <color name="reject_color">#e57373</color>

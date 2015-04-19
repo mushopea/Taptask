@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
     tools:context="sg.edu.nus.taptask.RecordFragment">
 
     <RelativeLayout
@@ -14,7 +16,7 @@
         <TextView
             style="@style/title_text_style"
             android:id="@+id/instructionsText"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content" />
     </RelativeLayout>
 
@@ -31,33 +33,64 @@
         android:orientation="vertical"
         android:layout_gravity="bottom">
 
-        <Button
+        <mehdi.sakout.fancybuttons.FancyButton
+            style="@style/default_button_style2"
             android:id="@+id/startButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Start"
-            />
+            fancy:borderColor="@color/btn_blue"
+            fancy:borderWidth="@dimen/btn_border"
+            fancy:defaultColor="@color/white"
+            fancy:focusColor="@color/btn_blue_hover"
+            fancy:radius="30dp"
+            fancy:text="START"
+            fancy:textColor="@color/btn_blue"/>
 
-        <Button
+
+        <mehdi.sakout.fancybuttons.FancyButton
+            style="@style/default_button_style2"
             android:id="@+id/confirmButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
             android:text="Continue"
+            fancy:borderColor="@color/Primary"
+            fancy:borderWidth="@dimen/btn_border"
+            fancy:defaultColor="@color/white"
+            fancy:focusColor="@color/paleRed"
+            fancy:radius="30dp"
+            fancy:text="CONTINUE"
+            fancy:textColor="@color/Primary"
             />
-        <Button
+        <mehdi.sakout.fancybuttons.FancyButton
+            style="@style/default_button_style2"
             android:id="@+id/resetButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
             android:text="Reset"
+            fancy:borderColor="@color/btn_yellow"
+            fancy:borderWidth="@dimen/btn_border"
+            fancy:defaultColor="@color/white"
+            fancy:focusColor="@color/btn_yellow_hover"
+            fancy:radius="30dp"
+            fancy:text="RESET"
+            fancy:textColor="@color/btn_yellow"
             />
-        <Button
+        <mehdi.sakout.fancybuttons.FancyButton
+            style="@style/default_button_style2"
             android:id="@+id/addButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
             android:text="Add Task"
+            fancy:borderColor="@color/Primary"
+            fancy:borderWidth="@dimen/btn_border"
+            fancy:defaultColor="@color/white"
+            fancy:focusColor="@color/paleRed"
+            fancy:radius="30dp"
+            fancy:text="OKAY. ADD THIS TASK!"
+            fancy:textColor="@color/Primary"
             />
     </LinearLayout>
 

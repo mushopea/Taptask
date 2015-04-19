@@ -1,5 +1,6 @@
 package sg.edu.nus.taptask;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import sg.edu.nus.taptask.util.Utils;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 
 public class RecordActivity extends ActionBarActivity {
@@ -24,6 +26,12 @@ public class RecordActivity extends ActionBarActivity {
             stopService(new Intent(this, TaptaskService.class));
         }
 
+    }
+
+    // for font
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
 

@@ -6,10 +6,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import mehdi.sakout.fancybuttons.FancyButton;
 import sg.edu.nus.taptask.model.TapAction;
 import sg.edu.nus.taptask.model.TapActionManager;
 import sg.edu.nus.taptask.model.TapPattern;
@@ -18,10 +18,10 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
     // Views
     private AccelerometerRecordSurfaceView accelerometerRecordSurfaceView = null;
     private TextView instructionsText = null;
-    private Button startButton = null;
-    private Button confirmButton = null;
-    private Button resetButton = null;
-    private Button addButton = null;
+    private FancyButton startButton = null;
+    private FancyButton confirmButton = null;
+    private FancyButton resetButton = null;
+    private FancyButton addButton = null;
 
 
     // Accelerometer
@@ -38,16 +38,17 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
         super.onCreate(savedInstanceState);
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_record, container, false);
         accelerometerRecordSurfaceView = (AccelerometerRecordSurfaceView) view.findViewById(R.id.surfaceView);
         instructionsText = (TextView) view.findViewById(R.id.instructionsText);
-        startButton = (Button) view.findViewById(R.id.startButton);
-        confirmButton = (Button) view.findViewById(R.id.confirmButton);
-        resetButton = (Button) view.findViewById(R.id.resetButton);
-        addButton = (Button) view.findViewById(R.id.addButton);
+        startButton = (FancyButton) view.findViewById(R.id.startButton);
+        confirmButton = (FancyButton) view.findViewById(R.id.confirmButton);
+        resetButton = (FancyButton) view.findViewById(R.id.resetButton);
+        addButton = (FancyButton) view.findViewById(R.id.addButton);
 
         // Add listeners
         startButton.setOnClickListener(new View.OnClickListener() {
@@ -82,9 +83,9 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
     }
 
     public void onClickStartButton(View view) {
-        if (instructionsText.getText().equals("Press start to record pattern.")) {
+        if (instructionsText.getText().equals(getString(R.string.instructions_start))) {
             startRecording();
-        } else if (instructionsText.getText().equals("Press start to confirm pattern.")) {
+        } else if (instructionsText.getText().equals(getString(R.string.instructions_confirm))) {
             startSecondRecording();
         }
     }
@@ -121,7 +122,7 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
         switch(state) {
             case 0:
                 // Waiting for first recording to start
-                instructionsText.setText("Press start to record pattern.");
+                instructionsText.setText(R.string.instructions_start);
                 startButton.setVisibility(View.VISIBLE);
                 resetButton.setVisibility(View.GONE);
                 confirmButton.setVisibility(View.GONE);
@@ -145,7 +146,7 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
                 break;
             case 3:
                 // Waiting for second recording to start
-                instructionsText.setText("Press start to confirm pattern.");
+                instructionsText.setText(R.string.instructions_confirm);
                 startButton.setVisibility(View.VISIBLE);
                 confirmButton.setVisibility(View.GONE);
                 resetButton.setVisibility(View.GONE);
@@ -277,8 +278,8 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
             });
         }
 
-    }
 
+    }
     @Override
     public void onMatchFound(TapAction tapAction, TapPattern signalPattern, double matchPct) {
     }

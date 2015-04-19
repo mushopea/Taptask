@@ -32,6 +32,17 @@
         <item name="android:layout_marginRight">@dimen/btn_padding</item>
     </style>
 
+    <style name="default_button_style2">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">@dimen/btn_inner_padding</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_alignParentLeft">true</item>
+        <item name="android:layout_marginTop">@dimen/btn_padding_top2</item>
+        <item name="android:layout_marginLeft">@dimen/btn_padding</item>
+        <item name="android:layout_marginRight">@dimen/btn_padding</item>
+    </style>
+
     <style name="title_text_style">
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>

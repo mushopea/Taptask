@@ -7,26 +7,22 @@
     <string name="on">ON</string>
     <string name="off">OFF</string>
     <string name="lasttriggered">Last Triggered: </string>
-
     <string name="preferences_key">sg.edu.nus.taptask.androidtogglebutton</string>
-    <string name="title_activity_add_new_task">add_new_task</string>
-    <string name="title_activity_add_task">AddTaskActivity</string>
-    <string name="title_activity_add_call_task">AddCallTaskActivity</string>
-    <string name="title_activity_add_app_task">AddAppTaskActivity</string>
-    <string name="title_activity_add_volume_task">AddVolumeTaskActivity</string>
-    <string name="title_activity_add_sms_task">AddSMSTaskActivity</string>
-    <string name="title_activity_record">RecordActivity</string>
 
-    <string name="title_activity_onboarding">OnboardingActivity</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_add_new_task">add_new_task</string>
+    <string name="title_activity_add_task">Taptask</string>
+    <string name="title_activity_add_call_task">Taptask</string>
+    <string name="title_activity_add_app_task">Taptask</string>
+    <string name="title_activity_add_volume_task">Taptask</string>
+    <string name="title_activity_add_sms_task">Taptask</string>
+    <string name="title_activity_record">Taptask</string>
+    <string name="title_activity_onboarding">Taptask</string>
 
     <string name="circle">&#xf1db;</string>
     <string name="filledcircle">&#xf111;</string>
-    <string name="trash">&#xf1f8;</string>
     <string name="contacts">&#xf007;</string>
 
-
-
+    <string name="instructions_start">Press start to record pattern.</string>
+    <string name="instructions_confirm">Almost there! Tap the pattern again to confirm. Press start when you are ready.</string>
 
 </resources>
