@@ -142,6 +142,6 @@ public class TaptaskService extends Service implements AccelerometerSamplerListe
         accelerometerMatcher.stopSampling();
         Toast.makeText(this, "Taptask service stopped", Toast.LENGTH_SHORT).show();
         notificationManager.cancel(1);
-        //stopForeground(true);
+        stopForeground(true);
     }
 }
