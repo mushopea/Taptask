@@ -23,8 +23,10 @@ import sg.edu.nus.taptask.util.RecyclerViewAdapter;
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator;
 import sg.edu.nus.taptask.model.TapActionCall;
+import sg.edu.nus.taptask.model.TapActionManager;
 import sg.edu.nus.taptask.model.TapActionSMS;
 import sg.edu.nus.taptask.model.TapActionVolume;
+import sg.edu.nus.taptask.util.Utils;
 
 
 
@@ -44,7 +46,7 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // enable taptask toggle
+        // Initialize views
         taptaskToggle = (SettingsToggle) this.findViewById(R.id.taptaskToggle);
         mRecyclerView = (RecyclerView) findViewById(R.id.taskList);
 
@@ -58,6 +60,12 @@ public class MainActivity extends ActionBarActivity {
 
         initFabListeners();
         showAddTaskGuide();
+
+        // Start service if enabled and not already running
+        if (taptaskToggle.isOn() && !Utils.isMyServiceRunning(getBaseContext(), TaptaskService.class)) {
+            startService(new Intent(this, TaptaskService.class));
+        }
+
     }
 
     @Override
@@ -167,7 +175,7 @@ public class MainActivity extends ActionBarActivity {
             return;
         }
 
-        if (toggle.isOn()) {
+        if (toggle.isOn() && !Utils.isMyServiceRunning(getBaseContext(), TaptaskService.class)) {
             startService(new Intent(this, TaptaskService.class));
         } else {
             stopService(new Intent(this, TaptaskService.class));

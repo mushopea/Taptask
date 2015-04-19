@@ -15,8 +15,15 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 public class TapActionManager {
+    // Transient attributes
     public transient String saveFileName = "TapActionManager.json";
     private transient static TapActionManager ourInstance = new TapActionManager();
+    private transient Context context = null;
+    private transient TapAction currentTapAction = null;
+
+    // Attributes
+    public ArrayList<TapAction> tapActions = new ArrayList<TapAction>();
+
     public static TapActionManager getInstance(Context context) {
         if (ourInstance.context == null) {
             ourInstance.context = context;
@@ -24,11 +31,6 @@ public class TapActionManager {
         ourInstance.readTapActionManager();
         return ourInstance;
     }
-    private transient Context context = null;
-
-    // Attributes
-    public ArrayList<TapAction> tapActions = new ArrayList<TapAction>();
-    private transient TapAction currentTapAction = null;
 
     public TapAction getCurrentTapAction() {
         return currentTapAction;
@@ -135,5 +137,4 @@ public class TapActionManager {
         }
         return ret;
     }
-
 }

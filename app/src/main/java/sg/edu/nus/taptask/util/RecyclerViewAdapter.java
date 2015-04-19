@@ -93,7 +93,7 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
             }
             @Override
             public void onHandRelease(SwipeLayout layout, float xvel, float yvel){
-                
+
                 Log.e("x value", "xvalue: " + xvel);
                 Log.e("y value", "yvalue: " + yvel);
 
