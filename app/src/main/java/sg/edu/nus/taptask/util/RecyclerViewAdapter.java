@@ -1,6 +1,7 @@
 package sg.edu.nus.taptask.util;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,13 +17,11 @@ import com.daimajia.androidanimations.library.YoYo;
 import com.daimajia.swipe.SimpleSwipeListener;
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
-import com.daimajia.swipe.implments.SwipeItemRecyclerMangerImpl;
 
 import sg.edu.nus.taptask.R;
+import sg.edu.nus.taptask.TaptaskService;
 import sg.edu.nus.taptask.model.TapAction;
 import sg.edu.nus.taptask.model.TapActionManager;
-
-import java.util.ArrayList;
 
 public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapter.SimpleViewHolder> {
 
@@ -31,20 +30,14 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
         Button buttonDelete;
         public TextView taskName;
         public ImageView taskImage;
+        public TextView onOffTextView;
 
         public SimpleViewHolder(View itemView) {
             super(itemView);
             swipeLayout = (SwipeLayout) itemView.findViewById(R.id.swipe);
             taskName = (TextView) itemView.findViewById(R.id.taskName);
             taskImage = (ImageView)itemView.findViewById(R.id.taskImage);
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Log.d(getClass().getSimpleName(), "onItemSelected: " + taskName.getText().toString());
-                    Toast.makeText(view.getContext(), "onItemSelected: " + taskName.getText().toString(), Toast.LENGTH_SHORT).show();
-                }
-            });
+            onOffTextView = (TextView) itemView.findViewById(R.id.toggleOnOff);
         }
     }
 
@@ -69,17 +62,56 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(final SimpleViewHolder viewHolder, final int position) {
         final TapAction tapAction = tapActionManager.tapActions.get(position);
+
         // set name
         viewHolder.taskName.setText(tapAction.getName());
+
         // set icon
         String imageName = tapAction.getImage();
         viewHolder.taskImage.setImageDrawable(mContext.getResources().getDrawable(mContext.getResources().getIdentifier(imageName, "drawable", mContext.getPackageName())));
+
         // Set icon onClickListener
         // Vibrate pattern when icon is clicked.
         viewHolder.taskImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 tapAction.getPattern().vibratePattern(mContext);
+            }
+        });
+
+        // Set on off text
+        String onOffText = tapAction.isEnabled() ? "ON" : "OFF";
+        int onOffColor = tapAction.isEnabled() ?
+                mContext.getResources().getColor(R.color.lightgreen) :
+                mContext.getResources().getColor(R.color.disabled_grey);
+        viewHolder.onOffTextView.setText(onOffText);
+        viewHolder.onOffTextView.setBackgroundColor(onOffColor);
+
+        // Toggle task on/off on click
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tapAction.setEnabled(!tapAction.isEnabled());
+
+                // Set on off text
+                String onOffText = tapAction.isEnabled() ? "ON" : "OFF";
+                int onOffColor = tapAction.isEnabled() ?
+                        mContext.getResources().getColor(R.color.lightgreen) :
+                        mContext.getResources().getColor(R.color.disabled_grey);
+                viewHolder.onOffTextView.setText(onOffText);
+                viewHolder.onOffTextView.setBackgroundColor(onOffColor);
+
+                // Save on new thread, so UI thread does not lag
+                // Restart service if running
+                new Thread(new Runnable() {
+                    public void run(){
+                        tapActionManager.saveTapActionManager();
+                        if (Utils.isMyServiceRunning(mContext, TaptaskService.class)) {
+                            mContext.stopService(new Intent(mContext, TaptaskService.class));
+                            mContext.startService(new Intent(mContext, TaptaskService.class));
+                        }
+                    }
+                }).start();
             }
         });
 
