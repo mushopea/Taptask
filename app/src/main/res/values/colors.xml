@@ -2,6 +2,7 @@
 <resources>
     <color name="Primary" >#F44336</color>
     <color name="PrimaryDark" >#D32F2F</color>
+    <color name="PrimaryLight" >#ffc65659</color>
     <color name="Primary_pressed" >#D32F2F</color>
     <color name="Ripple" >#ffd9d9d9</color>
     <color name="Accent" >#FF1744</color>

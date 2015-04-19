@@ -6,12 +6,28 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:background="@color/white"
+    tools:ignore="MissingPrefix"
     tools:context="sg.edu.nus.taptask.AddCallTaskActivity">
 
     <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_margin="@dimen/add_task_outer_padding">
+        style="@style/title_container_style"
+        android:id="@+id/titleContainer"
+        >
+
+        <TextView
+            style="@style/title_text_style"
+            android:text="Record a task to call any contact or phone number."
+            android:id="@+id/textView"
+        />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        style="@style/title_separator_style"
+        android:id="@+id/separator"></LinearLayout>
+
+    <RelativeLayout
+        style="@style/add_task_form_style">
 
         <TextView android:text="Number to Call" android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -38,6 +54,7 @@
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:inputType="textPersonName"
             android:ems="10"
             android:id="@+id/targetName"
             android:layout_below="@+id/targetNameHeader"
@@ -84,5 +101,8 @@
             android:layout_marginBottom="5dp"
             android:layout_alignParentEnd="true" />
     </RelativeLayout>
+
+
+
 
 </RelativeLayout>

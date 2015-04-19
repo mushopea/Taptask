@@ -32,6 +32,42 @@
         <item name="android:layout_marginRight">@dimen/btn_padding</item>
     </style>
 
+    <style name="title_text_style">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:textColor">@color/PrimaryDark</item>
+        <item name="android:textSize">@dimen/title_text_size</item>
+        <item name="fontPath">fonts/Roboto-Thin.ttf</item>
+        <item name="android:layout_alignParentTop">true</item>
+        <item name="android:layout_alignParentLeft">true</item>
+    </style>
+
+    <style name="title_container_style">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">@dimen/add_task_outer_padding</item>
+        <item name="android:paddingBottom">@dimen/title_text_size</item>
+    </style>
+
+    <style name="title_separator_style">
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">@dimen/list_separator_height</item>
+        <item name="android:background">@color/separator_grey</item>
+        <item name="android:layout_alignBottom">@+id/titleContainer</item>
+    </style>
+
+    <style name="add_task_form_style">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">fill_parent</item>
+        <item name="android:layout_marginLeft">@dimen/add_task_outer_padding</item>
+        <item name="android:layout_marginRight">@dimen/add_task_outer_padding</item>
+        <item name="android:layout_marginBottom">@dimen/add_task_outer_padding</item>
+        <item name="android:layout_below">@+id/titleContainer</item>
+        <item name="android:layout_marginTop">@dimen/title_text_size</item>
+    </style>
+
 
     <style name="BaseTheme" parent="Theme.AppCompat.Light.DarkActionBar">
     </style>
