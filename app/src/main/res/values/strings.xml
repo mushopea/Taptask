@@ -23,6 +23,6 @@
     <string name="contacts">&#xf007;</string>
 
     <string name="instructions_start">Press start to record pattern.</string>
-    <string name="instructions_confirm">Almost there! Tap the pattern again to confirm. Press start when you are ready.</string>
+    <string name="instructions_confirm">Almost done! Press start to confirm pattern.</string>
 
 </resources>
