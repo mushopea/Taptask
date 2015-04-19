@@ -3,7 +3,6 @@ package sg.edu.nus.taptask.model;
 import android.content.Context;
 import android.util.Log;
 
-import sg.edu.nus.taptask.model.TapPattern;
 
 /**
  * Class that describes an action to be done when a tap pattern is matched
