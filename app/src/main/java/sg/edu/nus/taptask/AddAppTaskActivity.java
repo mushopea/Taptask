@@ -75,6 +75,7 @@ public class AddAppTaskActivity extends ActionBarActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         appNameField.setText((appNameItems[which]).toString());
                         appPackageName = packageNames.get(which);
+                        Log.e("appPackageName", appPackageName);
                     }
                 });
 

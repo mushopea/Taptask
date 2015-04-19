@@ -16,18 +16,24 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
-import java.util.List;
+import com.daimajia.swipe.util.Attributes;
+import sg.edu.nus.taptask.util.RecyclerViewAdapter;
+import sg.edu.nus.taptask.util.DividerItemDecoration;
+
 
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
+import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator;
 import sg.edu.nus.taptask.model.TapActionCall;
 import sg.edu.nus.taptask.model.TapActionSMS;
 import sg.edu.nus.taptask.model.TapActionVolume;
+
+
 
 public class MainActivity extends ActionBarActivity {
 
     private SettingsToggle taptaskToggle;
     private RecyclerView mRecyclerView;
-    private TaskAdapter mAdapter;
+    private RecyclerViewAdapter mAdapter;
 
     private View shadowView;
     private FloatingActionsMenu fabButton;
@@ -45,7 +51,10 @@ public class MainActivity extends ActionBarActivity {
 
         // task list recycler view
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new TaskAdapter(R.layout.row_task, this);
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(getResources().getDrawable(R.drawable.divider)));
+        mRecyclerView.setItemAnimator(new FadeInLeftAnimator());
+
+        mAdapter = new RecyclerViewAdapter(R.layout.row_task, this);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setItemAnimator(new SlideInLeftAnimator());
 
@@ -57,7 +66,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onResume() {
         super.onResume();
         // Refresh the list onResume
-        mAdapter = new TaskAdapter(R.layout.row_task, this);
+        mAdapter = new RecyclerViewAdapter(R.layout.row_task, this);
         mRecyclerView.setAdapter(mAdapter);
     }
 

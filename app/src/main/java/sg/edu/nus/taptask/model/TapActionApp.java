@@ -2,6 +2,7 @@ package sg.edu.nus.taptask.model;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 /**
  * Created by Yiwen on 12/4/2015.
@@ -13,6 +14,7 @@ public class TapActionApp extends TapAction {
 
     public TapActionApp(TapPattern pattern, String appName, String appPackageName) {
         super(pattern);
+        Log.e("TapActionApp", appPackageName);
         this.appPackageName = appPackageName;
         this.appName = appName;
     }
@@ -26,6 +28,7 @@ public class TapActionApp extends TapAction {
     }
 
     public boolean performAction(Context context) {
+        Log.e("TapActionApp Performed", appPackageName);
         Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(appPackageName);
         context.startActivity(launchIntent);
         return true;

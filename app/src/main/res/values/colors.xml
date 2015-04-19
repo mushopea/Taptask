@@ -17,7 +17,7 @@
     <color name="reject_color">#e57373</color>
     <color name="msg_color">#66bb6a</color>
     <color name="volume_color">#7986cb</color>
-
+co
     <color name="teal">#6dcded</color>
     <color name="darkTeal">#2bb3de</color>
     <color name="white">#FFFFFF</color>
@@ -46,6 +46,13 @@
     <color name="lightBlue_Disabled">#eaeaea</color>
     <color name="darkBlue">#00698b</color>
     <color name="green">#64911c</color>
+
+    <color name="backgroundColor">#E8E8E0</color>
+    <color name="backgroundColorPress">#DBDBD3</color>
+    <color name="red">#FF3B00</color>
+    <color name="red_press">#990000</color>
+    <color name="dark_gray">#4C535B</color>
+    <color name="dark_gray_press">#ff7e8a97</color>
 
     <color name="black_overlay">#66000000</color>
 </resources>
