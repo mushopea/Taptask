@@ -1,13 +1,12 @@
 package sg.edu.nus.taptask;
 
-import android.app.ActivityManager;
-import android.app.ActivityManager.RunningServiceInfo;
-import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import sg.edu.nus.taptask.util.Utils;
 
 
 public class RecordActivity extends ActionBarActivity {
@@ -20,7 +19,7 @@ public class RecordActivity extends ActionBarActivity {
         setContentView(R.layout.activity_record);
 
         // Check if Taptask Service is running, kill if running.
-        if (isMyServiceRunning(TaptaskService.class)) {
+        if (Utils.isMyServiceRunning(getBaseContext(), TaptaskService.class)) {
             serviceWasRunning = true;
             stopService(new Intent(this, TaptaskService.class));
         }
@@ -63,17 +62,6 @@ public class RecordActivity extends ActionBarActivity {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-    }
-
-    // Utility function
-    private boolean isMyServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
     }
 
 }
