@@ -12,10 +12,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
+import mehdi.sakout.fancybuttons.FancyButton;
 import sg.edu.nus.taptask.model.TapActionCall;
 import sg.edu.nus.taptask.model.TapActionManager;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
@@ -28,7 +27,7 @@ public class AddCallTaskActivity extends ActionBarActivity {
     private EditText targetNameField;
     private EditText targetNumField;
     private TapActionManager tapActionManager;
-    private Button continueButton;
+    private FancyButton continueButton;
 
     private boolean isFormValid(){
         boolean isNumValid = targetNumField.getText().toString().length() > 0;
@@ -48,7 +47,7 @@ public class AddCallTaskActivity extends ActionBarActivity {
         setContentView(R.layout.activity_add_call_task);
         targetNameField = (EditText) findViewById(R.id.targetName);
         targetNumField = (EditText) findViewById(R.id.targetNum);
-        continueButton = (Button) findViewById(R.id.button);
+        continueButton = (FancyButton) findViewById(R.id.button);
         continueButton.setEnabled(false);
         tapActionManager = TapActionManager.getInstance(getBaseContext());
 
