@@ -43,6 +43,7 @@
         <item name="android:layout_marginRight">@dimen/btn_padding</item>
     </style>
 
+
     <style name="title_text_style">
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>

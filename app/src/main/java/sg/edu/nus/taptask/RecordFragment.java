@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import at.markushi.ui.CircleButton;
 import mehdi.sakout.fancybuttons.FancyButton;
 import sg.edu.nus.taptask.model.TapAction;
 import sg.edu.nus.taptask.model.TapActionManager;
@@ -18,7 +19,7 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
     // Views
     private AccelerometerRecordSurfaceView accelerometerRecordSurfaceView = null;
     private TextView instructionsText = null;
-    private FancyButton startButton = null;
+    private CircleButton startButton = null;
     private FancyButton confirmButton = null;
     private FancyButton resetButton = null;
     private FancyButton addButton = null;
@@ -45,7 +46,7 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
         View view = inflater.inflate(R.layout.fragment_record, container, false);
         accelerometerRecordSurfaceView = (AccelerometerRecordSurfaceView) view.findViewById(R.id.surfaceView);
         instructionsText = (TextView) view.findViewById(R.id.instructionsText);
-        startButton = (FancyButton) view.findViewById(R.id.startButton);
+        startButton = (CircleButton) view.findViewById(R.id.startButton);
         confirmButton = (FancyButton) view.findViewById(R.id.confirmButton);
         resetButton = (FancyButton) view.findViewById(R.id.resetButton);
         addButton = (FancyButton) view.findViewById(R.id.addButton);

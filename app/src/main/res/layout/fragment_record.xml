@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fancy="http://schemas.android.com/apk/res-auto"
     tools:context="sg.edu.nus.taptask.RecordFragment">
 
@@ -33,18 +34,15 @@
         android:orientation="vertical"
         android:layout_gravity="bottom">
 
-        <mehdi.sakout.fancybuttons.FancyButton
-            style="@style/default_button_style2"
+
+        <at.markushi.ui.CircleButton
             android:id="@+id/startButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            fancy:borderColor="@color/btn_blue"
-            fancy:borderWidth="@dimen/btn_border"
-            fancy:defaultColor="@color/white"
-            fancy:focusColor="@color/btn_blue_hover"
-            fancy:radius="30dp"
-            fancy:text="START"
-            fancy:textColor="@color/btn_blue"/>
+            android:layout_width="140dip"
+            android:layout_height="140dip"
+            android:src="@drawable/start"
+            app:cb_color="@color/btn_blue"
+            app:cb_pressedRingWidth="8dip"
+            android:layout_gravity="center_horizontal" />
 
 
         <mehdi.sakout.fancybuttons.FancyButton
