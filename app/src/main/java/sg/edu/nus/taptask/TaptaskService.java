@@ -30,12 +30,12 @@ public class TaptaskService extends Service implements AccelerometerSamplerListe
 
     @Override
     public void onCreate() {
+
     }
 
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         // Start notification
-
         notificationManager = (NotificationManager)
                 getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -47,7 +47,7 @@ public class TaptaskService extends Service implements AccelerometerSamplerListe
         notification.flags|=Notification.FLAG_NO_CLEAR;
         Context context = getApplicationContext();
         CharSequence contentTitle = "TapTask is enabled";
-        CharSequence contentText = "Big brother is watching you";
+        CharSequence contentText = "Big brother is wadstching you";
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this,
                 0, notificationIntent, 0);
@@ -75,6 +75,7 @@ public class TaptaskService extends Service implements AccelerometerSamplerListe
 
         return START_STICKY;
     }
+
 
     @Override
     public void onMatchFound(TapAction tapAction, TapPattern signalPattern, double matchPct) {
@@ -110,6 +111,7 @@ public class TaptaskService extends Service implements AccelerometerSamplerListe
 
     @Override
     public void onDestroy() {
+        Log.e("Taptask Service", "Service Destroyed");
         accelerometerMatcher.stopSampling();
         notificationManager.cancel(1);
         stopForeground(true);

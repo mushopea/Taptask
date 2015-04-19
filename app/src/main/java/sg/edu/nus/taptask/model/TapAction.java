@@ -2,6 +2,7 @@ package sg.edu.nus.taptask.model;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 
 /**

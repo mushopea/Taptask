@@ -91,8 +91,13 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tapAction.setEnabled(!tapAction.isEnabled());
-
+                boolean targetState = !tapAction.isEnabled();
+                tapAction.setEnabled(targetState);
+                if(targetState){
+                    Toast.makeText(mContext, "Enabled " + viewHolder.taskName.getText().toString() + "!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(mContext, "Disabled " + viewHolder.taskName.getText().toString() + "!", Toast.LENGTH_SHORT).show();
+                }
                 // Set on off text
                 String onOffText = tapAction.isEnabled() ? "ON" : "OFF";
                 int onOffColor = tapAction.isEnabled() ?
@@ -107,8 +112,10 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
                     public void run(){
                         tapActionManager.saveTapActionManager();
                         if (Utils.isMyServiceRunning(mContext, TaptaskService.class)) {
-                            mContext.stopService(new Intent(mContext, TaptaskService.class));
-                            mContext.startService(new Intent(mContext, TaptaskService.class));
+                            Intent stopIntent = new Intent(mContext, TaptaskService.class);
+                            Intent startIntent = new Intent(mContext, TaptaskService.class);
+                            mContext.stopService(stopIntent);
+                            mContext.startService(startIntent);
                         }
                     }
                 }).start();
@@ -122,17 +129,26 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
             @Override
             public void onStartOpen(SwipeLayout layout){
                YoYo.with(Techniques.Tada).duration(500).delay(100).playOn(layout.findViewById(R.id.trash));
+               mItemManger.closeAllItems();
             }
 
             @Override
             public void onOpen(SwipeLayout layout) {
-                mItemManger.closeAllItems();
+
                 mItemManger.removeShownLayouts(viewHolder.swipeLayout);
-                //tapActionManager.tapActions.remove(position);
-                notifyItemRemoved(position);
+                tapActionManager.tapActions.remove(position);
                 notifyItemRangeChanged(position, tapActionManager.tapActions.size());
+                notifyItemRemoved(position);
                 Toast.makeText(mContext, "Deleted " + viewHolder.taskName.getText().toString() + "!", Toast.LENGTH_SHORT).show();
-                //YoYo.with(Techniques.Tada).duration(500).delay(100).playOn(layout.findViewById(R.id.trash));
+                new Thread(new Runnable() {
+                    public void run(){
+                        tapActionManager.saveTapActionManager();
+                        if (Utils.isMyServiceRunning(mContext, TaptaskService.class)) {
+                            mContext.stopService(new Intent(mContext, TaptaskService.class));
+                            mContext.startService(new Intent(mContext, TaptaskService.class));
+                        }
+                    }
+                }).start();
             }
         });
         viewHolder.swipeLayout.setOnDoubleClickListener(new SwipeLayout.DoubleClickListener() {
