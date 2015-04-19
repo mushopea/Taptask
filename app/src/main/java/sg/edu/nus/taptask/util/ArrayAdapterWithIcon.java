@@ -35,7 +35,6 @@ public class ArrayAdapterWithIcon extends ArrayAdapter<String> {
         View view = super.getView(position, convertView, parent);
         TextView textView = (TextView) view.findViewById(android.R.id.text1);
         try {
-            System.out.println(images.get(position));
             textView.setCompoundDrawablesWithIntrinsicBounds(images.get(position), null, null, null);
         } catch(Exception e){
             textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.reject, 0, 0, 0);

@@ -27,7 +27,6 @@ public class TapActionApp extends TapAction {
 
     public boolean performAction(Context context) {
         Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(appPackageName);
-        System.out.println(appPackageName);
         context.startActivity(launchIntent);
         return true;
     }

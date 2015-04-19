@@ -3,7 +3,6 @@ package sg.edu.nus.taptask.model;
 import android.content.Context;
 import android.util.Log;
 
-import sg.edu.nus.taptask.model.TapPattern;
 
 /**
  * Class that describes an action to be done when a tap pattern is matched
@@ -11,6 +10,7 @@ import sg.edu.nus.taptask.model.TapPattern;
  */
 public class TapAction {
     private TapPattern pattern; // Pattern that triggers action
+    private boolean enabled = true;    // Enabled for matching
 
     public TapAction(TapPattern pattern) {
         this.pattern = pattern;
@@ -39,5 +39,13 @@ public class TapAction {
 
     public void setPattern(TapPattern pattern) {
         this.pattern = pattern;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

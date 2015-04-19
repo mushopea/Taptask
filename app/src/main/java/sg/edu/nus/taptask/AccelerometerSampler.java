@@ -253,4 +253,10 @@ public class AccelerometerSampler implements SensorEventListener {
     public void setAccelerometerSamplerListener(AccelerometerSamplerListener accelerometerSamplerListener) {
         this.accelerometerSamplerListener = accelerometerSamplerListener;
     }
+
+    public void clearBuffer() {
+        synchronized (this) {
+            Arrays.fill(absAccelerationBuffer, 0);
+        }
+    }
 }
