@@ -102,7 +102,7 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
 
     public void onClickResetButton(View view) {
         firstPattern = null;
-        accelerometerRecordSurfaceView.setBackgroundPattern(null);
+        accelerometerRecordSurfaceView.setFirstPattern(null);
         setViewState(0);
     }
 
@@ -249,9 +249,12 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
 
         if (firstPattern == null) {
             firstPattern = pattern;
-            accelerometerRecordSurfaceView.setBackgroundPattern(firstPattern);
+            accelerometerRecordSurfaceView.setFirstPattern(firstPattern);
+            accelerometerSampler.clearBuffer();
         } else {
             secondPattern = pattern;
+            accelerometerRecordSurfaceView.setSecondPattern(secondPattern);
+            accelerometerSampler.clearBuffer();
         }
 
         // Run recorder second time

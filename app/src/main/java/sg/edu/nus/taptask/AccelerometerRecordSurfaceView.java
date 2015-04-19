@@ -29,7 +29,8 @@ public class AccelerometerRecordSurfaceView extends SurfaceView implements Surfa
 
     private AccelerometerSampler accelerometerSampler = null;
 
-    private TapPattern backgroundPattern = null;
+    private TapPattern firstPattern = null;
+    private TapPattern secondPattern = null;
 
     private static final Handler handler = new Handler(){
         public void handleMessage(Message paramMessage)
@@ -50,8 +51,12 @@ public class AccelerometerRecordSurfaceView extends SurfaceView implements Surfa
         this.accelerometerSampler = accelerometerSampler;
     }
 
-    public void setBackgroundPattern(TapPattern backgroundPattern) {
-        this.backgroundPattern = backgroundPattern;
+    public void setFirstPattern(TapPattern firstPattern) {
+        this.firstPattern = firstPattern;
+    }
+
+    public void setSecondPattern(TapPattern secondPattern) {
+        this.secondPattern = secondPattern;
     }
 
     public void setDrawSurfaceHolder()
@@ -153,10 +158,10 @@ public class AccelerometerRecordSurfaceView extends SurfaceView implements Surfa
             // Draw horizontal line
             canvas.drawLine(0, circleYOffset, canvasWidth, circleYOffset, redPaint);
 
-            //Draw background pattern
-            if (backgroundPattern != null) {
-                ArrayList<Double> circlePositions = backgroundPattern.tapPositions;
-                int circleXMax = backgroundPattern.pattern.length;
+            //Draw first pattern
+            if (firstPattern != null) {
+                ArrayList<Double> circlePositions = firstPattern.tapPositions;
+                int circleXMax = firstPattern.pattern.length;
                 float circleXScale = (float)canvasWidth/(float)circleXMax;
                 for (int i=0 ; i<circlePositions.size() ; i++) {
                     float x = (float)(circlePositions.get(i) * circleXScale);
@@ -166,7 +171,20 @@ public class AccelerometerRecordSurfaceView extends SurfaceView implements Surfa
                 }
             }
 
-            if (accelerometerSampler != null) {
+            //Draw second pattern
+            if (secondPattern != null) {
+                ArrayList<Double> circlePositions = secondPattern.tapPositions;
+                int circleXMax = secondPattern.pattern.length;
+                float circleXScale = (float)canvasWidth/(float)circleXMax;
+                for (int i=0 ; i<circlePositions.size() ; i++) {
+                    float x = (float)(circlePositions.get(i) * circleXScale);
+                    float y = circleYOffset;
+
+                    canvas.drawCircle(x, y, (float)(canvasWidth*0.03), redPaint);
+                }
+            }
+
+            if (accelerometerSampler != null && accelerometerSampler.isSampling) {
                 // Copy absAccelerationBuffer
                 double[] absAccelerationBufferCopy = accelerometerSampler.getAbsAccelerationBufferSafe();
 
