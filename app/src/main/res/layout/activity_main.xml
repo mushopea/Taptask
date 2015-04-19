@@ -100,10 +100,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             fab:fab_size="mini"
-            fab:fab_icon="@drawable/reject"
-            fab:fab_title="Reject call"
-            fab:fab_colorNormal="@color/reject_color"
-            fab:fab_colorPressed="@color/reject_color"
+            fab:fab_icon="@drawable/openapp"
+            fab:fab_title="Launch an app"
+            fab:fab_colorNormal="@color/open_app_color"
+            fab:fab_colorPressed="@color/open_app_color"
             android:onClick="onClickAppButton" />
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
