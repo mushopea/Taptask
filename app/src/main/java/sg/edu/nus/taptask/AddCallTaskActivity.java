@@ -14,6 +14,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
+
 import mehdi.sakout.fancybuttons.FancyButton;
 import sg.edu.nus.taptask.model.TapActionCall;
 import sg.edu.nus.taptask.model.TapActionManager;
@@ -38,17 +41,21 @@ public class AddCallTaskActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState); // font
+        super.onCreate(savedInstanceState);
+        // font
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
                         .setDefaultFontPath("fonts/Roboto-Regular.ttf")
                         .setFontAttrId(R.attr.fontPath)
                         .build()
         );
+
+
         setContentView(R.layout.activity_add_call_task);
         targetNameField = (EditText) findViewById(R.id.targetName);
         targetNumField = (EditText) findViewById(R.id.targetNum);
         continueButton = (FancyButton) findViewById(R.id.button);
         continueButton.setEnabled(false);
+        continueButton.setVisibility(View.GONE);
         tapActionManager = TapActionManager.getInstance(getBaseContext());
 
 
@@ -122,8 +129,13 @@ public class AddCallTaskActivity extends ActionBarActivity {
                         this.targetNameField.setText(name);
                         if(isFormValid()){
                             continueButton.setEnabled(true);
+                            continueButton.setVisibility(View.VISIBLE);
+                            YoYo.with(Techniques.FadeInUp)
+                                    .duration(1000)
+                                    .playOn(continueButton);
                         } else {
                             continueButton.setEnabled(false);
+                            continueButton.setVisibility(View.GONE);
                         }
                     }
                 } finally {
