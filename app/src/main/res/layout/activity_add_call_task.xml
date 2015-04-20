@@ -2,7 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/activity_style"
     xmlns:fancy="http://schemas.android.com/apk/res-auto"
-
     tools:ignore="MissingPrefix"
     tools:context="sg.edu.nus.taptask.AddCallTaskActivity">
 

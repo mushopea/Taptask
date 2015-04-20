@@ -1,5 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" style="@style/activity_style"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/activity_style"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
     tools:ignore="MissingPrefix"
     tools:context="sg.edu.nus.taptask.AddAppTaskActivity">
 
@@ -37,7 +39,8 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_toStartOf="@+id/choose_app_button"
-            android:layout_toLeftOf="@+id/choose_app_button" />
+            android:layout_toLeftOf="@+id/choose_app_button"
+            android:editable="false" />
 
         <mehdi.sakout.fancybuttons.FancyButton
             android:id="@+id/choose_app_button"
@@ -53,13 +56,13 @@
             fancy:text="CHOOSE APP"
             fancy:textColor="#FFFFFF"
             fancy:textSize="3dp"
-            android:layout_alignBottom="@+id/targetNum"
+            android:layout_alignBottom="@+id/appName"
             android:layout_alignRight="@+id/button"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
-            android:onClick="selectContact"
+            android:onClick="selectApp"
             android:layout_marginLeft="5dp"
             android:layout_marginBottom="5dp"
             android:layout_alignParentEnd="true" />

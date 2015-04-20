@@ -100,11 +100,17 @@ public class MainActivity extends ActionBarActivity {
     // Determines whether to show the "Add Task here!" guide or not.
     public void showAddTaskGuide() {
         boolean tasksEmpty = false;
+
         if (mAdapter.getItemCount() == 0) {
             tasksEmpty = true;
         }
 
         if (tasksEmpty) {
+            // Hide FAB menu if it's open
+            if (fabButton.isExpanded()) {
+                fabButton.collapse();
+            }
+
             // Show guide if there are no tasks
             final View addButtonGuide = this.findViewById(R.id.addbuttonguide);
             final View myTasks = this.findViewById(R.id.myTasks);

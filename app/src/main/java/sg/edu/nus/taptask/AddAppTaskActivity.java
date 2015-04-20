@@ -1,6 +1,7 @@
 package sg.edu.nus.taptask;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -12,16 +13,20 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
+
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import mehdi.sakout.fancybuttons.FancyButton;
 import sg.edu.nus.taptask.model.TapActionApp;
 import sg.edu.nus.taptask.model.TapActionManager;
 import sg.edu.nus.taptask.util.ArrayAdapterWithIcon;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 
 public class AddAppTaskActivity extends ActionBarActivity {
@@ -33,7 +38,7 @@ public class AddAppTaskActivity extends ActionBarActivity {
     private List<String> appNames;
     private List<Drawable> packageIcons;
     private AlertDialog choose;
-    private Button continueButton;
+    private FancyButton continueButton;
 
     private boolean isFormValid(){
         boolean isAppNameValid = appNameField.getText().toString().length() > 0;
@@ -46,15 +51,11 @@ public class AddAppTaskActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_app_task);
         appNameField = (EditText) findViewById(R.id.appName);
-        continueButton = (Button) findViewById(R.id.button);
+        continueButton = (FancyButton) findViewById(R.id.button);
         continueButton.setEnabled(false);
+        continueButton.setVisibility(View.GONE);
+        appNameField.setFocusable(false);
         tapActionManager = TapActionManager.getInstance(getBaseContext());
-        appNameField.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectApp();
-            }
-        });
 
         packageNames = new ArrayList<>();
         appNames = new ArrayList<>();
@@ -88,18 +89,23 @@ public class AddAppTaskActivity extends ActionBarActivity {
                         Log.e("appPackageName", appPackageName);
                         if(isFormValid()){
                             continueButton.setEnabled(true);
+                            continueButton.setVisibility(View.VISIBLE);
+                            YoYo.with(Techniques.FadeInUp)
+                                    .duration(1000)
+                                    .playOn(continueButton);
                         } else {
                             continueButton.setEnabled(false);
+                            continueButton.setVisibility(View.GONE);
                         }
                     }
                 });
-
-
-
         choose = builder.create();
-
     }
 
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -143,13 +149,18 @@ public class AddAppTaskActivity extends ActionBarActivity {
         startActivity(intent);
     }
 
-    public void selectApp(){
+    public void selectApp(View v){
 
         choose.show();
         if(isFormValid()){
             continueButton.setEnabled(true);
+            continueButton.setVisibility(View.VISIBLE);
+            YoYo.with(Techniques.FadeInUp)
+                    .duration(1000)
+                    .playOn(continueButton);
         } else {
             continueButton.setEnabled(false);
+            continueButton.setVisibility(View.GONE);
         }
 
     }
