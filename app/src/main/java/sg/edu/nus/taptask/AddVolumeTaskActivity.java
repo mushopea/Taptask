@@ -1,6 +1,7 @@
 package sg.edu.nus.taptask;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -11,6 +12,7 @@ import android.view.View;
 
 import sg.edu.nus.taptask.model.TapActionManager;
 import sg.edu.nus.taptask.model.TapActionVolume;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 
 public class AddVolumeTaskActivity extends ActionBarActivity {
@@ -44,6 +46,11 @@ public class AddVolumeTaskActivity extends ActionBarActivity {
             return true;
         }
 
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -54,6 +61,11 @@ public class AddVolumeTaskActivity extends ActionBarActivity {
         overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
     }
 
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
 
 
     // go to add new task screen

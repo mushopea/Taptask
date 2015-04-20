@@ -2,8 +2,8 @@ package sg.edu.nus.taptask;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -26,7 +26,6 @@ public class RecordActivity extends ActionBarActivity {
             serviceWasRunning = true;
             stopService(new Intent(this, TaptaskService.class));
         }
-
     }
 
     // for font

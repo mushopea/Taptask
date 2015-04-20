@@ -1,6 +1,7 @@
 package sg.edu.nus.taptask;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -18,6 +19,7 @@ import android.widget.EditText;
 
 import sg.edu.nus.taptask.model.TapActionManager;
 import sg.edu.nus.taptask.model.TapActionSMS;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 
 public class AddSMSTaskActivity extends ActionBarActivity {
@@ -91,6 +93,7 @@ public class AddSMSTaskActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_add_call_task, menu);
+
         return true;
     }
 
@@ -106,7 +109,18 @@ public class AddSMSTaskActivity extends ActionBarActivity {
             return true;
         }
 
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
 
