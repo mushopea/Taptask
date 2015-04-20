@@ -114,7 +114,7 @@ public class MainActivity extends ActionBarActivity {
             shadowView.setVisibility(View.VISIBLE);
             addButtonGuide.setVisibility(View.VISIBLE);
             YoYo.with(Techniques.FlipInX)
-                    .duration(1000)
+                    .duration(1500)
                     .playOn(addButtonGuide);
         }
     }

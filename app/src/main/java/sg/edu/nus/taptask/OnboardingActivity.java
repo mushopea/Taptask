@@ -145,12 +145,13 @@ public class OnboardingActivity extends Activity implements AccelerometerSampler
         intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         finish();
     }
 
     // draws the circle indicators that indicates current page of the tutorial slider
     public void refreshCircleIndicator(int currPage) {
-        Log.e("Refreshing circles", "CURRPAGE: " + currPage);
+        Log.e("Refreshing circles", "Onboarding activity page: " + currPage);
         // declare variables
         TextView circleText = (TextView) findViewById(R.id.circleText);
         int totalPages = mSlideShowPagerAdapter.getCount();
