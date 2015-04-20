@@ -12,7 +12,8 @@ import sg.edu.nus.taptask.FFTHelper;
  * Class representing a tap pattern
  */
 public class TapPattern {
-    public static final double MATCH_PERCENTAGE_THRESHOLD = 0.75; // TODO: test what values are good or let user decide.
+    public static final double MATCH_PERCENTAGE_THRESHOLD = 0.85;       // TODO: test what values are good or let user decide.
+    public static final double MATCH_RECORD_CONFIRM_THRESHOLD = 0.6;    // Threshold for confirmation pattern
 
     public double duration;
     public double frequency;

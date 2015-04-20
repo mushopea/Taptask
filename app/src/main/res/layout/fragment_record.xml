@@ -87,7 +87,7 @@
             fancy:defaultColor="@color/white"
             fancy:focusColor="@color/paleRed"
             fancy:radius="30dp"
-            fancy:text="OKAY. ADD THIS TASK!"
+            fancy:text="OKAY! ADD THIS TASK!"
             fancy:textColor="@color/Primary"
             />
     </LinearLayout>

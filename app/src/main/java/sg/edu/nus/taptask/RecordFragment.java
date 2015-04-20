@@ -147,6 +147,7 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
                 break;
             case 3:
                 // Waiting for second recording to start
+                accelerometerRecordSurfaceView.setSecondPattern(null);
                 instructionsText.setText(R.string.instructions_confirm);
                 startButton.setVisibility(View.VISIBLE);
                 confirmButton.setVisibility(View.GONE);
@@ -270,13 +271,25 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
         } else {
             // Find match percentage
             final double matchPct = firstPattern.matchPatternPercentage(secondPattern) * 100;
-            // Set instructions text
-            this.getActivity().runOnUiThread(new Runnable() {
-                public void run() {
-                    setViewState(4);
-                    instructionsText.setText("Pattern match: " + (int)matchPct + "%");
-                }
-            });
+
+            if (matchPct < TapPattern.MATCH_PERCENTAGE_THRESHOLD) {
+
+
+                this.getActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+                        setViewState(2);
+                        instructionsText.setText("Pattern match: " + (int) matchPct + "%\nPlease try again!");
+                    }
+                });
+            } else {
+                // Set instructions text
+                this.getActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+                        setViewState(4);
+                        instructionsText.setText("Pattern match: " + (int) matchPct + "%");
+                    }
+                });
+            }
         }
 
 
