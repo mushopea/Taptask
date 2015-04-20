@@ -21,6 +21,7 @@
     <string name="circle">&#xf1db;</string>
     <string name="filledcircle">&#xf111;</string>
     <string name="contacts">&#xf007;</string>
+    <string name="appdroid">&#xf17b;</string>
 
     <string name="instructions_start">Press start to record pattern.</string>
     <string name="instructions_confirm">Almost done! Press start to confirm pattern.</string>
