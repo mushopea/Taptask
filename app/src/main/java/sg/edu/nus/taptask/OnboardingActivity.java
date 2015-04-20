@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.ToxicBakery.viewpager.transforms.CubeOutTransformer;
+
 import sg.edu.nus.taptask.model.TapAction;
 import sg.edu.nus.taptask.model.TapPattern;
 import sg.edu.nus.taptask.util.SystemUiHider;
@@ -34,6 +36,7 @@ public class OnboardingActivity extends Activity implements AccelerometerSampler
     SlideShowPagerAdapter mSlideShowPagerAdapter;
     mehdi.sakout.fancybuttons.FancyButton gotItButton;
 
+    // Tutorial images
     int[] mResources = {
             R.drawable.t1,
             R.drawable.t2,
@@ -53,6 +56,7 @@ public class OnboardingActivity extends Activity implements AccelerometerSampler
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mSlideShowPagerAdapter = new SlideShowPagerAdapter(this);
         mViewPager.setAdapter(mSlideShowPagerAdapter);
+        mViewPager.setPageTransformer(true, new CubeOutTransformer());
         refreshCircleIndicator(0);
 
         // Set event for view pager
