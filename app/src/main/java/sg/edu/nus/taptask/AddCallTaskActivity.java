@@ -79,6 +79,13 @@ public class AddCallTaskActivity extends ActionBarActivity {
     }
 
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
+    }
+
+
     // go to add new task screen
     public void onClickContinueButton(View view) {
         Log.e("Meow", "Recording call activity screen activated");
