@@ -19,7 +19,6 @@ import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator;
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
-import sg.edu.nus.taptask.model.TapActionCall;
 import sg.edu.nus.taptask.util.RecyclerViewAdapter;
 import sg.edu.nus.taptask.util.Utils;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
@@ -188,6 +187,7 @@ public class MainActivity extends ActionBarActivity {
         Intent intent;
         intent = new Intent(this, AddCallTaskActivity.class);
         startActivity(intent);
+        overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
     }
 
     public void onClickAppButton(View view){
@@ -195,11 +195,7 @@ public class MainActivity extends ActionBarActivity {
         Intent intent;
         intent = new Intent(this, AddAppTaskActivity.class);
         startActivity(intent);
-    }
-
-    public void onClickCallButton(View view){
-        TapActionCall action = new TapActionCall(null, "97936499", "zhang yiwen");
-        action.performAction(MainActivity.this);
+        overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
     }
 
     public void onClickVolButton(View view) {
@@ -207,6 +203,7 @@ public class MainActivity extends ActionBarActivity {
         Intent intent;
         intent = new Intent(this, AddVolumeTaskActivity.class);
         startActivity(intent);
+        overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
     }
 
     public void onClickSMSButton(View view) {
@@ -214,6 +211,7 @@ public class MainActivity extends ActionBarActivity {
         Intent intent;
         intent = new Intent(this, AddSMSTaskActivity.class);
         startActivity(intent);
+        overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
     }
 
     @Override
