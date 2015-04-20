@@ -35,10 +35,10 @@ public class OnboardingActivity extends Activity implements AccelerometerSampler
     mehdi.sakout.fancybuttons.FancyButton gotItButton;
 
     int[] mResources = {
-            R.drawable.task_icon_volume,
-            R.drawable.task_icon_call,
-            R.drawable.task_icon_call_reject,
-            R.drawable.task_icon_message,
+            R.drawable.t1,
+            R.drawable.t2,
+            R.drawable.t3,
+            R.drawable.t4,
     };
 
 
