@@ -16,6 +16,9 @@ import sg.edu.nus.taptask.model.TapActionManager;
 import sg.edu.nus.taptask.model.TapPattern;
 
 public class RecordFragment extends Fragment implements AccelerometerSamplerListener {
+
+    TapActionManager tapActionManager;
+
     // Views
     private AccelerometerRecordSurfaceView accelerometerRecordSurfaceView = null;
     private TextView instructionsText = null;
@@ -37,6 +40,7 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        tapActionManager = TapActionManager.getInstance(this.getActivity().getBaseContext());
     }
 
 
@@ -103,8 +107,6 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
 
     public void onClickAddButton(View view) {
         // Save stuff
-        TapActionManager tapActionManager = TapActionManager.getInstance(this.getActivity().getBaseContext());
-
         TapAction tapAction = tapActionManager.getCurrentTapAction();
         if (tapAction == null) {
             Log.e("onClickAddButton", "Null tapAction");
@@ -139,7 +141,7 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
                 break;
             case 2:
                 // Done recording first
-                instructionsText.setText("Pattern recorded!");
+                instructionsText.setText("Awesome! Pattern recorded!");
                 confirmButton.setVisibility(View.VISIBLE);
                 resetButton.setVisibility(View.VISIBLE);
                 startButton.setVisibility(View.INVISIBLE);
@@ -263,16 +265,34 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
                 }
             });
         } else if (secondPattern == null) {
+            // Check similarity with existing patterns and warn.
+            double highestMatchPct = 0;
+            TapAction closestMatchTapAction = null;
+            for (TapAction tapAction : tapActionManager.tapActions) {
+                double matchPct = tapAction.getPattern().matchPatternSimilarityPercentage(firstPattern);
+                if (matchPct > highestMatchPct) {
+                    highestMatchPct = matchPct;
+                    closestMatchTapAction = tapAction;
+                }
+            }
+
+            final int finalMatchPct = (int)(highestMatchPct * 100);
+            final TapAction finalTapAction = closestMatchTapAction;
             this.getActivity().runOnUiThread(new Runnable() {
                 public void run() {
                     setViewState(2);
+                    if (finalMatchPct > TapPattern.MATCH_PERCENTAGE_THRESHOLD * 100) {
+                        instructionsText.setText("WARNING!\n" + finalMatchPct + "% Similarity with an existing task: " + finalTapAction.getName());
+                        Log.i("RecordFragment", "Similar existing pattern: " + finalTapAction.getName());
+                    }
                 }
             });
+
         } else {
             // Find match percentage
             final double matchPct = firstPattern.matchPatternPercentage(secondPattern) * 100;
 
-            if (matchPct < TapPattern.MATCH_PERCENTAGE_THRESHOLD) {
+            if (matchPct < TapPattern.MATCH_RECORD_CONFIRM_THRESHOLD) {
 
 
                 this.getActivity().runOnUiThread(new Runnable() {
@@ -297,4 +317,10 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
     @Override
     public void onMatchFound(TapAction tapAction, TapPattern signalPattern, double matchPct) {
     }
+
+
+
+
+
+
 }

@@ -101,6 +101,14 @@ public class TapPattern {
         return matchPct;
     }
 
+    public double matchPatternSimilarityPercentage(TapPattern tapPattern) {
+        if (this.tapIntervals.size() > tapPattern.tapIntervals.size()) {
+            return tapPattern.matchSignalPercentage(this);
+        } else {
+            return this.matchSignalPercentage(tapPattern);
+        }
+    }
+
     public double matchSignalPercentage(TapPattern signalTapPattern, int len) {
         // Get len taps
         ArrayList<Double> tapIntervals0 = new ArrayList<Double>(this.tapIntervals);
