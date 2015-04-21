@@ -113,18 +113,11 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
                 }
 
                 // Save on new thread, so UI thread does not lag
-                // Restart service if running
+                // Refresh service
                 new Thread(new Runnable() {
                     public void run(){
                         tapActionManager.saveTapActionManager();
-                        if (Utils.isMyServiceRunning(mContext, TaptaskService.class)) {
-                            Intent stopIntent = new Intent(mContext, TaptaskService.class);
-                            Intent startIntent = new Intent(mContext, TaptaskService.class);
-                            mContext.stopService(stopIntent);
-                            if (!Utils.isMyServiceRunning(mContext, TaptaskService.class)) {
-                                mContext.startService(startIntent);
-                            }
-                        }
+                        mContext.sendBroadcast(new Intent(TaptaskService.REFRESH_SERVICE_INTENT));
                     }
                 }).start();
             }
@@ -152,12 +145,7 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
                 new Thread(new Runnable() {
                     public void run(){
                         tapActionManager.saveTapActionManager();
-                        if (Utils.isMyServiceRunning(mContext, TaptaskService.class)) {
-                            mContext.stopService(new Intent(mContext, TaptaskService.class));
-                            if (!Utils.isMyServiceRunning(mContext, TaptaskService.class)) {
-                                mContext.startService(new Intent(mContext, TaptaskService.class));
-                            }
-                        }
+                        mContext.sendBroadcast(new Intent(TaptaskService.REFRESH_SERVICE_INTENT));
                     }
                 }).start();
 

@@ -4,8 +4,10 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.IBinder;
 import android.os.Vibrator;
 import android.util.Log;
@@ -14,14 +16,17 @@ import android.widget.Toast;
 import sg.edu.nus.taptask.model.TapAction;
 import sg.edu.nus.taptask.model.TapActionManager;
 import sg.edu.nus.taptask.model.TapPattern;
+import sg.edu.nus.taptask.util.RecyclerViewAdapter;
 
 public class TaptaskService extends Service implements AccelerometerSamplerListener {
 
     public static final String REFRESH_APP_INTENT = "REFRESH_APP_INTENT";
+    public static final String REFRESH_SERVICE_INTENT = "REFRESH_SERVICE_INTENT";
 
     AccelerometerMatcher accelerometerMatcher = null;
     private TapActionManager tapActionManager;
     private NotificationManager notificationManager;
+    private DataUpdateReceiver dataUpdateReceiver;
 
     public TaptaskService() {
 
@@ -35,6 +40,11 @@ public class TaptaskService extends Service implements AccelerometerSamplerListe
     @Override
     public void onCreate() {
         this.tapActionManager = TapActionManager.getInstance(getBaseContext());
+        if (dataUpdateReceiver == null) {
+            dataUpdateReceiver = new DataUpdateReceiver();
+        }
+        IntentFilter intentFilter = new IntentFilter(REFRESH_SERVICE_INTENT);
+        registerReceiver(dataUpdateReceiver, intentFilter);
     }
 
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -71,11 +81,8 @@ public class TaptaskService extends Service implements AccelerometerSamplerListe
 
         // Set patterns to match
         TapActionManager tapActionManager = TapActionManager.getInstance(getBaseContext());
-        Log.e("Taptask Service", "Number of Tap Actions: " + tapActionManager.tapActions.size());
-
-        if (tapActionManager.tapActions.size() > 0) {
-            accelerometerMatcher.setTapActionsToMatch(tapActionManager.tapActions);
-        }
+        Log.d("Taptask Service", "Number of Tap Actions: " + tapActionManager.tapActions.size());
+        accelerometerMatcher.setTapActionsToMatch(tapActionManager.tapActions);
 
         return START_STICKY;
     }
@@ -120,8 +127,22 @@ public class TaptaskService extends Service implements AccelerometerSamplerListe
     @Override
     public void onDestroy() {
         Log.e("Taptask Service", "Service Destroyed");
+        if (dataUpdateReceiver != null) {
+            unregisterReceiver(dataUpdateReceiver);
+        }
         accelerometerMatcher.stopSampling();
         notificationManager.cancel(1);
         stopForeground(true);
+    }
+
+    private class DataUpdateReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(TaptaskService.REFRESH_SERVICE_INTENT)) {
+                tapActionManager.readTapActionManager();
+                accelerometerMatcher.clearBuffer();
+                accelerometerMatcher.setTapActionsToMatch(tapActionManager.tapActions);
+            }
+        }
     }
 }
