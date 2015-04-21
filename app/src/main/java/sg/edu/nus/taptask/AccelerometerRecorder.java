@@ -17,6 +17,7 @@ public class AccelerometerRecorder extends AccelerometerSampler {
     protected volatile double remainingDelayBeforeStart = 0;      // Remaining delay before recording
     protected volatile int timeIndexBeforeStop = -1;
     protected volatile int filledTimeIndex = 0;
+    protected volatile TapPattern tapPattern = null;
 
     public AccelerometerRecorder(Context context) {
         super(context);
@@ -100,8 +101,8 @@ public class AccelerometerRecorder extends AccelerometerSampler {
             // Attempt to locate first tap every 5/15 sec (0.3 sec) (samplingDuration/10)
             if (waitForFirstTap && timeIndexBeforeStop == -1 &&
                     timeIndex % (absAccelerationBuffer.length / 15) == 1) {
-                TapPattern pattern = TapPattern.createPattern(this.getAbsAccelerationBuffer(), this.samplingDuration, this.samplingFrequency);
-                timeIndexBeforeStop = FFTHelper.firstElementLargerThan(pattern.pattern, 0.001, absAccelerationBuffer.length / 2);
+                tapPattern = TapPattern.createPattern(this.getAbsAccelerationBuffer(), this.samplingDuration, this.samplingFrequency, tapPattern);
+                timeIndexBeforeStop = FFTHelper.firstElementLargerThan(tapPattern.pattern, 0.001, absAccelerationBuffer.length / 2);
                 if (timeIndexBeforeStop != -1) {
                     Log.i("AccRecorder", "First tap found");
                 }

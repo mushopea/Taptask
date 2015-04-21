@@ -318,6 +318,11 @@ public class FFTHelper {
         }
     }
 
+    public static double[] trim(double[] input, int length, double[] output) {
+        System.arraycopy(input, 0, output, 0, length);
+        return output;
+    }
+
     public static int firstElementLargerThan(double[] input, double limit, int startIndex) {
         for (int i=startIndex ; i<input.length ; i++) {
             if (input[i] > limit) {

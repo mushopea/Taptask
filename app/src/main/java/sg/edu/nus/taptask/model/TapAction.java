@@ -51,7 +51,6 @@ public class TapAction {
         try {
             TimeZone tz = TimeZone.getDefault();
             sdf.setTimeZone(tz);
-            Log.e("TapAction", "get last trigger action");
             return "Last Triggered: " + sdf.format(lastTriggerTime);
         } catch(NullPointerException e) {
             return "Last Triggered: Never";

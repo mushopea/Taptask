@@ -130,8 +130,6 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
             tapAction = new TapAction(firstPattern);
         }
         tapAction.setPattern(firstPattern);
-
-        //tapActionManager.removeAllTasks();
         tapActionManager.addTapAction(tapAction);
 
         // Return to main activity
@@ -248,9 +246,8 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
     @Override
     public void onRecordingDone() {
         Log.i("RecordFragment", "onRecordingDone() called");
-        TapPattern pattern = TapPattern.createPattern(accelerometerSampler.getAbsAccelerationBuffer(),
-                accelerometerSampler.samplingDuration,
-                accelerometerSampler.samplingFrequency);
+        TapPattern pattern = accelerometerRecordSurfaceView.tapPattern;
+        accelerometerRecordSurfaceView.tapPattern = null;
 
         if (firstPattern == null) {
             // Enforce minimum of 2 taps
@@ -309,7 +306,7 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
             // Find match percentage
             final double matchPct = firstPattern.matchPatternPercentage(secondPattern) * 100;
 
-            if (matchPct < TapPattern.MATCH_RECORD_CONFIRM_THRESHOLD) {
+            if (matchPct < TapPattern.MATCH_RECORD_CONFIRM_THRESHOLD * 100) {
 
                 secondPattern = null;
                 accelerometerRecordSurfaceView.setSecondPattern(secondPattern);

@@ -27,6 +27,9 @@ public class AccelerometerRecordSurfaceView extends SurfaceView implements Surfa
     public static volatile Boolean drawFlag = false;
     public boolean draw = true;
 
+    // Pattern being tapped
+    public TapPattern tapPattern = null;
+
     private AccelerometerSampler accelerometerSampler = null;
 
     private TapPattern firstPattern = null;
@@ -123,9 +126,6 @@ public class AccelerometerRecordSurfaceView extends SurfaceView implements Surfa
         private Paint redPaint2 = new Paint();
         private Paint grayPaint = new Paint();
 
-
-        // Pattern being tapped
-        TapPattern tapPattern = null;
         int timeIndex = 0;
 
         public DrawThread(SurfaceHolder paramContext, Context paramHandler, Handler arg4)
@@ -206,7 +206,11 @@ public class AccelerometerRecordSurfaceView extends SurfaceView implements Surfa
                 }
 
                 synchronized (accelerometerSampler) {
-                    tapPattern = TapPattern.createPattern(accelerometerSampler.getAbsAccelerationBuffer(), accelerometerSampler.samplingFrequency, 5, tapPattern);
+                    if (!accelerometerSampler.isSampling) {
+                        return;
+                    }
+                    tapPattern = TapPattern.createPattern(accelerometerSampler.getAbsAccelerationBuffer(),
+                            accelerometerSampler.samplingDuration, accelerometerSampler.samplingFrequency, null);
                     timeIndex = ((AccelerometerRecorder) accelerometerSampler).timeIndexRecorded();
                 }
                 double[] patternBuffer = tapPattern.pattern;

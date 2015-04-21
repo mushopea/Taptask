@@ -4,7 +4,10 @@ import android.content.Context;
 import android.os.Vibrator;
 import android.util.Log;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import sg.edu.nus.taptask.FFTHelper;
 
@@ -13,7 +16,7 @@ import sg.edu.nus.taptask.FFTHelper;
  */
 public class TapPattern {
     public static final double MATCH_PERCENTAGE_THRESHOLD = 0.85;       // TODO: test what values are good or let user decide.
-    public static final double MATCH_RECORD_CONFIRM_THRESHOLD = 0.6;    // Threshold for confirmation pattern
+    public static final double MATCH_RECORD_CONFIRM_THRESHOLD = 0.7;    // Threshold for confirmation pattern
 
     public double duration;
     public double frequency;
@@ -21,15 +24,36 @@ public class TapPattern {
     public ArrayList<Double> tapPositions;
     public ArrayList<Double> tapIntervals;
 
+    public TapPattern() {
+    }
+
+    public TapPattern(TapPattern tapPattern) {
+        this.duration = tapPattern.duration;
+        this.frequency = tapPattern.frequency;
+        this.pattern = Arrays.copyOf(tapPattern.pattern, tapPattern.pattern.length);
+        this.tapPositions = new ArrayList<>(tapPattern.tapPositions);
+        this.tapIntervals = new ArrayList<>(tapPattern.tapIntervals);
+    }
+
 
     private transient static double[] boxKernel = null;
     private transient static double[] triangleKernel = null;
+    private transient static double[] absAccelerationBufferOptimal = null;
     public static TapPattern createPattern(double[] absAccelerationBuffer, double duration, double frequency) {
         return createPattern(absAccelerationBuffer, duration, frequency, null);
     }
     public static TapPattern createPattern(double[] absAccelerationBuffer, double duration, double frequency, TapPattern pattern) {
+        int optimalLength = FFTHelper.nextPowerOf2(absAccelerationBuffer.length * 2);
+        if (absAccelerationBufferOptimal == null || absAccelerationBufferOptimal.length != optimalLength) {
+            absAccelerationBufferOptimal = new double[optimalLength];
+            Arrays.fill(absAccelerationBufferOptimal, 0);
+        }
+
+        System.arraycopy(absAccelerationBuffer, 0, absAccelerationBufferOptimal, 0, absAccelerationBuffer.length);
+        Arrays.fill(absAccelerationBufferOptimal, absAccelerationBuffer.length, absAccelerationBufferOptimal.length, 0);
+
         // Calculate jounce
-        double[] jounce = getJounce(absAccelerationBuffer);
+        double[] jounce = getJounce(absAccelerationBufferOptimal);
         // Get absolute values
         FFTHelper.abs(jounce);
         // Binary threshold
@@ -51,12 +75,13 @@ public class TapPattern {
         // Clamp max value
         FFTHelper.clampMaxValue(jounce, 1);
 
-        // Check number of taps using threshold?
-        // Check first tap at the front of buffer?
+        // Trim length, re-use absAccelerationBuffer
+        jounce = FFTHelper.trim(jounce, absAccelerationBuffer.length, absAccelerationBuffer);
+
 
         if (pattern == null) {
             pattern = new TapPattern();
-            Log.e("new", "TapPattern");
+            Log.d("new", "TapPattern");
         }
         pattern.duration = duration;
         pattern.frequency = frequency;
@@ -242,4 +267,8 @@ public class TapPattern {
         return dotProduct;
     }
 
+    public String toString() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
+    }
 }
