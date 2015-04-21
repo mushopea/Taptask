@@ -53,7 +53,8 @@ public class AddSMSTaskActivity extends ActionBarActivity {
         continueButton.setEnabled(false);
         continueButton.setVisibility(View.GONE);
         tapActionManager = TapActionManager.getInstance(getBaseContext());
-        targetContentField.addTextChangedListener(new TextWatcher() {
+
+        TextWatcher textWatcher = new TextWatcher() {
             public void afterTextChanged(Editable s) {
                 if (isFormValid()) {
                     continueButton.setEnabled(true);
@@ -73,22 +74,10 @@ public class AddSMSTaskActivity extends ActionBarActivity {
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
-        });
-
-//        targetContentField.setOnKeyListener(
-//                new View.OnKeyListener() {
-//                    @Override
-//                    public boolean onKey(View v, int keyCode, KeyEvent event) {
-//                        Log.e("Form Validation", "validate");
-//                        if (isFormValid()) {
-//                            continueButton.setEnabled(true);
-//                        } else {
-//                            continueButton.setEnabled(false);
-//                        }
-//                        return true;
-//                    }
-//                }
-//        );
+        };
+        targetContentField.addTextChangedListener(textWatcher);
+        targetNameField.addTextChangedListener(textWatcher);
+        targetNumField.addTextChangedListener(textWatcher);
 
     }
 

@@ -8,6 +8,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,6 +36,9 @@ public class AddCallTaskActivity extends ActionBarActivity {
     private boolean isFormValid(){
         boolean isNumValid = targetNumField.getText().toString().length() > 0;
         boolean isNameValid = targetNameField.getText().toString().length() > 0;
+
+        Log.e("call", targetNumField.getText().toString() + "--" + targetNameField.getText().toString());
+
         boolean isValid = isNumValid && isNameValid;
         return isValid;
     }
@@ -48,6 +53,31 @@ public class AddCallTaskActivity extends ActionBarActivity {
         continueButton.setEnabled(false);
         continueButton.setVisibility(View.GONE);
         tapActionManager = TapActionManager.getInstance(getBaseContext());
+
+        TextWatcher textWatcher = new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+                if (isFormValid()) {
+                    continueButton.setEnabled(true);
+                    continueButton.setVisibility(View.VISIBLE);
+                    YoYo.with(Techniques.FadeInUp)
+                            .duration(1000)
+                            .playOn(continueButton);
+                } else {
+                    continueButton.setEnabled(false);
+                    continueButton.setEnabled(false);
+                    continueButton.setVisibility(View.GONE);
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        };
+        targetNameField.addTextChangedListener(textWatcher);
+        targetNumField.addTextChangedListener(textWatcher);
+
     }
 
 
