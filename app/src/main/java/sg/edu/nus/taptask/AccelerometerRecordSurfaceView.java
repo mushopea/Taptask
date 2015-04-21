@@ -66,7 +66,7 @@ public class AccelerometerRecordSurfaceView extends SurfaceView implements Surfa
     }
 
 
-    public void init()
+    public synchronized void init()
     {
         if (!threadExists) {
 
@@ -88,7 +88,6 @@ public class AccelerometerRecordSurfaceView extends SurfaceView implements Surfa
     {
         drawThread.setSurfaceSize(paramInt2, paramInt3);
     }
-
 
     public void surfaceCreated(SurfaceHolder paramSurfaceHolder)
     {
@@ -272,8 +271,15 @@ public class AccelerometerRecordSurfaceView extends SurfaceView implements Surfa
                             surfaceHolder.unlockCanvasAndPost(localCanvas);
                         }
                     }
+
+                    try {
+                        Thread.sleep(5);
+                    } catch (InterruptedException e) {
+                    }
+
                 }
             }
+            threadExists = false;
         }
 
     }

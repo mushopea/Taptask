@@ -89,6 +89,18 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
         return view;
     }
 
+    @Override
+    public void onPause() {
+        accelerometerRecordSurfaceView.drawFlag = false;
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        accelerometerRecordSurfaceView.init();
+    }
+
     public void onClickStartButton(View view) {
         if (instructionsText.getText().equals(getString(R.string.instructions_start))) {
             startRecording();
