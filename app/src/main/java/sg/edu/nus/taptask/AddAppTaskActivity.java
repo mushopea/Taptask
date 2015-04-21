@@ -1,5 +1,6 @@
 package sg.edu.nus.taptask;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -31,6 +32,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class AddAppTaskActivity extends ActionBarActivity {
 
+    private Activity activity;
     private EditText appNameField;
     private String appPackageName;
     private TapActionManager tapActionManager;
@@ -48,7 +50,9 @@ public class AddAppTaskActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        activity = this;
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_add_app_task);
         appNameField = (EditText) findViewById(R.id.appName);
         continueButton = (FancyButton) findViewById(R.id.button);
@@ -61,45 +65,64 @@ public class AddAppTaskActivity extends ActionBarActivity {
         appNames = new ArrayList<>();
         packageIcons = new ArrayList<Drawable>();
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         final PackageManager pm = getPackageManager();
-        List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
+        final List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
 
-        for (ApplicationInfo packageInfo : packages) {
-            boolean isLaunchable = (pm.getLaunchIntentForPackage(packageInfo.packageName) != null );
-            if (isLaunchable) {
-                packageNames.add(packageInfo.packageName);
-                appNames.add((String) (packageInfo != null ? pm.getApplicationLabel(packageInfo) : "(unknown)"));
-                Drawable appIcon = packageInfo.loadIcon (getPackageManager ());
-                packageIcons.add(appIcon);
-            }
 
-        }
+        new Thread(new Runnable() {
+            public void run() {
+                for (ApplicationInfo packageInfo : packages) {
+                    boolean isLaunchable = (pm.getLaunchIntentForPackage(packageInfo.packageName) != null);
+                    if (isLaunchable) {
+                        packageNames.add(packageInfo.packageName);
+                        appNames.add((String) (packageInfo != null ? pm.getApplicationLabel(packageInfo) : "(unknown)"));
+                        Drawable appIcon = packageInfo.loadIcon(getPackageManager());
+                        packageIcons.add(appIcon);
+                    }
 
-        final String[] appNameItems = appNames.toArray(new String[appNames.size()]);
-        final Drawable[] iconItems = packageIcons.toArray(new Drawable[packageIcons.size()]);
+                }
+                final String[] appNameItems = appNames.toArray(new String[appNames.size()]);
+                final Drawable[] iconItems = packageIcons.toArray(new Drawable[packageIcons.size()]);
 
-        ListAdapter adapter = new ArrayAdapterWithIcon(this, appNameItems, iconItems);
+                ListAdapter adapter = new ArrayAdapterWithIcon(activity, appNameItems, iconItems);
 
-        builder.setTitle("Select an App")
-                .setAdapter(adapter, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        appNameField.setText((appNameItems[which]).toString());
-                        appPackageName = packageNames.get(which);
-                        Log.e("appPackageName", appPackageName);
-                        if(isFormValid()){
-                            continueButton.setEnabled(true);
-                            continueButton.setVisibility(View.VISIBLE);
-                            YoYo.with(Techniques.FadeInUp)
-                                    .duration(1000)
-                                    .playOn(continueButton);
-                        } else {
-                            continueButton.setEnabled(false);
-                            continueButton.setVisibility(View.GONE);
+                builder.setTitle("Select an App")
+                        .setAdapter(adapter, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                appNameField.setText((appNameItems[which]));
+                                appPackageName = packageNames.get(which);
+                                Log.e("appPackageName", appPackageName);
+                                if (isFormValid()) {
+                                    continueButton.setEnabled(true);
+                                    continueButton.setVisibility(View.VISIBLE);
+                                    YoYo.with(Techniques.FadeInUp)
+                                            .duration(1000)
+                                            .playOn(continueButton);
+                                } else {
+                                    continueButton.setEnabled(false);
+                                    continueButton.setVisibility(View.GONE);
+                                }
+                            }
+                        });
+
+                activity.runOnUiThread(new Runnable() {
+                    public void run() {
+                        choose = builder.create();
+                        if (selectAppWhenReady) {
+                            selectApp(null);
+                            selectAppWhenReady = false;
                         }
                     }
                 });
-        choose = builder.create();
+            }
+        }).start();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        choose = null;
     }
 
     @Override
@@ -134,14 +157,11 @@ public class AddAppTaskActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
     }
-
-
 
     // go to add new task screen
     public void onClickContinueButton(View view) {
@@ -154,10 +174,21 @@ public class AddAppTaskActivity extends ActionBarActivity {
         startActivity(intent);
     }
 
-    public void selectApp(View v){
+    private boolean selectAppWhenReady = false;
+    public void selectApp(final View v){
+        // Run later if app list not ready yet.
+        if (choose == null) {
+            selectAppWhenReady = true;
+            return;
+        }
 
-        choose.show();
-        if(isFormValid()){
+        try {
+            choose.show();
+        } catch (Exception e) {
+            Log.e("AddAppTaskActivity", "Error:" + e.getMessage());
+            return;
+        }
+        if (isFormValid()) {
             continueButton.setEnabled(true);
             continueButton.setVisibility(View.VISIBLE);
             YoYo.with(Techniques.FadeInUp)
@@ -167,7 +198,6 @@ public class AddAppTaskActivity extends ActionBarActivity {
             continueButton.setEnabled(false);
             continueButton.setVisibility(View.GONE);
         }
-
     }
 
 }
