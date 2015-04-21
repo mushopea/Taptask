@@ -1,74 +1,123 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/activity_style"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
+    tools:ignore="MissingPrefix"
     tools:context="sg.edu.nus.taptask.AddSMSTaskActivity">
 
-    <TextView android:text="Number to SMS" android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/targetNumHeader" />
+    <RelativeLayout
+        style="@style/title_container_style"
+        android:id="@+id/titleContainer"
+        >
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="phone"
-        android:ems="10"
-        android:id="@+id/targetNum"
-        android:layout_below="@+id/targetNumHeader"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        <TextView
+            style="@style/title_text_style"
+            android:text="Record a task to send a text to any contact or number."
+            android:id="@+id/textView"
+            />
 
-    <TextView android:text="Name" android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/targetNum"
-        android:layout_marginTop="30dp"
-        android:id="@+id/targetNameHeader" />
+    </RelativeLayout>
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:id="@+id/targetName"
-        android:layout_below="@+id/targetNameHeader"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+    <LinearLayout
+        style="@style/title_separator_style"
+        android:id="@+id/separator"></LinearLayout>
 
-    <TextView android:text="Message" android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/targetName"
-        android:layout_marginTop="30dp"
-        android:id="@+id/targetContentHeader" />
+    <RelativeLayout
+        style="@style/add_task_form_style">
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:id="@+id/targetContent"
-        android:layout_below="@+id/targetContentHeader"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/button"
-        android:layout_alignEnd="@+id/button"
-        android:editable="true"
-        android:height="80dp"
-        android:gravity="top"
-        android:autoText="false" />
+        <TextView android:text="Number to SMS" android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/targetNumHeader" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Record this task"
-        android:id="@+id/button"
-        android:layout_below="@+id/targetContent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="62dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:onClick="onClickContinueButton" />
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="phone"
+            android:ems="10"
+            android:id="@+id/targetNum"
+            android:layout_below="@+id/targetNumHeader"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@+id/choose_contact_button"
+            android:layout_toStartOf="@+id/choose_contact_button" />
 
+        <TextView android:text="Name" android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/targetNum"
+            android:layout_marginTop="30dp"
+            android:id="@+id/targetNameHeader" />
 
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/targetName"
+            android:layout_below="@+id/targetNameHeader"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <TextView android:text="Your Message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/targetName"
+            android:layout_marginTop="30dp"
+            android:id="@+id/targetContentHeader" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:id="@+id/targetContent"
+            android:layout_below="@+id/targetContentHeader"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:editable="true"
+            android:gravity="top"
+            android:autoText="false"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <mehdi.sakout.fancybuttons.FancyButton
+            android:id="@+id/choose_contact_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fancy:borderColor="#FFFFFF"
+            fancy:defaultColor="@color/Primary"
+            fancy:focusColor="@color/PrimaryDark"
+            fancy:fontIconResource="@string/contacts"
+            fancy:fontIconSize="4sp"
+            fancy:radius="3dp"
+            fancy:iconPosition="top"
+            fancy:text="CONTACTS"
+            fancy:textColor="#FFFFFF"
+            fancy:textSize="3dp"
+            android:layout_alignBottom="@+id/targetNum"
+            android:layout_alignRight="@+id/button"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:onClick="selectContact"
+            android:layout_marginLeft="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_alignParentEnd="true" />
+
+        <mehdi.sakout.fancybuttons.FancyButton
+            style="@style/default_button_style"
+            android:id="@+id/button"
+            android:onClick="onClickContinueButton"
+            android:layout_below="@+id/targetContent"
+            fancy:borderColor="@color/Primary"
+            fancy:borderWidth="@dimen/btn_border"
+            fancy:defaultColor="@color/white"
+            fancy:focusColor="@color/paleRed"
+            fancy:radius="30dp"
+            fancy:text="RECORD THIS TASK"
+            fancy:textColor="@color/Primary"/>
+    </RelativeLayout>
 
 </RelativeLayout>

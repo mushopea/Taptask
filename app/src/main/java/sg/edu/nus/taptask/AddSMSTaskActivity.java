@@ -14,9 +14,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
+
+import mehdi.sakout.fancybuttons.FancyButton;
 import sg.edu.nus.taptask.model.TapActionManager;
 import sg.edu.nus.taptask.model.TapActionSMS;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
@@ -29,7 +32,7 @@ public class AddSMSTaskActivity extends ActionBarActivity {
     private EditText targetNumField;
     private EditText targetContentField;
     private TapActionManager tapActionManager;
-    private Button continueButton;
+    private FancyButton continueButton;
 
     private boolean isFormValid(){
         boolean isNumValid = targetNumField.getText().toString().length() > 0;
@@ -46,21 +49,22 @@ public class AddSMSTaskActivity extends ActionBarActivity {
         targetNameField = (EditText) findViewById(R.id.targetName);
         targetNumField = (EditText) findViewById(R.id.targetNum);
         targetContentField = (EditText) findViewById(R.id.targetContent);
-        continueButton = (Button) findViewById(R.id.button);
+        continueButton = (FancyButton) findViewById(R.id.button);
         continueButton.setEnabled(false);
+        continueButton.setVisibility(View.GONE);
         tapActionManager = TapActionManager.getInstance(getBaseContext());
-        targetNumField.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectContact(v);
-            }
-        });
         targetContentField.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
                 if (isFormValid()) {
                     continueButton.setEnabled(true);
+                    continueButton.setVisibility(View.VISIBLE);
+                    YoYo.with(Techniques.FadeInUp)
+                            .duration(1000)
+                            .playOn(continueButton);
                 } else {
                     continueButton.setEnabled(false);
+                    continueButton.setEnabled(false);
+                    continueButton.setVisibility(View.GONE);
                 }
             }
 
