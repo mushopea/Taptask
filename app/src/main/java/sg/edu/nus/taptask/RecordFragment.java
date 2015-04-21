@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.regex.Pattern;
+
 import at.markushi.ui.CircleButton;
 import mehdi.sakout.fancybuttons.FancyButton;
 import sg.edu.nus.taptask.model.TapAction;
@@ -101,7 +103,10 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
 
     public void onClickResetButton(View view) {
         firstPattern = null;
+        secondPattern = null;
         accelerometerRecordSurfaceView.setFirstPattern(null);
+        accelerometerRecordSurfaceView.setSecondPattern(null);
+        accelerometerSampler.clearBuffer();
         setViewState(0);
     }
 
