@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -78,6 +80,7 @@ public class AddAppTaskActivity extends ActionBarActivity {
                         packageNames.add(packageInfo.packageName);
                         appNames.add((String) (packageInfo != null ? pm.getApplicationLabel(packageInfo) : "(unknown)"));
                         Drawable appIcon = packageInfo.loadIcon(getPackageManager());
+                        appIcon = resizeImage(appIcon, 144, 144);
                         packageIcons.add(appIcon);
                     }
 
@@ -200,4 +203,13 @@ public class AddAppTaskActivity extends ActionBarActivity {
         }
     }
 
+    public Drawable resizeImage (Drawable image, int sizeX, int sizeY) {
+        if ((image == null) || !(image instanceof BitmapDrawable)) {
+            return image;
+        }
+        Bitmap b = ((BitmapDrawable)image).getBitmap();
+        Bitmap bitmapResized = Bitmap.createScaledBitmap(b, sizeX, sizeY, false);
+        image = new BitmapDrawable(getResources(), bitmapResized);
+        return image;
+    }
 }
