@@ -14,9 +14,10 @@ import android.widget.Toast;
 import sg.edu.nus.taptask.model.TapAction;
 import sg.edu.nus.taptask.model.TapActionManager;
 import sg.edu.nus.taptask.model.TapPattern;
-import sg.edu.nus.taptask.util.Utils;
 
 public class TaptaskService extends Service implements AccelerometerSamplerListener {
+
+    public static final String REFRESH_APP_INTENT = "REFRESH_APP_INTENT";
 
     AccelerometerMatcher accelerometerMatcher = null;
     private TapActionManager tapActionManager;
@@ -50,7 +51,7 @@ public class TaptaskService extends Service implements AccelerometerSamplerListe
         notification.flags|=Notification.FLAG_NO_CLEAR;
         Context context = getApplicationContext();
         CharSequence contentTitle = "TapTask is enabled";
-        CharSequence contentText = "Big brother is wadstching you";
+        CharSequence contentText = "Click to go to Taptask";
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this,
                 0, notificationIntent, 0);
@@ -87,6 +88,7 @@ public class TaptaskService extends Service implements AccelerometerSamplerListe
         new Thread(new Runnable() {
             public void run(){
                 tapActionManager.saveTapActionManager();
+                sendBroadcast(new Intent(REFRESH_APP_INTENT));
             }
         }).start();
 

@@ -74,25 +74,26 @@ public class TapActionManager {
     }
 
     public void readTapActionManager() {
-        String jsonTapActionManager = readFromFile();
-        if (jsonTapActionManager.equals("")) {
-            return;
+        synchronized (this) {
+            String jsonTapActionManager = readFromFile();
+            if (jsonTapActionManager.equals("")) {
+                return;
+            }
+
+            final RuntimeTypeAdapterFactory<TapAction> typeFactory = RuntimeTypeAdapterFactory
+                    .of(TapAction.class, "type") // Here you specify which is the parent class and what field particularizes the child class.
+                    .registerSubtype(TapActionCall.class, "TapActionCall") // if the flag equals the class name, you can skip the second parameter. This is only necessary, when the "type" field does not equal the class name.
+                    .registerSubtype(TapActionSMS.class, "TapActionSMS")
+                    .registerSubtype(TapActionApp.class, "TapActionApp")
+                    .registerSubtype(TapActionVolume.class, "TapActionVolume");
+
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapterFactory(typeFactory)
+                    .create();
+            TapActionManager tapActionManager = gson.fromJson(jsonTapActionManager, TapActionManager.class);
+            // Copy attributes
+            this.tapActions = tapActionManager.tapActions;
         }
-
-        final RuntimeTypeAdapterFactory<TapAction> typeFactory = RuntimeTypeAdapterFactory
-                .of(TapAction.class, "type") // Here you specify which is the parent class and what field particularizes the child class.
-                .registerSubtype(TapActionCall.class, "TapActionCall") // if the flag equals the class name, you can skip the second parameter. This is only necessary, when the "type" field does not equal the class name.
-                .registerSubtype(TapActionSMS.class, "TapActionSMS")
-                .registerSubtype(TapActionApp.class, "TapActionApp")
-                .registerSubtype(TapActionVolume.class, "TapActionVolume");
-
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapterFactory(typeFactory)
-                .create();
-        TapActionManager tapActionManager = gson.fromJson(jsonTapActionManager, TapActionManager.class);
-        // Copy attributes
-        this.tapActions = tapActionManager.tapActions;
-
     }
 
     // From: http://stackoverflow.com/questions/14376807/how-to-read-write-string-from-a-file-in-android

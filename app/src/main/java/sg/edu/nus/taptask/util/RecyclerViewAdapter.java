@@ -68,7 +68,6 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
         viewHolder.taskName.setText(tapAction.getName());
 
         // set lastTrigger
-
         viewHolder.lastTrigger.setText(tapAction.getLastTriggerTime());
 
         // set icon
@@ -96,20 +95,22 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean targetState = !tapAction.isEnabled();
-                tapAction.setEnabled(targetState);
-                if(targetState){
-                    Toast.makeText(mContext, "Enabled " + viewHolder.taskName.getText().toString() + "!", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(mContext, "Disabled " + viewHolder.taskName.getText().toString() + "!", Toast.LENGTH_SHORT).show();
+                synchronized (tapActionManager) {
+                    boolean targetState = !tapAction.isEnabled();
+                    tapAction.setEnabled(targetState);
+                    if (targetState) {
+                        Toast.makeText(mContext, "Enabled " + viewHolder.taskName.getText().toString() + "!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(mContext, "Disabled " + viewHolder.taskName.getText().toString() + "!", Toast.LENGTH_SHORT).show();
+                    }
+                    // Set on off text
+                    String onOffText = tapAction.isEnabled() ? "ON" : "OFF";
+                    int onOffColor = tapAction.isEnabled() ?
+                            mContext.getResources().getColor(R.color.lightgreen) :
+                            mContext.getResources().getColor(R.color.disabled_grey);
+                    viewHolder.onOffTextView.setText(onOffText);
+                    viewHolder.onOffTextView.setBackgroundColor(onOffColor);
                 }
-                // Set on off text
-                String onOffText = tapAction.isEnabled() ? "ON" : "OFF";
-                int onOffColor = tapAction.isEnabled() ?
-                        mContext.getResources().getColor(R.color.lightgreen) :
-                        mContext.getResources().getColor(R.color.disabled_grey);
-                viewHolder.onOffTextView.setText(onOffText);
-                viewHolder.onOffTextView.setBackgroundColor(onOffColor);
 
                 // Save on new thread, so UI thread does not lag
                 // Restart service if running

@@ -60,7 +60,6 @@ public class TapAction {
     }
 
     public void updateLastTriggerTime(){
-        Log.e("TapAction", "update last trigger action");
         lastTriggerTime = new Date();
     }
 

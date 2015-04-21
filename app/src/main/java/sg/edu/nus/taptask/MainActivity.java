@@ -1,8 +1,11 @@
 package sg.edu.nus.taptask;
 
 
+import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,12 +22,17 @@ import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator;
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
+import sg.edu.nus.taptask.model.TapActionManager;
 import sg.edu.nus.taptask.util.RecyclerViewAdapter;
 import sg.edu.nus.taptask.util.Utils;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 
 public class MainActivity extends ActionBarActivity {
+
+    private TapActionManager tapActionManager;
+    private Activity activity;
+    private DataUpdateReceiver dataUpdateReceiver;
 
     private SettingsToggle taptaskToggle;
     private RecyclerView mRecyclerView;
@@ -37,6 +45,9 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        activity = this;
+        tapActionManager = TapActionManager.getInstance(this.getBaseContext());
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -70,9 +81,33 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Refresh the list onResume
-        mAdapter = new RecyclerViewAdapter(R.layout.row_task, this);
+        mAdapter = new RecyclerViewAdapter(R.layout.row_task, activity);
         mRecyclerView.setAdapter(mAdapter);
+
+        if (dataUpdateReceiver == null) {
+            dataUpdateReceiver = new DataUpdateReceiver();
+        }
+        IntentFilter intentFilter = new IntentFilter(TaptaskService.REFRESH_APP_INTENT);
+        registerReceiver(dataUpdateReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (dataUpdateReceiver != null) {
+            unregisterReceiver(dataUpdateReceiver);
+        }
+    }
+
+    private class DataUpdateReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(TaptaskService.REFRESH_APP_INTENT)) {
+                tapActionManager.readTapActionManager();
+                mAdapter = new RecyclerViewAdapter(R.layout.row_task, activity);
+                mRecyclerView.setAdapter(mAdapter);
+            }
+        }
     }
 
     @Override
