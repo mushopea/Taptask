@@ -223,12 +223,13 @@ public class MainActivity extends ActionBarActivity {
     }
 
     // go to add new task screen
-    public void onClickAddButton(View view) {
-        Log.e("Meow", "Add activity button triggered");
+    public void onClickCallButton(View view) {
+        Log.e("Meow", "Call activity button triggered");
         Intent intent;
         intent = new Intent(this, AddCallTaskActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
+        fabButton.collapse();
     }
 
     public void onClickAppButton(View view){
@@ -237,6 +238,7 @@ public class MainActivity extends ActionBarActivity {
         intent = new Intent(this, AddAppTaskActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
+        fabButton.collapse();
     }
 
     public void onClickVolButton(View view) {
@@ -245,6 +247,7 @@ public class MainActivity extends ActionBarActivity {
         intent = new Intent(this, AddVolumeTaskActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
+        fabButton.collapse();
     }
 
     public void onClickSMSButton(View view) {
@@ -253,6 +256,7 @@ public class MainActivity extends ActionBarActivity {
         intent = new Intent(this, AddSMSTaskActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
+        fabButton.collapse();
     }
 
     @Override

@@ -317,7 +317,7 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
                 this.getActivity().runOnUiThread(new Runnable() {
                     public void run() {
                         setViewState(3);
-                        instructionsText.setText("Pattern match: " + (int) matchPct + "%\nPlease try again!");
+                        instructionsText.setText((int) matchPct + "% match\nPlease try again!");
                     }
                 });
             } else {
@@ -325,7 +325,7 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
                 this.getActivity().runOnUiThread(new Runnable() {
                     public void run() {
                         setViewState(4);
-                        instructionsText.setText("Pattern match: " + (int) matchPct + "%");
+                        instructionsText.setText((int) matchPct + "% match\n Great!");
                     }
                 });
             }
