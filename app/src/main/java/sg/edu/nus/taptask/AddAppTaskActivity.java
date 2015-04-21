@@ -61,6 +61,12 @@ public class AddAppTaskActivity extends ActionBarActivity {
         continueButton.setEnabled(false);
         continueButton.setVisibility(View.GONE);
         appNameField.setFocusable(false);
+        appNameField.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectApp(v);
+            }
+        });
         tapActionManager = TapActionManager.getInstance(getBaseContext());
 
         packageNames = new ArrayList<>();
