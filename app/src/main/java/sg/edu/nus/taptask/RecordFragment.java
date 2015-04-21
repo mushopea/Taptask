@@ -102,9 +102,9 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
     }
 
     public void onClickStartButton(View view) {
-        if (instructionsText.getText().equals(getString(R.string.instructions_start))) {
+        if (firstPattern == null) {
             startRecording();
-        } else if (instructionsText.getText().equals(getString(R.string.instructions_confirm))) {
+        } else if (secondPattern == null) {
             startSecondRecording();
         }
     }
@@ -311,10 +311,12 @@ public class RecordFragment extends Fragment implements AccelerometerSamplerList
 
             if (matchPct < TapPattern.MATCH_RECORD_CONFIRM_THRESHOLD) {
 
+                secondPattern = null;
+                accelerometerRecordSurfaceView.setSecondPattern(secondPattern);
 
                 this.getActivity().runOnUiThread(new Runnable() {
                     public void run() {
-                        setViewState(2);
+                        setViewState(3);
                         instructionsText.setText("Pattern match: " + (int) matchPct + "%\nPlease try again!");
                     }
                 });
