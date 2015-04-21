@@ -198,25 +198,27 @@ public class AccelerometerRecordSurfaceView extends SurfaceView implements Surfa
             }
 
             if (accelerometerSampler != null && accelerometerSampler.isSampling) {
-                // Copy absAccelerationBuffer
-                double[] absAccelerationBufferCopy = accelerometerSampler.getAbsAccelerationBufferSafe();
 
-                if (absAccelerationBufferCopy.length < 1) {
-                    return;
-                }
 
                 synchronized (accelerometerSampler) {
                     if (!accelerometerSampler.isSampling) {
                         return;
                     }
-                    tapPattern = TapPattern.createPattern(accelerometerSampler.getAbsAccelerationBuffer(),
+                    double[] absAccelerationBuffer = accelerometerSampler.getAbsAccelerationBuffer();
+                    if (absAccelerationBuffer.length < 1) {
+                        return;
+                    }
+                    tapPattern = TapPattern.createPattern(absAccelerationBuffer,
                             accelerometerSampler.samplingDuration, accelerometerSampler.samplingFrequency, null);
                     timeIndex = ((AccelerometerRecorder) accelerometerSampler).timeIndexRecorded();
                 }
-                double[] patternBuffer = tapPattern.pattern;
+
 
                 /*
                 // Draw absAccelerationBufferCopy
+                // Copy absAccelerationBuffer
+                double[] patternBuffer = tapPattern.pattern;
+                double[] absAccelerationBufferCopy = accelerometerSampler.getAbsAccelerationBufferSafe();
                 double[] jounce = TapPattern.getJounce(absAccelerationBufferCopy);
                 int patternBufferXMax = absAccelerationBufferCopy.length;
                 float patternBufferXScale = (float)canvasWidth/(float)patternBufferXMax;

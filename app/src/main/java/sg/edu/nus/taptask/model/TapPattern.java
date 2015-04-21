@@ -58,14 +58,14 @@ public class TapPattern {
         FFTHelper.abs(jounce);
         // Binary threshold
         if (frequency < AccelerometerConfig.getInstance(null).minSamplingFrequency){
-            FFTHelper.binaryThreshold(jounce, 6);
+            FFTHelper.binaryThreshold(jounce, 5);
         } else {
             // Apply convolution to blur with box kernel
-            if (boxKernel == null || boxKernel.length != jounce.length) {
-                boxKernel = FFTHelper.boxKernel(jounce.length, 3);
-            }
-            jounce = FFTHelper.FFTConvolution(jounce, boxKernel);
-            FFTHelper.binaryThreshold(jounce, 6); // TODO: tweak threshold
+//            if (boxKernel == null || boxKernel.length != jounce.length) {
+//                boxKernel = FFTHelper.boxKernel(jounce.length, 3);
+//            }
+//            jounce = FFTHelper.FFTConvolution(jounce, boxKernel);
+            FFTHelper.binaryThreshold(jounce, 5); // TODO: tweak threshold
         }
         // Triangle filter
         if (triangleKernel == null || triangleKernel.length != jounce.length) {
