@@ -23,18 +23,24 @@
         android:id="@+id/separator"></LinearLayout>
 
 
-
-    <mehdi.sakout.fancybuttons.FancyButton
-        style="@style/default_button_style"
-        android:id="@+id/button"
-        android:onClick="onClickContinueButton"
+    <RelativeLayout
         android:layout_below="@+id/separator"
-        fancy:borderColor="@color/Primary"
-        fancy:borderWidth="@dimen/btn_border"
-        fancy:defaultColor="@color/white"
-        fancy:focusColor="@color/paleRed"
-        fancy:radius="30dp"
-        fancy:text="RECORD THIS TASK"
-        fancy:textColor="@color/Primary"/>
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        style="@style/add_task_form_style">
+
+        <mehdi.sakout.fancybuttons.FancyButton
+            style="@style/default_button_style"
+            android:id="@+id/button"
+            android:onClick="onClickContinueButton"
+            android:layout_below="@+id/separator"
+            fancy:borderColor="@color/Primary"
+            fancy:borderWidth="@dimen/btn_border"
+            fancy:defaultColor="@color/white"
+            fancy:focusColor="@color/paleRed"
+            fancy:radius="30dp"
+            fancy:text="RECORD THIS TASK"
+            fancy:textColor="@color/Primary"/>
+    </RelativeLayout>
 
 </RelativeLayout>

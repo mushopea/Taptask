@@ -18,11 +18,17 @@
     <style name="activity_style">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/white</item>
+    </style>
+
+    <style name="layout_style">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">fill_parent</item>
+        <item name="android:background">@color/white</item>
         <item name="android:paddingLeft">@dimen/activity_horizontal_margin</item>
         <item name="android:paddingRight">@dimen/activity_horizontal_margin</item>
         <item name="android:paddingTop">@dimen/activity_vertical_margin</item>
         <item name="android:paddingBottom">@dimen/activity_vertical_margin</item>
-        <item name="android:background">@color/white</item>
     </style>
 
     <style name="menu_labels_style">
@@ -79,6 +85,8 @@
         <item name="android:layout_height">@dimen/list_separator_height</item>
         <item name="android:background">@color/separator_grey</item>
         <item name="android:layout_alignBottom">@+id/titleContainer</item>
+        <item name="android:layout_marginLeft">@dimen/add_task_outer_padding</item>
+        <item name="android:layout_marginRight">@dimen/add_task_outer_padding</item>
     </style>
 
     <style name="add_task_form_style">
