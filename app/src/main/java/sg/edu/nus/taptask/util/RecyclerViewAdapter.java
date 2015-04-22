@@ -135,19 +135,24 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
 
             @Override
             public void onOpen(SwipeLayout layout) {
+                try {
+                    synchronized (this) {
+                        mItemManger.removeShownLayouts(viewHolder.swipeLayout);
+                        tapActionManager.tapActions.remove(position);
+                        notifyItemRangeChanged(position, tapActionManager.tapActions.size());
+                        notifyItemRemoved(position);
+                        Toast.makeText(mContext, "Deleted " + viewHolder.taskName.getText().toString() + "!", Toast.LENGTH_SHORT).show();
 
-                mItemManger.removeShownLayouts(viewHolder.swipeLayout);
-                tapActionManager.tapActions.remove(position);
-                notifyItemRangeChanged(position, tapActionManager.tapActions.size());
-                notifyItemRemoved(position);
-                Toast.makeText(mContext, "Deleted " + viewHolder.taskName.getText().toString() + "!", Toast.LENGTH_SHORT).show();
-
-                new Thread(new Runnable() {
-                    public void run(){
-                        tapActionManager.saveTapActionManager();
-                        mContext.sendBroadcast(new Intent(TaptaskService.REFRESH_SERVICE_INTENT));
+                        new Thread(new Runnable() {
+                            public void run() {
+                                tapActionManager.saveTapActionManager();
+                                mContext.sendBroadcast(new Intent(TaptaskService.REFRESH_SERVICE_INTENT));
+                            }
+                        }).start();
                     }
-                }).start();
+                } catch (Exception e) {
+                    Log.e("LOL", "" + e.getMessage() + "\n" + e.getStackTrace() );
+                }
 
             }
         });

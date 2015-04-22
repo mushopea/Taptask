@@ -42,9 +42,11 @@ public class MainActivity extends ActionBarActivity {
     private FloatingActionsMenu fabButton;
     private View addButtonGuide;
 
+    private boolean onCreateFlag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        onCreateFlag = true;
         activity = this;
         tapActionManager = TapActionManager.getInstance(this.getBaseContext());
 
@@ -58,18 +60,24 @@ public class MainActivity extends ActionBarActivity {
         // task list recycler view
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setItemAnimator(new FadeInLeftAnimator());
+        mRecyclerView.setItemAnimator(new SlideInLeftAnimator());
 
         mAdapter = new RecyclerViewAdapter(R.layout.row_task, this);
         mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setItemAnimator(new SlideInLeftAnimator());
 
         initFabListeners();
         showAddTaskGuide();
 
-        // Start service if enabled and not already running
-        if (taptaskToggle.isOn() && !Utils.isMyServiceRunning(getBaseContext(), TaptaskService.class)) {
-            startService(new Intent(this, TaptaskService.class));
-        }
+        new Thread(new Runnable() {
+            public void run(){
+                // Start service if enabled and not already running
+                if (taptaskToggle.isOn() && !Utils.isMyServiceRunning(getBaseContext(), TaptaskService.class)) {
+                    startService(new Intent(activity, TaptaskService.class));
+                }
+                // Load app icons in background
+                Utils.getPackageMetaData(getBaseContext());
+            }
+        }).start();
 
     }
 
@@ -81,8 +89,12 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mAdapter = new RecyclerViewAdapter(R.layout.row_task, activity);
-        mRecyclerView.setAdapter(mAdapter);
+        if (!onCreateFlag) {
+            mAdapter = new RecyclerViewAdapter(R.layout.row_task, activity);
+            mRecyclerView.setAdapter(mAdapter);
+        } else {
+            onCreateFlag = false;
+        }
 
         if (dataUpdateReceiver == null) {
             dataUpdateReceiver = new DataUpdateReceiver();
